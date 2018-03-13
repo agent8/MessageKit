@@ -708,5 +708,6 @@ open class MessageInputBar: UIView {
     /// Invalidates each of the inputManagers
     open func didSelectSendButton() {
         delegate?.messageInputBar(self, didPressSendButtonWith: inputTextView.text)
+        delegate?.finishSendingMessage()
     }
 }
