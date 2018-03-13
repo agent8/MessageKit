@@ -128,8 +128,8 @@ public enum MessageStyle {
         guard let imageName = imageName else { return nil }
         
         switch self {
-        case .bubble, .bubbleOutline:
-            return imageName
+        case .bubble(let face), .bubbleOutline(_, let face):
+            return imageName + "_" + face.rawValue
         case .bubbleTail(let corner, _), .bubbleTailOutline(_, let corner, _):
             return imageName + "_" + corner.rawValue
         default:
