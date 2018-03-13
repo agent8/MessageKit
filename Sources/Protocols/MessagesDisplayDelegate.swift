@@ -171,7 +171,12 @@ public extension MessagesDisplayDelegate {
     // MARK: - All Messages Defaults
 
     func messageStyle(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> MessageStyle {
-        return .bubble
+        
+        guard let dataSource = messagesCollectionView.messagesDataSource else {
+            return .bubble(.faceLeft)
+        }
+        
+        return .bubble(dataSource.isFromCurrentSender(message: message) ? .faceLeft : .faceRight)
     }
 
     func backgroundColor(for message: MessageType, at  indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIColor {

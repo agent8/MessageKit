@@ -44,7 +44,21 @@ public enum MessageStyle {
             }
         }
     }
-
+    
+    // MARK: - TaillessBubbleFace
+    
+    public enum TaillessBubbleFace: String {
+        
+        case faceLeft, faceRight
+        
+        var imageOrientation: UIImageOrientation {
+            switch self {
+            case .faceLeft: return .up
+            case .faceRight: return .upMirrored
+            }
+        }
+    }
+    
     // MARK: - TailStyle
 
     public enum TailStyle {
@@ -65,8 +79,8 @@ public enum MessageStyle {
     // MARK: - MessageStyle
 
     case none
-    case bubble
-    case bubbleOutline(UIColor)
+    case bubble(TaillessBubbleFace)
+    case bubbleOutline(UIColor, TaillessBubbleFace)
     case bubbleTail(TailCorner, TailStyle)
     case bubbleTailOutline(UIColor, TailCorner, TailStyle)
     case custom((MessageContainerView) -> Void)
@@ -87,8 +101,9 @@ public enum MessageStyle {
         switch self {
         case .none, .custom:
             return nil
-        case .bubble, .bubbleOutline:
-            break
+        case .bubble(let face), .bubbleOutline(_, let face):
+            guard let cgImage = image.cgImage else { return nil }
+            image = UIImage(cgImage: cgImage, scale: image.scale, orientation: face.imageOrientation)
         case .bubbleTail(let corner, _), .bubbleTailOutline(_, let corner, _):
             guard let cgImage = image.cgImage else { return nil }
             image = UIImage(cgImage: cgImage, scale: image.scale, orientation: corner.imageOrientation)

@@ -62,8 +62,8 @@ open class MessageContainerView: UIImageView {
             sizeMaskToView()
             mask = imageMask
             image = nil
-        case .bubbleOutline(let color):
-            let bubbleStyle: MessageStyle = .bubble
+        case .bubbleOutline(let color, let face):
+            let bubbleStyle: MessageStyle = .bubble(face)
             imageMask.image = bubbleStyle.image
             sizeMaskToView()
             mask = imageMask
