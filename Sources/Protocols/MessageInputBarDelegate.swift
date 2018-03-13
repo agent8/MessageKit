@@ -49,10 +49,6 @@ public protocol MessageInputBarDelegate: AnyObject {
     ///   - inputBar: The MessageInputBar
     ///   - text: The current text in the MessageInputBar's InputTextView
     func messageInputBar(_ inputBar: MessageInputBar, textViewTextDidChangeTo text: String)
-    
-    /// Called after the default send button has been selected and
-    /// `messageInputBar(_, didPressSendButtonWith)` has been called
-    func finishSendingMessage()
 }
 
 public extension MessageInputBarDelegate {
@@ -62,6 +58,4 @@ public extension MessageInputBarDelegate {
     func messageInputBar(_ inputBar: MessageInputBar, didChangeIntrinsicContentTo size: CGSize) {}
     
     func messageInputBar(_ inputBar: MessageInputBar, textViewTextDidChangeTo text: String) {}
-    
-    func finishSendingMessage() {}
 }
