@@ -198,7 +198,7 @@ public extension MessagesDisplayDelegate {
 
     func shouldDisplayHeader(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> Bool {
         guard let dataSource = messagesCollectionView.messagesDataSource else { return false }
-        if indexPath.section == 0 { return false }
+        if indexPath.section == 0 { return true }
         let previousSection = indexPath.section - 1
         let previousIndexPath = IndexPath(item: 0, section: previousSection)
         let previousMessage = dataSource.messageForItem(at: previousIndexPath, in: messagesCollectionView)
