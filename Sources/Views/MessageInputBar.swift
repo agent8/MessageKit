@@ -128,9 +128,9 @@ open class MessageInputBar: UIView {
     open var sendButton: InputBarButtonItem = {
         return InputBarButtonItem()
             .onEnabled {
-                $0.imageView?.tintColor = COLOR_ICON_BLUE
+                $0.imageView?.tintColor = nil
             }.onDisabled {
-                $0.imageView?.tintColor = COLOR_ICON_GRAY
+                $0.imageView?.tintColor = .darkGray
             }.configure {
                 $0.setSize(CGSize(width: 52, height: 28), animated: false)
                 $0.isEnabled = false
