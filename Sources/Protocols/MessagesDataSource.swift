@@ -70,7 +70,13 @@ public protocol MessagesDataSource: AnyObject {
     ///
     /// The default value returned by this method is `nil`.
     func cellBottomLabelAttributedText(for message: MessageType, at indexPath: IndexPath) -> NSAttributedString?
-
+    
+    /// Delegate callback that indicates a message is to be deleted at `indexPath`
+    ///
+    /// - Parameters:
+    ///   - messagesCollectionView: The `MessagesCollectionView` in which this message is deleted from.
+    ///   - indexPath: The `IndexPath` of the cell.
+    func didDeleteMessage(in messagesCollectionView: MessagesCollectionView, at indexPath: IndexPath)
 }
 
 public extension MessagesDataSource {
@@ -86,5 +92,6 @@ public extension MessagesDataSource {
     func cellBottomLabelAttributedText(for message: MessageType, at indexPath: IndexPath) -> NSAttributedString? {
         return nil
     }
-
+    
+    func didDeleteMessage(in messagesCollectionView: MessagesCollectionView, at indexPath: IndexPath) {}
 }

@@ -144,4 +144,19 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
     open func cellContentView(canHandle touchPoint: CGPoint) -> Bool {
         return false
     }
+    
+    open override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
+        guard let delegate = self.delegate else {
+            return false
+        }
+        return delegate.canPerformAction(for: self, action: action, withSender: sender)
+    }
+    
+    override open func copy(_ sender: Any?) {
+        delegate?.didTapCopyMenuItem(from: self)
+    }
+    
+    override open func delete(_ sender: Any?) {
+        delegate?.didTapDeleteMenuItem(from: self)
+    }
 }

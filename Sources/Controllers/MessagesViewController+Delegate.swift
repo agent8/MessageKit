@@ -78,25 +78,17 @@ extension MessagesViewController: UICollectionViewDelegateFlowLayout {
     }
 
     open func collectionView(_ collectionView: UICollectionView, canPerformAction action: Selector, forItemAt indexPath: IndexPath, withSender sender: Any?) -> Bool {
-        return (action == NSSelectorFromString("copy:"))
+        /*
+         * this is never called, but NEEDS to be implemented
+         * actual canPerformAction logic is handled by the cells and passed up to its delegate.
+         */
+        return false
     }
 
     open func collectionView(_ collectionView: UICollectionView, performAction action: Selector, forItemAt indexPath: IndexPath, withSender sender: Any?) {
-        guard let messagesDataSource = messagesCollectionView.messagesDataSource else {
-            fatalError(MessageKitError.nilMessagesDataSource)
-        }
-        let pasteBoard = UIPasteboard.general
-        let message = messagesDataSource.messageForItem(at: indexPath, in: messagesCollectionView)
-
-        switch message.data {
-        case .text(let text), .emoji(let text):
-            pasteBoard.string = text
-        case .attributedText(let attributedText):
-            pasteBoard.string = attributedText.string
-        case .photo(let image):
-            pasteBoard.image = image
-        default:
-            break
-        }
+        /*
+         * this is never called, but NEEDS to be implemented
+         * actual performAction logic stems from the cells and passed up to its delegate for handling
+         */
     }
 }

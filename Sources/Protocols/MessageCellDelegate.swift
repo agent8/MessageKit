@@ -66,7 +66,15 @@ public protocol MessageCellDelegate: MessageLabelDelegate {
     /// `indexPath(for: cell)` method. Then using the returned `IndexPath` with the `MessagesDataSource`
     /// method `messageForItem(at:indexPath:messagesCollectionView)`.
     func didTapTopLabel(in cell: MessageCollectionViewCell)
-
+    
+    /// Asks the delegate if this call can perform this menu action.
+    func canPerformAction(for cell: MessageCollectionViewCell, action: Selector, withSender: Any?) -> Bool
+    
+    /// A handler for when the "Copy" menu item is selected.
+    func didTapCopyMenuItem(from cell: MessageCollectionViewCell)
+    
+    /// A handler for when the "Delete" menu item is selected.
+    func didTapDeleteMenuItem(from cell: MessageCollectionViewCell)
 }
 
 public extension MessageCellDelegate {
@@ -78,5 +86,13 @@ public extension MessageCellDelegate {
     func didTapBottomLabel(in cell: MessageCollectionViewCell) {}
 
     func didTapTopLabel(in cell: MessageCollectionViewCell) {}
+    
+    func canPerformAction(for cell: MessageCollectionViewCell, action: Selector, withSender: Any?) -> Bool {
+        return false
+    }
+    
+    func didTapCopyMenuItem(from cell: MessageCollectionViewCell) {}
+    
+    func didTapDeleteMenuItem(from cell: MessageCollectionViewCell) {}
 
 }
