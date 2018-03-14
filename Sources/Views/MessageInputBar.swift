@@ -127,7 +127,11 @@ open class MessageInputBar: UIView {
     /// A InputBarButtonItem used as the send button and initially placed in the rightStackView
     open var sendButton: InputBarButtonItem = {
         return InputBarButtonItem()
-            .configure {
+            .onEnabled {
+                $0.imageView?.tintColor = COLOR_ICON_BLUE
+            }.onDisabled {
+                $0.imageView?.tintColor = COLOR_ICON_GRAY
+            }.configure {
                 $0.setSize(CGSize(width: 52, height: 28), animated: false)
                 $0.isEnabled = false
                 $0.title = "Send"
