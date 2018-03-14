@@ -130,7 +130,7 @@ open class MessageInputBar: UIView {
             .onEnabled {
                 $0.imageView?.tintColor = nil
             }.onDisabled {
-                $0.imageView?.tintColor = .darkGray
+                $0.imageView?.tintColor = COLOR_TINT_DARK_GRAY
             }.configure {
                 $0.setSize(CGSize(width: 52, height: 28), animated: false)
                 $0.isEnabled = false
