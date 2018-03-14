@@ -68,9 +68,18 @@ open class MessagesViewController: UIViewController {
         didSet {
             messagesCollectionView.contentInset.bottom = messageCollectionViewBottomInset
             messagesCollectionView.scrollIndicatorInsets.bottom = messageCollectionViewBottomInset
+        
+            updateScrollToBottomButtonBottomConstraint(oldBottomInset: oldValue, newBottomInset: messageCollectionViewBottomInset)
         }
     }
 
+    /// The bottom constraint of the scroll to bottom button that is tied to the
+    /// content inset of the collection view.
+    private var scrollToBottomButtonBottomConstraint: NSLayoutConstraint?
+    
+    /// A button that when tapped, scrolls the collection view to the bottom.
+    open var scrollToBottomButton: UIButton = UIButton()
+    
     // MARK: - View Life Cycle
 
     open override func viewDidLoad() {
@@ -123,6 +132,7 @@ open class MessagesViewController: UIViewController {
     /// Adds the messagesCollectionView to the controllers root view.
     private func setupSubviews() {
         view.addSubview(messagesCollectionView)
+        setupScrollToBottomButton()
     }
 
     /// Registers all cells and supplementary views of the messagesCollectionView property.
@@ -164,5 +174,107 @@ open class MessagesViewController: UIViewController {
     
     @objc private func clearMemoryCache() {
         MessageStyle.bubbleImageCache.removeAllObjects()
+    }
+    
+    // MARK: Scroll to bottom button
+
+    private func updateScrollToBottomButtonBottomConstraint(oldBottomInset old: CGFloat, newBottomInset new: CGFloat) {
+        
+        guard let bottomConstraint = scrollToBottomButtonBottomConstraint else {
+            return
+        }
+        
+        bottomConstraint.constant = bottomConstraint.constant - old + new
+        if new >= old {
+            view.layoutIfNeeded()
+        } else { // only animate drops in inset
+            UIView.animate(withDuration: 0.3,
+                           delay: 0,
+                           options: .curveEaseOut,
+                           animations: { [weak self] in self?.view.layoutIfNeeded() })
+        }
+    }
+    
+    private class RoundedButton: UIButton {
+        override func layoutSubviews() {
+            super.layoutSubviews()
+            layer.cornerRadius = frame.height / 2
+        }
+    }
+    
+    private func setupScrollToBottomButton() {
+        let button = RoundedButton(type: .custom)
+        
+        view.addSubview(button)
+        
+        let buttonWidth: CGFloat = 40
+        let padding = messagesCollectionView.scrollIndicatorInsets.right + 8
+        
+        if #available(iOS 11.0, *) {
+            scrollToBottomButtonBottomConstraint =
+                view.safeAreaLayoutGuide
+                    .bottomAnchor
+                    .constraint(equalTo: button.bottomAnchor,
+                                constant: padding + messageCollectionViewBottomInset)
+        } else {
+            scrollToBottomButtonBottomConstraint =
+                NSLayoutConstraint.constraints(withVisualFormat: "V:[button]-(padding)-|",
+                                               options: LAYOUT_OPT_NONE,
+                                               metrics: ["padding": padding + messageCollectionViewBottomInset],
+                                               views: ["button": button]).first
+        }
+        
+        if let constraint = scrollToBottomButtonBottomConstraint {
+            view.addConstraint(constraint)
+        }
+        
+        view.addConstraintsForDimensions([button], height: buttonWidth, width: buttonWidth)
+        view.addConstraintsForFloatRight(button, padding: padding, useSafeArea: true)
+        
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.isHidden = true
+        button.addTarget(self, action: #selector(didTapScrollToBottomButton), for: .touchUpInside)
+        button.clipsToBounds = true
+        button.backgroundColor = .white
+        button.alpha = 1
+        button.setImage(EdoTintImage("arrow-down-icon"), for: .normal)
+        button.imageView?.tintColor = .lightGray
+        button.layer.borderWidth = 0.5
+        button.layer.borderColor = UIColor.lightGray.cgColor
+        
+        scrollToBottomButton = button
+    }
+    
+    @objc private func didTapScrollToBottomButton() {
+        messagesCollectionView.scrollToBottom(animated: true)
+    }
+}
+
+// MARK: - UIScrollViewDelegate
+
+extension MessagesViewController: UIScrollViewDelegate {
+    
+    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        updateScrollToBottomButton(in: scrollView)
+    }
+    
+    private func updateScrollToBottomButton(in scrollView: UIScrollView) {
+        
+        var currentOffset = scrollView.contentOffset.y + scrollView.bounds.size.height - scrollView.contentInset.bottom
+        if #available(iOS 11.0, *) {
+            currentOffset -= view.safeAreaInsets.bottom
+        }
+        
+        let hideButtonThreshold = scrollView.contentSize.height - scrollView.bounds.size.height / 2
+        let shouldHideButton = currentOffset >= hideButtonThreshold
+        
+        if shouldHideButton != scrollToBottomButton.isHidden {
+            UIView.transition(with: scrollToBottomButton,
+                              duration: 0.25,
+                              options: .transitionCrossDissolve,
+                              animations: {
+                                self.scrollToBottomButton.isHidden = !self.scrollToBottomButton.isHidden
+            })
+        }
     }
 }
