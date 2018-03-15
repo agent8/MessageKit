@@ -31,11 +31,13 @@ extension MessagesViewController {
     /// Add observer for `UIMenuControllerWillShowMenu` notification
     func addMenuControllerObservers() {
         NotificationCenter.default.addObserver(self, selector: #selector(MessagesViewController.menuControllerWillShow(_:)), name: .UIMenuControllerWillShowMenu, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(MessagesViewController.menuControllerWillHide(_:)), name: .UIMenuControllerWillHideMenu, object: nil)
     }
 
     /// Remove observer for `UIMenuControllerWillShowMenu` notification
     func removeMenuControllerObservers() {
         NotificationCenter.default.removeObserver(self, name: .UIMenuControllerWillShowMenu, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .UIMenuControllerWillHideMenu, object: nil)
     }
 
     // MARK: - Notification Handlers
@@ -52,13 +54,15 @@ extension MessagesViewController {
             NotificationCenter.default.addObserver(self,
                                                    selector: #selector(MessagesViewController.menuControllerWillShow(_:)),
                                                    name: .UIMenuControllerWillShowMenu, object: nil)
-            selectedIndexPathForMenu = nil
         }
 
         currentMenuController.setMenuVisible(false, animated: false)
 
         guard let selectedCell = messagesCollectionView.cellForItem(at: selectedIndexPath) as? MessageCollectionViewCell else { return }
         let selectedCellMessageBubbleFrame = selectedCell.convert(selectedCell.messageContainerView.frame, to: view)
+        
+        // Highlight messageContainerView
+        selectedCell.messageContainerView.backgroundColor = selectedCell.messageContainerView.backgroundColor?.darker(by: 0.13)
 
         var messageInputBarFrame: CGRect = .zero
         if let messageInputBarSuperview = messageInputBar.superview {
@@ -90,6 +94,32 @@ extension MessagesViewController {
         currentMenuController.setMenuVisible(true, animated: true)
     }
 
+    /// Set messageContainerView back to its original color
+    @objc
+    func menuControllerWillHide(_ notification: Notification) {
+        guard let currentMenuController = notification.object as? UIMenuController,
+            let selectedIndexPath = selectedIndexPathForMenu else { return }
+        
+        NotificationCenter.default.removeObserver(self, name: .UIMenuControllerWillHideMenu, object: nil)
+        defer {
+            NotificationCenter.default.addObserver(self,
+                                                   selector: #selector(MessagesViewController.menuControllerWillHide(_:)),
+                                                   name: .UIMenuControllerWillHideMenu, object: nil)
+            selectedIndexPathForMenu = nil
+        }
+        
+        guard
+            let selectedCell = messagesCollectionView.cellForItem(at: selectedIndexPath) as? MessageCollectionViewCell,
+            let messagesDataSource = messagesCollectionView.messagesDataSource,
+            let messagesDisplayDelegate = messagesCollectionView.messagesDisplayDelegate else {
+                return
+        }
+        let message = messagesDataSource.messageForItem(at: selectedIndexPath, in: messagesCollectionView)
+        selectedCell.messageContainerView.backgroundColor = messagesDisplayDelegate.backgroundColor(for: message,
+                                                                                                    at: selectedIndexPath,
+                                                                                                    in: messagesCollectionView)
+    }
+    
     // MARK: - Helpers
 
     private var navigationBarFrame: CGRect {
