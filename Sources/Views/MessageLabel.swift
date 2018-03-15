@@ -356,9 +356,9 @@ open class MessageLabel: UILabel {
         return characterIndex
 
     }
-
-  func handleGesture(_ touchLocation: CGPoint) -> Bool {
-
+    
+    func handleGesture(_ touchLocation: CGPoint) -> Bool {
+        
         guard let index = stringIndex(at: touchLocation) else { return false }
 
         for (detectorType, ranges) in rangesForDetectors {
