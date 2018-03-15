@@ -76,7 +76,7 @@ public protocol MessagesDataSource: AnyObject {
     /// - Parameters:
     ///   - messagesCollectionView: The `MessagesCollectionView` in which this message is deleted from.
     ///   - indexPath: The `IndexPath` of the cell.
-    func didDeleteMessage(in messagesCollectionView: MessagesCollectionView, at indexPath: IndexPath)
+    func deleteMessage(in messagesCollectionView: MessagesCollectionView, at indexPath: IndexPath)
 }
 
 public extension MessagesDataSource {
@@ -93,5 +93,5 @@ public extension MessagesDataSource {
         return nil
     }
     
-    func didDeleteMessage(in messagesCollectionView: MessagesCollectionView, at indexPath: IndexPath) {}
+    func deleteMessage(in messagesCollectionView: MessagesCollectionView, at indexPath: IndexPath) {}
 }

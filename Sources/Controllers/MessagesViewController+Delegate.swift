@@ -80,7 +80,7 @@ extension MessagesViewController: UICollectionViewDelegateFlowLayout {
     open func collectionView(_ collectionView: UICollectionView, canPerformAction action: Selector, forItemAt indexPath: IndexPath, withSender sender: Any?) -> Bool {
         /*
          * this is never called, but NEEDS to be implemented
-         * actual canPerformAction logic is handled by the cells and passed up to its delegate.
+         * actual canPerformAction logic is handled by the cell's delegate.
          */
         return false
     }
@@ -88,7 +88,7 @@ extension MessagesViewController: UICollectionViewDelegateFlowLayout {
     open func collectionView(_ collectionView: UICollectionView, performAction action: Selector, forItemAt indexPath: IndexPath, withSender sender: Any?) {
         /*
          * this is never called, but NEEDS to be implemented
-         * actual performAction logic stems from the cells and passed up to its delegate for handling
+         * actual performAction logic stems from the cells and passed up to its delegate for handling.
          */
     }
 }
