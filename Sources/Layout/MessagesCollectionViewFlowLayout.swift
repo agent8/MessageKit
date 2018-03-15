@@ -618,9 +618,15 @@ private extension MessagesCollectionViewFlowLayout {
             cellHeight += attributes.bottomLabelSize.height
             cellHeight += attributes.messageContainerSize.height
             cellHeight += attributes.messageVerticalPadding
+            if attributes.bottomLabelSize.height > 0 {
+                cellHeight += attributes.bottomLabelVerticalPadding
+            }
         case .cellBottom:
             cellHeight += max(attributes.avatarSize.height, attributes.bottomLabelSize.height)
             cellHeight += attributes.topLabelSize.height
+            if attributes.topLabelSize.height > 0 {
+                cellHeight += attributes.topLabelVerticalPadding
+            }
             cellHeight += attributes.messageContainerSize.height
             cellHeight += attributes.messageVerticalPadding
         case .messageTop, .messageCenter, .messageBottom:
@@ -628,6 +634,12 @@ private extension MessagesCollectionViewFlowLayout {
             cellHeight += attributes.messageVerticalPadding
             cellHeight += attributes.topLabelSize.height
             cellHeight += attributes.bottomLabelSize.height
+            if attributes.topLabelSize.height > 0 {
+                cellHeight += attributes.topLabelVerticalPadding
+            }
+            if attributes.bottomLabelSize.height > 0 {
+                cellHeight += attributes.bottomLabelVerticalPadding
+            }
         }
         
         return cellHeight
