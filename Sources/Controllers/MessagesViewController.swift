@@ -29,7 +29,11 @@ open class MessagesViewController: UIViewController {
     // MARK: - Properties [Public]
 
     /// The `MessagesCollectionView` managed by the messages view controller object.
-    open var messagesCollectionView = MessagesCollectionView()
+    open var messagesCollectionView: MessagesCollectionView = {
+        let collectionView = MessagesCollectionView()
+        collectionView.contentInset.top += 5
+        return collectionView
+    }()
 
     /// The `MessageInputBar` used as the `inputAccessoryView` in the view controller.
     open var messageInputBar = MessageInputBar()
@@ -66,7 +70,7 @@ open class MessagesViewController: UIViewController {
 
     var messageCollectionViewBottomInset: CGFloat = 0 {
         didSet {
-            messagesCollectionView.contentInset.bottom = messageCollectionViewBottomInset
+            messagesCollectionView.contentInset.bottom = messageCollectionViewBottomInset + 5
             messagesCollectionView.scrollIndicatorInsets.bottom = messageCollectionViewBottomInset
         
             updateScrollToBottomButtonBottomConstraint(oldBottomInset: oldValue, newBottomInset: messageCollectionViewBottomInset)
