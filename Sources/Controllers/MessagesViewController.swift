@@ -72,6 +72,22 @@ open class MessagesViewController: UIViewController {
             updateScrollToBottomButtonBottomConstraint(oldBottomInset: oldValue, newBottomInset: messageCollectionViewBottomInset)
         }
     }
+    
+    var verticalOffsetForBottom: CGFloat {
+        var offset = messagesCollectionView.contentSize.height - messagesCollectionView.bounds.size.height + messagesCollectionView.contentInset.bottom
+        if #available(iOS 11.0, *) {
+            offset += view.safeAreaInsets.bottom
+        }
+        return offset
+    }
+
+    var verticalOffsetForTop: CGFloat {
+        var topInset = messagesCollectionView.contentInset.top
+        if #available(iOS 11.0, *) {
+            topInset += view.safeAreaInsets.top
+        }
+        return -topInset
+    }
 
     /// The bottom constraint of the scroll to bottom button that is tied to the
     /// content inset of the collection view.
@@ -258,15 +274,11 @@ extension MessagesViewController: UIScrollViewDelegate {
         updateScrollToBottomButton(in: scrollView)
     }
     
-    private func updateScrollToBottomButton(in scrollView: UIScrollView) {
+    func updateScrollToBottomButton(in scrollView: UIScrollView) {
         
-        var currentOffset = scrollView.contentOffset.y + scrollView.bounds.size.height - scrollView.contentInset.bottom
-        if #available(iOS 11.0, *) {
-            currentOffset -= view.safeAreaInsets.bottom
-        }
-        
-        let hideButtonThreshold = scrollView.contentSize.height - scrollView.bounds.size.height / 2
-        let shouldHideButton = currentOffset >= hideButtonThreshold
+        // hide button when less than half a screen away from bottom
+        let thresholdFromBottom = scrollView.bounds.size.height / 2
+        let shouldHideButton = scrollView.contentOffset.y >= verticalOffsetForBottom - thresholdFromBottom
         
         if shouldHideButton != scrollToBottomButton.isHidden {
             UIView.transition(with: scrollToBottomButton,
