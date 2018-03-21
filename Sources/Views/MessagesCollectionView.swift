@@ -26,6 +26,10 @@ import UIKit
 
 open class MessagesCollectionView: UICollectionView {
 
+    /// Minimum insets of this UICollectionView.
+    let minimumTopContentInset: CGFloat = 5
+    let minimumBottomContentInset: CGFloat = 5
+    
     // MARK: - Properties
 
     open weak var messagesDataSource: MessagesDataSource?
