@@ -90,20 +90,10 @@ open class MessagesCollectionView: UICollectionView {
     }
     
     public func reloadDataAndKeepOffset() {
-        // stop scrolling
-        setContentOffset(contentOffset, animated: false)
-        
-        // calculate the offset and reloadData
-        let beforeContentSize = contentSize
+        let beforeDistanceToBottom = contentSize.height - contentOffset.y - bounds.size.height
         reloadData()
         layoutIfNeeded()
-        let afterContentSize = contentSize
-        
-        // reset the contentOffset after data is updated
-        let newOffset = CGPoint(
-            x: contentOffset.x + (afterContentSize.width - beforeContentSize.width),
-            y: contentOffset.y + (afterContentSize.height - beforeContentSize.height))
-        setContentOffset(newOffset, animated: false)
+        let newYOffset = contentSize.height - bounds.size.height - beforeDistanceToBottom
+        contentOffset.y = newYOffset
     }
-
 }
