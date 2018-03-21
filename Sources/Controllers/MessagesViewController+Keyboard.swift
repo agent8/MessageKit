@@ -74,11 +74,11 @@ extension MessagesViewController {
     @objc
     func adjustScrollViewInset() {
         if #available(iOS 11.0, *) {
-            // No need to add to the top contentInset
+            messagesCollectionView.contentInset.top = messagesCollectionView.minimumTopContentInset
         } else {
             let navigationBarInset = navigationController?.navigationBar.frame.height ?? 0
             let statusBarInset: CGFloat = UIApplication.shared.isStatusBarHidden ? 0 : 20
-            let topInset = navigationBarInset + statusBarInset
+            let topInset = navigationBarInset + statusBarInset + messagesCollectionView.minimumTopContentInset
             messagesCollectionView.contentInset.top = topInset
             messagesCollectionView.scrollIndicatorInsets.top = topInset
         }
