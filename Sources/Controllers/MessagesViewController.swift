@@ -282,7 +282,7 @@ extension MessagesViewController: UIScrollViewDelegate {
     
     /// Checks if the collection view is at most `threshold` distance away from the top.
     func isNearTop(threshold: CGFloat) -> Bool {
-        return messagesCollectionView.contentOffset.y < verticalOffsetForTop + threshold
+        return messagesCollectionView.contentOffset.y <= verticalOffsetForTop + threshold
     }
     
     func updateScrollToBottomButton(in scrollView: UIScrollView) {
