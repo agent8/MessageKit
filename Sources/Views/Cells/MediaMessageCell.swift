@@ -55,8 +55,16 @@ open class MediaMessageCell: MessageCollectionViewCell {
     open override func configure(with message: MessageType, at indexPath: IndexPath, and messagesCollectionView: MessagesCollectionView) {
         super.configure(with: message, at: indexPath, and: messagesCollectionView)
         switch message.data {
-        case .photo(let image):
-            imageView.image = image
+        case .photo(let downloadInfo):
+            if let message: ChatMessage = EmailDAL.getChatMessage(accountId: downloadInfo.accountId,
+                                                                  msgId: downloadInfo.messageId),
+                let image = UIImage(contentsOfFile: message.thumbPath) {
+                imageView.image = image
+            } else {
+                // placeholder image
+                imageView.image = UIImage().from(color: .lightGray, size: CGSize(width: 210, height: 150))
+                downloadData(for: downloadInfo)
+            }
             playButtonView.isHidden = true
         case .video(_, let image):
             imageView.image = image
@@ -65,4 +73,12 @@ open class MediaMessageCell: MessageCollectionViewCell {
             break
         }
     }
+    
+    // Should be overriden by subclass
+    open func downloadData(for downloadInfo: DownloadInfo) {
+        XMPPAdapter.downloadData(accountId: downloadInfo.accountId,
+                                 chatMsgId: downloadInfo.messageId,
+                                 forThumb: downloadInfo.isThumbnail)
+    }
+
 }
