@@ -29,7 +29,15 @@ open class MediaMessageCell: MessageCollectionViewCell {
     open override class func reuseIdentifier() -> String { return "messagekit.cell.mediamessage" }
 
     // MARK: - Properties
-
+    
+    public override init(frame: CGRect) {
+        super.init(frame: frame)
+    }
+    
+    required public init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     open lazy var playButtonView: PlayButtonView = {
         let playButtonView = PlayButtonView()
         return playButtonView

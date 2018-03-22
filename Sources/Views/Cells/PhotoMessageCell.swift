@@ -15,6 +15,19 @@ class PhotoMessageCell: MediaMessageCell {
     var isLoadingThumb = false
     var backgroundTask: UIBackgroundTaskIdentifier = UIBackgroundTaskInvalid
     
+    public override init(frame: CGRect) {
+        super.init(frame: frame)
+        BroadcastCenter.addObserver(self, selector: #selector(self.appWillEnterBackground(noti:)), notification: .AppPrepareEnterBackground)
+    }
+    
+    required public init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    deinit {
+        BroadcastCenter.removeObserver(self)
+    }
+    
     override func downloadData(for downloadInfo: DownloadInfo) {
         guard !isLoadingThumb else { return }
         XMPPAdapter.downloadData(accountId: downloadInfo.accountId,
@@ -39,6 +52,16 @@ class PhotoMessageCell: MediaMessageCell {
         }
     }
     
+    @objc func appWillEnterBackground(noti:Notification) {
+        if isLoadingThumb {
+            self.backgroundTask = UIApplication.shared.beginBackgroundTask(expirationHandler: {
+                UIApplication.shared.endBackgroundTask(self.backgroundTask)
+                NMLog("backgroundTask expired")
+                self.backgroundTask = UIBackgroundTaskInvalid
+            })
+        }
+    }
+    
     private func imageNotFound() {
         self.imageView.contentMode = .center
         self.imageView.image = EdoImageNoCache("image-not-found")
@@ -50,7 +73,8 @@ class PhotoMessageCell: MediaMessageCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        self.isLoadingThumb = false
         self.imageView.image = nil
+        self.imageView.contentMode = .scaleAspectFill
+        self.isLoadingThumb = false
     }
 }
