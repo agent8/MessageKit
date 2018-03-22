@@ -82,7 +82,7 @@ open class MessagesCollectionViewFlowLayout: UICollectionViewFlowLayout {
     /// Convenience property for unwrapping the `MessagesCollectionView`'s `MessagesLayoutDelegate`.
     fileprivate var messagesLayoutDelegate: MessagesLayoutDelegate {
         guard let messagesLayoutDelegate = messagesCollectionView.messagesLayoutDelegate else {
-            fatalError(MessageKitError.nilMessagesLayoutDeleagte)
+            fatalError(MessageKitError.nilMessagesLayoutDelegate)
         }
         return messagesLayoutDelegate
     }
