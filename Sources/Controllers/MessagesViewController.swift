@@ -109,6 +109,12 @@ open class MessagesViewController: UIViewController {
         addMenuControllerObservers()
         addObservers()
     }
+
+    open override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        becomeFirstResponder()
+        isFirstLayout = true
+    }
     
     open override func viewDidLayoutSubviews() {
         // Hack to prevent animation of the contentInset after viewDidAppear
