@@ -32,6 +32,8 @@ open class MessageInputBar: UIView {
     /// A delegate to broadcast notifications from the MessageInputBar
     open weak var delegate: MessageInputBarDelegate?
     
+    open var attachments = [ChatAttachment]() //SZ: documents, images to be sent
+    
     /// The background UIView anchored to the bottom, left, and right of the MessageInputBar
     /// with a top anchor equal to the bottom of the top InputStackView
     open var backgroundView: UIView = {
@@ -58,6 +60,20 @@ open class MessageInputBar: UIView {
         view.layer.cornerRadius = 19
         view.layer.masksToBounds = true
         return view
+    }()
+    
+    open var attachmentsView: UITableView = {
+        let tableView = UITableView(frame: .zero)
+        tableView.register(InputBarAttachmentCell.self, forCellReuseIdentifier: "InputBarAttachmentCell")
+        tableView.transform = CGAffineTransform.identity.rotated(by: -CGFloat(Double.pi / 2))
+        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.estimatedRowHeight = 100
+        tableView.showsHorizontalScrollIndicator = false
+        tableView.showsVerticalScrollIndicator = false
+        tableView.separatorStyle = .none
+        tableView.backgroundColor = .clear
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        return tableView
     }()
     
     /**
@@ -97,11 +113,8 @@ open class MessageInputBar: UIView {
      2. It's alignment is initially set to .fill
      */
     open let topStackView: InputStackView = {
-        let stackView = InputStackView(axis: .horizontal, spacing: 10)
-        stackView.alignment = .leading
-        stackView.distribution = .fillProportionally
-        stackView.layoutMargins = UIEdgeInsets(top: 12, left: 10, bottom: 10, right: 10)
-        stackView.isLayoutMarginsRelativeArrangement = true
+        let stackView = InputStackView(axis: .vertical, spacing: 0)
+        stackView.alignment = .fill
         return stackView
     }()
     
@@ -237,6 +250,15 @@ open class MessageInputBar: UIView {
         }
     }
     
+    open var attachmentViewHeight: CGFloat = 0 {
+        didSet {
+            attachmentViewLayoutSet?.centerY?.constant = -textViewPadding.top - attachmentViewHeight / 2
+            attachmentViewLayoutSet?.width?.constant = attachmentViewHeight
+            textViewLayoutSet?.top?.constant = textViewPadding.top + attachmentViewHeight
+            invalidateIntrinsicContentSize()
+        }
+    }
+    
     /// The height that will fit the current text in the InputTextView based on its current bounds
     public var requiredInputTextViewHeight: CGFloat {
         let maxTextViewSize = CGSize(width: inputTextView.bounds.width, height: .greatestFiniteMagnitude)
@@ -287,6 +309,7 @@ open class MessageInputBar: UIView {
     private var bottomStackViewLayoutSet: NSLayoutConstraintSet?
     private var contentViewLayoutSet: NSLayoutConstraintSet?
     private var borderViewLayoutSet: NSLayoutConstraintSet?
+    private var attachmentViewLayoutSet: NSLayoutConstraintSet?
     private var windowAnchor: NSLayoutConstraint?
     private var backgroundViewBottomAnchor: NSLayoutConstraint?
     
@@ -352,6 +375,7 @@ open class MessageInputBar: UIView {
         contentView.addSubview(leftStackView)
         contentView.addSubview(rightStackView)
         contentView.addSubview(bottomStackView)
+        contentView.addSubview(attachmentsView)
         setStackViewItems([sendButton], forStack: .right, animated: false)
     }
     
@@ -366,20 +390,20 @@ open class MessageInputBar: UIView {
         
         topStackViewLayoutSet = NSLayoutConstraintSet(
             top:    topStackView.topAnchor.constraint(equalTo: topAnchor, constant: topStackViewPadding.top),
-            bottom: topStackView.bottomAnchor.constraint(equalTo: contentView.topAnchor, constant: -topStackViewPadding.bottom),
-            left:   topStackView.leftAnchor.constraint(equalTo: inputTextView.leftAnchor, constant: topStackViewPadding.left),
-            right:  topStackView.rightAnchor.constraint(equalTo: inputTextView.rightAnchor, constant: -topStackViewPadding.right)
+            bottom: topStackView.bottomAnchor.constraint(equalTo: contentView.topAnchor, constant: -padding.top),
+            left:   topStackView.leftAnchor.constraint(equalTo: leftAnchor, constant: topStackViewPadding.left),
+            right:  topStackView.rightAnchor.constraint(equalTo: rightAnchor, constant: -topStackViewPadding.right)
         )
         
         contentViewLayoutSet = NSLayoutConstraintSet(
-            top:    contentView.topAnchor.constraint(equalTo: topStackView.bottomAnchor, constant: 0),
+            top:    contentView.topAnchor.constraint(equalTo: topStackView.bottomAnchor, constant: padding.top),
             bottom: contentView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -padding.bottom),
             left:   contentView.leftAnchor.constraint(equalTo: leftAnchor, constant: padding.left),
             right:  contentView.rightAnchor.constraint(equalTo: rightAnchor, constant: -padding.right)
         )
         
         borderViewLayoutSet = NSLayoutConstraintSet(
-            top:    borderView.topAnchor.constraint(equalTo: topStackView.topAnchor, constant: -1),
+            top:    borderView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: -1),
             bottom: borderView.bottomAnchor.constraint(equalTo: inputTextView.bottomAnchor, constant: 1),
             left:   borderView.leftAnchor.constraint(equalTo: inputTextView.leftAnchor, constant: -1.5),
             right:  borderView.rightAnchor.constraint(equalTo: inputTextView.rightAnchor, constant: 1.5)
@@ -390,11 +414,21 @@ open class MessageInputBar: UIView {
             contentViewLayoutSet?.bottom = contentView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -padding.bottom)
             contentViewLayoutSet?.left = contentView.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor, constant: padding.left)
             contentViewLayoutSet?.right = contentView.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -padding.right)
+            
+            topStackViewLayoutSet?.left = topStackView.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor, constant: topStackViewPadding.left)
+            topStackViewLayoutSet?.right = topStackView.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -topStackViewPadding.right)
         }
         
         // Constraints Within the contentView
+        attachmentViewLayoutSet = NSLayoutConstraintSet(
+            centerX: attachmentsView.centerXAnchor.constraint(equalTo: inputTextView.centerXAnchor, constant: 0),
+            centerY: attachmentsView.centerYAnchor.constraint(equalTo: inputTextView.topAnchor, constant: -textViewPadding.top - attachmentViewHeight / 2),
+            width:   attachmentsView.widthAnchor.constraint(equalToConstant: attachmentViewHeight),
+            height:  attachmentsView.heightAnchor.constraint(equalTo: inputTextView.widthAnchor)
+        )
+        
         textViewLayoutSet = NSLayoutConstraintSet(
-            top:    inputTextView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 0),
+            top:    inputTextView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: textViewPadding.top + attachmentViewHeight),
             bottom: inputTextView.bottomAnchor.constraint(equalTo: bottomStackView.topAnchor, constant: -textViewPadding.bottom),
             left:   inputTextView.leftAnchor.constraint(equalTo: leftStackView.rightAnchor, constant: textViewPadding.left),
             right:  inputTextView.rightAnchor.constraint(equalTo: rightStackView.leftAnchor, constant: -textViewPadding.right)
@@ -457,7 +491,7 @@ open class MessageInputBar: UIView {
     
     /// Updates the constraint constants that correspond to the textViewPadding UIEdgeInsets
     private func updateTextViewPadding() {
-        textViewLayoutSet?.top?.constant = textViewPadding.top
+        textViewLayoutSet?.top?.constant = textViewPadding.top + attachmentViewHeight
         textViewLayoutSet?.left?.constant = textViewPadding.left
         textViewLayoutSet?.right?.constant = -textViewPadding.right
         textViewLayoutSet?.bottom?.constant = -textViewPadding.bottom
@@ -510,7 +544,7 @@ open class MessageInputBar: UIView {
         let totalPadding = padding.top + padding.bottom + topStackViewPadding.top + textViewPadding.top + textViewPadding.bottom
         let topStackViewHeight = topStackView.arrangedSubviews.count > 0 ? topStackView.bounds.height : 0
         let bottomStackViewHeight = bottomStackView.arrangedSubviews.count > 0 ? bottomStackView.bounds.height : 0
-        let verticalStackViewHeight = topStackViewHeight + bottomStackViewHeight
+        let verticalStackViewHeight = topStackViewHeight + bottomStackViewHeight + attachmentViewHeight
         let requiredHeight = inputTextViewHeight + totalPadding + verticalStackViewHeight
         return CGSize(width: bounds.width, height: requiredHeight)
     }
@@ -576,6 +610,7 @@ open class MessageInputBar: UIView {
         bottomStackViewLayoutSet?.activate()
         topStackViewLayoutSet?.activate()
         borderViewLayoutSet?.activate()
+        attachmentViewLayoutSet?.activate()
     }
     
     /// Deactivates the NSLayoutConstraintSet's
@@ -586,6 +621,8 @@ open class MessageInputBar: UIView {
         rightStackViewLayoutSet?.deactivate()
         bottomStackViewLayoutSet?.deactivate()
         topStackViewLayoutSet?.deactivate()
+        borderViewLayoutSet?.deactivate()
+        attachmentViewLayoutSet?.deactivate()
     }
     
     // MARK: - UIStackView InputBarItem Methods
@@ -697,14 +734,14 @@ open class MessageInputBar: UIView {
     @objc
     open func textViewDidChange() {
         let trimmedText = inputTextView.text.trimmingCharacters(in: .whitespacesAndNewlines)
-
+        
         if shouldManageSendButtonEnabledState {
-            sendButton.isHidden = trimmedText.isEmpty && inputTextView.images.count == 0
+            sendButton.isHidden = trimmedText.isEmpty && attachments.count == 0
         }
         inputTextView.placeholderLabel.isHidden = !inputTextView.text.isEmpty
-
+        
         items.forEach { $0.textViewDidChangeAction(with: inputTextView) }
-
+        
         delegate?.messageInputBar(self, textViewTextDidChangeTo: trimmedText)
         
         if requiredInputTextViewHeight != inputTextView.bounds.height {
