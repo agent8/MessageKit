@@ -29,7 +29,15 @@ open class MediaMessageCell: MessageCollectionViewCell {
     open override class func reuseIdentifier() -> String { return "messagekit.cell.mediamessage" }
 
     // MARK: - Properties
-
+    
+    public override init(frame: CGRect) {
+        super.init(frame: frame)
+    }
+    
+    required public init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     open lazy var playButtonView: PlayButtonView = {
         let playButtonView = PlayButtonView()
         return playButtonView
@@ -55,8 +63,16 @@ open class MediaMessageCell: MessageCollectionViewCell {
     open override func configure(with message: MessageType, at indexPath: IndexPath, and messagesCollectionView: MessagesCollectionView) {
         super.configure(with: message, at: indexPath, and: messagesCollectionView)
         switch message.data {
-        case .photo(let image):
-            imageView.image = image
+        case .photo(let downloadInfo):
+            if let message: ChatMessage = EmailDAL.getChatMessage(accountId: downloadInfo.accountId,
+                                                                  msgId: downloadInfo.messageId),
+                let image = UIImage(contentsOfFile: message.thumbPath) {
+                imageView.image = image
+            } else {
+                // placeholder image
+                imageView.image = UIImage().from(color: .lightGray, size: CGSize(width: 210, height: 150))
+                downloadData(for: downloadInfo)
+            }
             playButtonView.isHidden = true
         case .video(_, let image):
             imageView.image = image
@@ -65,4 +81,12 @@ open class MediaMessageCell: MessageCollectionViewCell {
             break
         }
     }
+    
+    // Should be overriden by subclass
+    open func downloadData(for downloadInfo: DownloadInfo) {
+        XMPPAdapter.downloadData(accountId: downloadInfo.accountId,
+                                 chatMsgId: downloadInfo.messageId,
+                                 forThumb: downloadInfo.isThumbnail)
+    }
+
 }

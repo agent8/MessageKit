@@ -109,6 +109,12 @@ open class MessagesViewController: UIViewController {
         addMenuControllerObservers()
         addObservers()
     }
+
+    open override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        becomeFirstResponder()
+        isFirstLayout = true
+    }
     
     open override func viewDidLayoutSubviews() {
         // Hack to prevent animation of the contentInset after viewDidAppear
@@ -157,6 +163,7 @@ open class MessagesViewController: UIViewController {
         messagesCollectionView.register(TextMessageCell.self)
         messagesCollectionView.register(MediaMessageCell.self)
         messagesCollectionView.register(LocationMessageCell.self)
+        messagesCollectionView.register(PhotoMessageCell.self)
 
         messagesCollectionView.register(MessageFooterView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionFooter)
         messagesCollectionView.register(MessageHeaderView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader)

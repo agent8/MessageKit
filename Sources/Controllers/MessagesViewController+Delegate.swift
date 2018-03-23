@@ -40,7 +40,7 @@ extension MessagesViewController: UICollectionViewDelegateFlowLayout {
             fatalError(MessageKitError.nilMessagesDataSource)
         }
         guard let layoutDelegate = messagesCollectionView.messagesLayoutDelegate else {
-            fatalError(MessageKitError.nilMessagesLayoutDeleagte)
+            fatalError(MessageKitError.nilMessagesLayoutDelegate)
         }
         // Could pose a problem if subclass behaviors allows more than one item per section
         let indexPath = IndexPath(item: 0, section: section)
@@ -56,7 +56,7 @@ extension MessagesViewController: UICollectionViewDelegateFlowLayout {
             fatalError(MessageKitError.nilMessagesDataSource)
         }
         guard let layoutDelegate = messagesCollectionView.messagesLayoutDelegate else {
-            fatalError(MessageKitError.nilMessagesLayoutDeleagte)
+            fatalError(MessageKitError.nilMessagesLayoutDelegate)
         }
         // Could pose a problem if subclass behaviors allows more than one item per section
         let indexPath = IndexPath(item: 0, section: section)
