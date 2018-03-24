@@ -13,6 +13,7 @@ class PhotoMessageCell: MediaMessageCell {
     open override class func reuseIdentifier() -> String { return "messagekit.cell.photomediamessage" }
     
     var isLoadingThumb = false
+    var messageId = ""
     var backgroundTask: UIBackgroundTaskIdentifier = UIBackgroundTaskInvalid
     
     public override init(frame: CGRect) {
@@ -30,10 +31,16 @@ class PhotoMessageCell: MediaMessageCell {
     
     override func downloadData(for downloadInfo: DownloadInfo) {
         guard !isLoadingThumb else { return }
+        messageId = downloadInfo.messageId
         XMPPAdapter.downloadData(accountId: downloadInfo.accountId,
                                  chatMsgId: downloadInfo.messageId,
                                  forThumb: downloadInfo.isThumbnail) { (messageId, filePath) in
             EDOMainthread {
+                guard messageId == self.messageId else {
+                    XMPPMgrLog("image is no longer needed")
+                    return
+                }
+                
                 guard
                     let path = filePath,
                     let image = UIImage(contentsOfFile: path) else {
@@ -54,7 +61,7 @@ class PhotoMessageCell: MediaMessageCell {
     
     @objc func appWillEnterBackground(noti:Notification) {
         if isLoadingThumb {
-            self.backgroundTask = UIApplication.shared.beginBackgroundTask(expirationHandler: {
+            backgroundTask = UIApplication.shared.beginBackgroundTask(expirationHandler: {
                 UIApplication.shared.endBackgroundTask(self.backgroundTask)
                 NMLog("backgroundTask expired")
                 self.backgroundTask = UIBackgroundTaskInvalid
@@ -63,18 +70,19 @@ class PhotoMessageCell: MediaMessageCell {
     }
     
     private func imageNotFound() {
-        self.imageView.contentMode = .center
-        self.imageView.image = EdoImageNoCache("image-not-found")
+        imageView.contentMode = .center
+        imageView.image = EdoImageNoCache("image-not-found")
     }
     
     private func updateImage(img: UIImage?) {
-        self.imageView.image = img
+        imageView.image = img
     }
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        self.imageView.image = nil
-        self.imageView.contentMode = .scaleAspectFill
-        self.isLoadingThumb = false
+        messageId = ""
+        imageView.image = nil
+        imageView.contentMode = .scaleToFill
+        isLoadingThumb = false
     }
 }
