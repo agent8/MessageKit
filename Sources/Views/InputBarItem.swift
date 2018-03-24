@@ -179,6 +179,21 @@ open class InputBarButtonItem: UIButton {
         setup()
     }
     
+    open func setIsHidden(_ newValue: Bool, animated: Bool) {
+        if !animated {
+            isHidden = newValue
+            return
+        }
+        
+        layer.removeAllAnimations()
+        let animationDuration = 0.1
+        if !newValue {
+            unhideAndGrow(duration: animationDuration)
+        } else {
+            shrinkAndHide(duration: animationDuration)
+        }
+    }
+    
     // MARK: - Setup
     
     /// Sets up the default properties
