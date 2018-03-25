@@ -295,12 +295,14 @@ extension MessagesViewController: UIScrollViewDelegate {
     func updateScrollToBottomButton(in scrollView: UIScrollView) {
         let shouldHideButton = isNearBottom(threshold: scrollView.bounds.size.height / 2)
         if shouldHideButton != scrollToBottomButton.isHidden {
-            UIView.transition(with: scrollToBottomButton,
-                              duration: 0.25,
-                              options: .transitionCrossDissolve,
-                              animations: {
-                                self.scrollToBottomButton.isHidden = !self.scrollToBottomButton.isHidden
-            })
+            UIView.transition(
+                with: scrollToBottomButton,
+                duration: 0.25,
+                options: .transitionCrossDissolve,
+                animations: {
+                    self.scrollToBottomButton.isHidden = !self.scrollToBottomButton.isHidden
+                }
+            )
         }
     }
 }
