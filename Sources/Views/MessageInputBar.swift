@@ -160,7 +160,7 @@ open class MessageInputBar: UIView {
                 $0.imageView?.tintColor = COLOR_TINT_DARK_GRAY
             }.configure {
                 $0.setSize(CGSize(width: 52, height: 28), animated: false)
-                $0.isHidden = true
+                $0.setIsHidden(true, animated: false)
                 $0.title = "Send"
                 $0.titleLabel?.font = UIFont.preferredFont(forTextStyle: .headline)
             }.onTouchUpInside {
@@ -746,7 +746,8 @@ open class MessageInputBar: UIView {
         let trimmedText = inputTextView.text.trimmingCharacters(in: .whitespacesAndNewlines)
         
         if shouldManageSendButtonEnabledState {
-            sendButton.isHidden = trimmedText.isEmpty && attachments.count == 0
+            let shouldHide = trimmedText.isEmpty && attachments.count == 0
+            sendButton.setIsHidden(shouldHide, animated: true)
         }
         inputTextView.placeholderLabel.isHidden = !inputTextView.text.isEmpty
         

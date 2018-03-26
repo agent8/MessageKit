@@ -78,8 +78,8 @@ extension MessagesViewController {
         } else {
             let navigationBarInset = navigationController?.navigationBar.frame.height ?? 0
             let statusBarInset: CGFloat = UIApplication.shared.isStatusBarHidden ? 0 : 20
-            let topInset = navigationBarInset + statusBarInset + messagesCollectionView.minimumTopContentInset
-            messagesCollectionView.contentInset.top = topInset
+            let topInset = navigationBarInset + statusBarInset
+            messagesCollectionView.contentInset.top = topInset + messagesCollectionView.minimumTopContentInset
             messagesCollectionView.scrollIndicatorInsets.top = topInset
         }
     }

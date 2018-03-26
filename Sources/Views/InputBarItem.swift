@@ -105,6 +105,25 @@ open class InputBarButtonItem: UIButton {
             setImage(newValue, for: .normal)
         }
     }
+
+    /// Calls the appropriate callback before and after setting.
+    open override var isHidden: Bool {
+        willSet {
+            if !newValue {
+                willUnhideAction?(self)
+            } else {
+                willHideAction?(self)
+            }
+        }
+        
+        didSet {
+            if isHidden {
+                onHideAction?(self)
+            } else {
+                onUnhideAction?(self)
+            }
+        }
+    }
     
     /// Calls the onSelectedAction or onDeselectedAction when set
     open override var isHighlighted: Bool {
@@ -138,6 +157,11 @@ open class InputBarButtonItem: UIButton {
     private var onDeselectedAction: InputBarButtonItemAction?
     private var onEnabledAction: InputBarButtonItemAction?
     private var onDisabledAction: InputBarButtonItemAction?
+    private var willHideAction: InputBarButtonItemAction?
+    private var willUnhideAction: InputBarButtonItemAction?
+    private var onHideAction: InputBarButtonItemAction?
+    private var onUnhideAction: InputBarButtonItemAction?
+
     
     // MARK: - Initialization
     
@@ -153,6 +177,21 @@ open class InputBarButtonItem: UIButton {
     required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         setup()
+    }
+    
+    open func setIsHidden(_ newValue: Bool, animated: Bool) {
+        if !animated {
+            isHidden = newValue
+            return
+        }
+        
+        layer.removeAllAnimations()
+        let animationDuration = 0.1
+        if !newValue {
+            unhideAndGrow(duration: animationDuration)
+        } else {
+            shrinkAndHide(duration: animationDuration)
+        }
     }
     
     // MARK: - Setup
@@ -278,6 +317,46 @@ open class InputBarButtonItem: UIButton {
     @discardableResult
     open func onDisabled(_ action: @escaping InputBarButtonItemAction) -> Self {
         onDisabledAction = action
+        return self
+    }
+    
+    /// Sets the onHideAction
+    ///
+    /// - Parameter action: The new onHideAction
+    /// - Returns: Self
+    @discardableResult
+    open func onHide(_ action: @escaping InputBarButtonItemAction) -> Self {
+        onHideAction = action
+        return self
+    }
+    
+    /// Sets the onUnhideAction
+    ///
+    /// - Parameter action: The new onUnhideAction
+    /// - Returns: Self
+    @discardableResult
+    open func onUnhide(_ action: @escaping InputBarButtonItemAction) -> Self {
+        onUnhideAction = action
+        return self
+    }
+    
+    /// Sets the willHideAction
+    ///
+    /// - Parameter action: The new willHideAction
+    /// - Returns: Self
+    @discardableResult
+    open func willHide(_ action: @escaping InputBarButtonItemAction) -> Self {
+        willHideAction = action
+        return self
+    }
+    
+    /// Sets the willUnhideAction
+    ///
+    /// - Parameter action: The new willUnhideAction
+    /// - Returns: Self
+    @discardableResult
+    open func willUnhide(_ action: @escaping InputBarButtonItemAction) -> Self {
+        willUnhideAction = action
         return self
     }
     
