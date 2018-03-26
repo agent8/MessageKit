@@ -70,7 +70,9 @@ open class MessagesViewController: UIViewController {
                 messageCollectionViewBottomInset + messagesCollectionView.minimumBottomContentInset
             messagesCollectionView.scrollIndicatorInsets.bottom = messageCollectionViewBottomInset
         
-            updateScrollToBottomButtonBottomConstraint(oldBottomInset: oldValue, newBottomInset: messageCollectionViewBottomInset)
+            updateScrollToBottomButtonBottomConstraint(
+                oldBottomInset: oldValue,
+                newBottomInset: messageCollectionViewBottomInset)
         }
     }
     
