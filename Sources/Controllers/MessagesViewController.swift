@@ -77,7 +77,11 @@ open class MessagesViewController: UIViewController {
     }
     
     var verticalOffsetForBottom: CGFloat {
-        var offset = messagesCollectionView.contentSize.height - messagesCollectionView.bounds.size.height + messagesCollectionView.contentInset.bottom
+        let contentSize = messagesCollectionView.collectionViewLayout.collectionViewContentSize.height
+        if contentSize <= heightAfterContentInsets {
+            return verticalOffsetForTop // content too little to scroll
+        }
+        var offset = contentSize - messagesCollectionView.bounds.size.height + messagesCollectionView.contentInset.bottom
         if #available(iOS 11.0, *) {
             offset += view.safeAreaInsets.bottom
         }
