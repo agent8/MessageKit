@@ -89,6 +89,17 @@ open class MessagesViewController: UIViewController {
         }
         return -topInset
     }
+    
+    var heightAfterContentInsets: CGFloat {
+        var height = messagesCollectionView.bounds.size.height
+        height -= messagesCollectionView.contentInset.top
+        height -= messagesCollectionView.contentInset.bottom
+        if #available(iOS 11.0, *) {
+            height -= view.safeAreaInsets.top
+            height -= view.safeAreaInsets.bottom
+        }
+        return height
+    }
 
     /// The bottom constraint of the scroll to bottom button that is tied to the
     /// content inset of the collection view.
