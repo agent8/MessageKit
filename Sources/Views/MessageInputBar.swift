@@ -250,14 +250,7 @@ open class MessageInputBar: UIView {
         }
     }
     
-    open var attachmentViewHeight: CGFloat = 0 {
-        didSet {
-            attachmentViewLayoutSet?.centerY?.constant = -textViewPadding.top - attachmentViewHeight / 2
-            attachmentViewLayoutSet?.width?.constant = attachmentViewHeight
-            textViewLayoutSet?.top?.constant = textViewPadding.top + attachmentViewHeight
-            invalidateIntrinsicContentSize()
-        }
-    }
+    private(set) var attachmentViewHeight: CGFloat = 0
     
     /// The height that will fit the current text in the InputTextView based on its current bounds
     public var requiredInputTextViewHeight: CGFloat {
@@ -403,7 +396,7 @@ open class MessageInputBar: UIView {
         )
         
         borderViewLayoutSet = NSLayoutConstraintSet(
-            top:    borderView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: -1),
+            top:    borderView.topAnchor.constraint(equalTo: inputTextView.topAnchor, constant: -attachmentViewHeight - 1),
             bottom: borderView.bottomAnchor.constraint(equalTo: inputTextView.bottomAnchor, constant: 1),
             left:   borderView.leftAnchor.constraint(equalTo: inputTextView.leftAnchor, constant: -1.5),
             right:  borderView.rightAnchor.constraint(equalTo: inputTextView.rightAnchor, constant: 1.5)
@@ -476,6 +469,23 @@ open class MessageInputBar: UIView {
             }
         }
     }
+    
+    func setAttachmentViewHeight(_ h: CGFloat, completed: ((Bool) -> Void)? = nil) {
+        attachmentViewHeight = h
+        attachmentViewLayoutSet?.centerY?.constant = -textViewPadding.top - attachmentViewHeight / 2
+        attachmentViewLayoutSet?.width?.constant = attachmentViewHeight
+        textViewLayoutSet?.top?.constant = textViewPadding.top + attachmentViewHeight
+        invalidateIntrinsicContentSize()
+        self.layoutIfNeeded()
+        
+        EdoAfterMainThread(0.01) {
+            self.borderViewLayoutSet?.top?.constant = -h - 1
+            UIView.animate(withDuration: 0.2, animations: {
+                self.layoutIfNeeded()
+            }, completion: completed)
+        }
+    }
+    
     
     // MARK: - Constraint Layout Updates
     
