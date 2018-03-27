@@ -70,12 +70,18 @@ open class MessagesViewController: UIViewController {
                 messageCollectionViewBottomInset + messagesCollectionView.minimumBottomContentInset
             messagesCollectionView.scrollIndicatorInsets.bottom = messageCollectionViewBottomInset
         
-            updateScrollToBottomButtonBottomConstraint(oldBottomInset: oldValue, newBottomInset: messageCollectionViewBottomInset)
+            updateScrollToBottomButtonBottomConstraint(
+                oldBottomInset: oldValue,
+                newBottomInset: messageCollectionViewBottomInset)
         }
     }
     
     var verticalOffsetForBottom: CGFloat {
-        var offset = messagesCollectionView.contentSize.height - messagesCollectionView.bounds.size.height + messagesCollectionView.contentInset.bottom
+        let contentSize = messagesCollectionView.collectionViewLayout.collectionViewContentSize.height
+        if contentSize <= heightAfterContentInsets {
+            return verticalOffsetForTop // content too little to scroll
+        }
+        var offset = contentSize - messagesCollectionView.bounds.size.height + messagesCollectionView.contentInset.bottom
         if #available(iOS 11.0, *) {
             offset += view.safeAreaInsets.bottom
         }
@@ -88,6 +94,17 @@ open class MessagesViewController: UIViewController {
             topInset += view.safeAreaInsets.top
         }
         return -topInset
+    }
+    
+    var heightAfterContentInsets: CGFloat {
+        var height = messagesCollectionView.bounds.size.height
+        height -= messagesCollectionView.contentInset.top
+        height -= messagesCollectionView.contentInset.bottom
+        if #available(iOS 11.0, *) {
+            height -= view.safeAreaInsets.top
+            height -= view.safeAreaInsets.bottom
+        }
+        return height
     }
 
     /// The bottom constraint of the scroll to bottom button that is tied to the
@@ -293,7 +310,7 @@ extension MessagesViewController: UIScrollViewDelegate {
     }
     
     func updateScrollToBottomButton(in scrollView: UIScrollView) {
-        let shouldHideButton = isNearBottom(threshold: scrollView.bounds.size.height / 2)
+        let shouldHideButton = isNearBottom(threshold: heightAfterContentInsets / 2)
         if shouldHideButton != scrollToBottomButton.isHidden {
             UIView.transition(
                 with: scrollToBottomButton,
