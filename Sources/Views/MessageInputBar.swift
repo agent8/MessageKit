@@ -72,6 +72,8 @@ open class MessageInputBar: UIView {
         tableView.showsVerticalScrollIndicator = false
         tableView.separatorStyle = .none
         tableView.backgroundColor = .clear
+        tableView.layer.masksToBounds = true
+        tableView.layer.cornerRadius = 19
         tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
     }()
@@ -363,12 +365,13 @@ open class MessageInputBar: UIView {
         addSubview(borderView)
         addSubview(topStackView)
         addSubview(contentView)
-        addSubview(separatorLine)
         contentView.addSubview(inputTextView)
         contentView.addSubview(leftStackView)
         contentView.addSubview(rightStackView)
         contentView.addSubview(bottomStackView)
         contentView.addSubview(attachmentsView)
+        contentView.addSubview(separatorLine)
+        separatorLine.isHidden = true
         setStackViewItems([sendButton], forStack: .right, animated: false)
     }
     
@@ -376,7 +379,7 @@ open class MessageInputBar: UIView {
     private func setupConstraints() {
         
         // The constraints within the MessageInputBar
-        separatorLine.addConstraints(topAnchor, left: leftAnchor, right: rightAnchor, heightConstant: 1)
+        separatorLine.addConstraints(inputTextView.topAnchor, left: inputTextView.leftAnchor, right: inputTextView.rightAnchor, heightConstant: 0.5)
         backgroundViewBottomAnchor = backgroundView.bottomAnchor.constraint(equalTo: bottomAnchor)
         backgroundViewBottomAnchor?.isActive = true
         backgroundView.addConstraints(topAnchor, left: leftAnchor, right: rightAnchor)
@@ -477,10 +480,11 @@ open class MessageInputBar: UIView {
         textViewLayoutSet?.top?.constant = textViewPadding.top + attachmentViewHeight
         invalidateIntrinsicContentSize()
         self.layoutIfNeeded()
+        //separatorLine.isHidden = h == 0 //Do not show separator, doesn't look great
         
         EdoAfterMainThread(0.01) {
             self.borderViewLayoutSet?.top?.constant = -h - 1
-            UIView.animate(withDuration: 0.2, animations: {
+            UIView.animate(withDuration: 0.25, animations: {
                 self.layoutIfNeeded()
             }, completion: completed)
         }

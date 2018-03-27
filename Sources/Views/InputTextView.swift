@@ -228,7 +228,7 @@ open class InputTextView: UITextView {
     ///
     /// - Parameter image: The image to add
     private func pasteImageInTextContainer(with image: UIImage) {
-
+        /*
         // Add the new image as an NSTextAttachment
         let attributedImageString = NSAttributedString(attachment: textAttachment(using: image))
         
@@ -256,6 +256,8 @@ open class InputTextView: UITextView {
         // Advance the range to the selected range plus the number of characters added
         let location = selectedRange.location + (isEmpty ? 2 : 3)
         selectedRange = NSRange(location: location, length: 0)
+        */
+        messageInputBar?.delegate?.messageInputBarTextViewDidPasteImage(image)
     
         // Broadcast a notification to recievers such as the MessageInputBar which will handle resizing
         NotificationCenter.default.post(name: .UITextViewTextDidChange, object: self)

@@ -49,6 +49,13 @@ public protocol MessageInputBarDelegate: AnyObject {
     ///   - inputBar: The MessageInputBar
     ///   - text: The current text in the MessageInputBar's InputTextView
     func messageInputBar(_ inputBar: MessageInputBar, textViewTextDidChangeTo text: String)
+    
+    /// Called when the MessageInputBar's an image is pasted into InputTextView.
+    ///
+    /// - Parameters:
+    ///   - inputBar: The MessageInputBar
+    ///   - image: The UIImage pasted
+    func messageInputBarTextViewDidPasteImage(_ image: UIImage)
 }
 
 public extension MessageInputBarDelegate {
@@ -58,4 +65,6 @@ public extension MessageInputBarDelegate {
     func messageInputBar(_ inputBar: MessageInputBar, didChangeIntrinsicContentTo size: CGSize) {}
     
     func messageInputBar(_ inputBar: MessageInputBar, textViewTextDidChangeTo text: String) {}
+    
+    func messageInputBarTextViewDidPasteImage(_ image: UIImage) {}
 }
