@@ -51,6 +51,8 @@ public enum MessageData {
 
     /// An emoji message.
     case emoji(String)
+    
+    case attachment(data: ChatAttachment)
 
     // MARK: - Not supported yet
 

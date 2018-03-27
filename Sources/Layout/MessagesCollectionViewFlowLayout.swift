@@ -438,6 +438,10 @@ private extension MessagesCollectionViewFlowLayout {
             let width = messagesLayoutDelegate.widthForMedia(message: message, at: indexPath, with: maxWidth, in: messagesCollectionView)
             let height = messagesLayoutDelegate.heightForMedia(message: message, at: indexPath, with: maxWidth, in: messagesCollectionView)
             messageContainerSize = CGSize(width: width, height: height)
+        case .attachment(let data):
+            let width: CGFloat = screenWidth() > 320 ? 300 : 260
+            let height = data.height
+            messageContainerSize = CGSize(width: width, height: height)
         case .location:
             let width = messagesLayoutDelegate.widthForLocation(message: message, at: indexPath, with: maxWidth, in: messagesCollectionView)
             let height = messagesLayoutDelegate.heightForLocation(message: message, at: indexPath, with: maxWidth, in: messagesCollectionView)

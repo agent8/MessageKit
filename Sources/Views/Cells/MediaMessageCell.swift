@@ -30,12 +30,22 @@ open class MediaMessageCell: MessageCollectionViewCell {
 
     // MARK: - Properties
     
+    var messageId = ""
+    var isDownloadingData = false
+    var giveUpRetry = false //if true, there is non-recoverable error, do not download data again
+    var backgroundTask: UIBackgroundTaskIdentifier = UIBackgroundTaskInvalid
+    
     public override init(frame: CGRect) {
         super.init(frame: frame)
+        BroadcastCenter.addObserver(self, selector: #selector(self.appWillEnterBackground(noti:)), notification: .AppPrepareEnterBackground)
     }
     
     required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    deinit {
+        BroadcastCenter.removeObserver(self)
     }
     
     open lazy var playButtonView: PlayButtonView = {
@@ -70,23 +80,66 @@ open class MediaMessageCell: MessageCollectionViewCell {
                 imageView.image = image
             } else {
                 // placeholder image
-                imageView.image = UIImage().from(color: .lightGray, size: CGSize(width: 210, height: 150))
+                imageView.image = UIImage().from(color: COLOR_TABLE_BACKGROUND, size: CGSize(width: 210, height: 150))
                 downloadData(for: downloadInfo)
             }
             playButtonView.isHidden = true
         case .video(_, let image):
             imageView.image = image
             playButtonView.isHidden = false
+        case .attachment(let data):
+            if let attachmentCell = self as? DocumentMessageCell {
+                attachmentCell.load(attachment: data)
+                //Preload attachment data
+                if let msg = message as? EdisonMessage {
+                    downloadData(for: DownloadInfo(accountId: msg.accountId, messageId: msg.messageId))
+                }
+            }
         default:
             break
         }
     }
     
-    // Should be overriden by subclass
-    open func downloadData(for downloadInfo: DownloadInfo) {
-        XMPPAdapter.downloadData(accountId: downloadInfo.accountId,
-                                 chatMsgId: downloadInfo.messageId,
-                                 forThumb: downloadInfo.isThumbnail)
+    // MARK: - Download data logic
+    func downloadData(for downloadInfo: DownloadInfo) {
+        guard !isDownloadingData && !giveUpRetry else { return }
+        messageId = downloadInfo.messageId
+        self.isDownloadingData = true
+        self.doDownloadData(for: downloadInfo) { doNotRetryDownload in
+            self.giveUpRetry = doNotRetryDownload
+            self.isDownloadingData = false
+            if self.backgroundTask != UIBackgroundTaskInvalid {
+                UIApplication.shared.endBackgroundTask(self.backgroundTask)
+                self.backgroundTask = UIBackgroundTaskInvalid
+            }
+        }
     }
-
+    
+    //If download data process has a non-recoverable error, so that it won't retry
+    //To be overriden by subclass
+    func hasNonRecoverableError() -> Bool {
+        return false
+    }
+    
+    //finished(doNotRetryDownload: Bool), if doNotRetryDownload is true, there is non-recoverable error, do not download data again
+    func doDownloadData(for downloadInfo: DownloadInfo, finishedAndDoNotRetry: ((Bool)->())? = nil) {
+        finishedAndDoNotRetry?(true)
+        //To be override by subclass
+    }
+    
+    @objc func appWillEnterBackground(noti:Notification) {
+        if isDownloadingData {
+            backgroundTask = UIApplication.shared.beginBackgroundTask(expirationHandler: {
+                UIApplication.shared.endBackgroundTask(self.backgroundTask)
+                NMLog("backgroundTask expired")
+                self.backgroundTask = UIBackgroundTaskInvalid
+            })
+        }
+    }
+    
+    override open func prepareForReuse() {
+        super.prepareForReuse()
+        isDownloadingData = false
+        messageId = ""
+    }
 }
