@@ -49,6 +49,37 @@ open class MessagesCollectionView: UICollectionView {
         return IndexPath(item: numberOfItems(inSection: lastSection) - 1, section: lastSection)
 
     }
+    
+    var verticalOffsetForBottom: CGFloat {
+        let contentSize = collectionViewLayout.collectionViewContentSize.height
+        if contentSize <= heightAfterContentInsets {
+            return verticalOffsetForTop // content too little to scroll
+        }
+        var offset = contentSize - bounds.size.height + contentInset.bottom
+        if #available(iOS 11.0, *) {
+            offset += safeAreaInsets.bottom
+        }
+        return offset
+    }
+    
+    var verticalOffsetForTop: CGFloat {
+        var topInset = contentInset.top
+        if #available(iOS 11.0, *) {
+            topInset += safeAreaInsets.top
+        }
+        return -topInset
+    }
+    
+    var heightAfterContentInsets: CGFloat {
+        var height = bounds.size.height
+        height -= contentInset.top
+        height -= contentInset.bottom
+        if #available(iOS 11.0, *) {
+            height -= safeAreaInsets.top
+            height -= safeAreaInsets.bottom
+        }
+        return height
+    }
 
     // MARK: - Initializers
 
@@ -91,6 +122,16 @@ open class MessagesCollectionView: UICollectionView {
         performBatchUpdates(nil) { _ in
             self.scrollRectToVisible(CGRect(0.0, collectionViewContentHeight - 1.0, 1.0, 1.0), animated: animated)
         }
+    }
+    
+    /// Checks if the collection view is at most `threshold` distance away from the bottom.
+    func isNearBottom(threshold: CGFloat) -> Bool {
+        return contentOffset.y >= verticalOffsetForBottom - threshold
+    }
+    
+    /// Checks if the collection view is at most `threshold` distance away from the top.
+    func isNearTop(threshold: CGFloat) -> Bool {
+        return contentOffset.y <= verticalOffsetForTop + threshold
     }
     
     public func reloadDataAndKeepOffset() {

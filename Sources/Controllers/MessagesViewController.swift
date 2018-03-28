@@ -75,37 +75,6 @@ open class MessagesViewController: UIViewController {
                 newBottomInset: messageCollectionViewBottomInset)
         }
     }
-    
-    var verticalOffsetForBottom: CGFloat {
-        let contentSize = messagesCollectionView.collectionViewLayout.collectionViewContentSize.height
-        if contentSize <= heightAfterContentInsets {
-            return verticalOffsetForTop // content too little to scroll
-        }
-        var offset = contentSize - messagesCollectionView.bounds.size.height + messagesCollectionView.contentInset.bottom
-        if #available(iOS 11.0, *) {
-            offset += view.safeAreaInsets.bottom
-        }
-        return offset
-    }
-
-    var verticalOffsetForTop: CGFloat {
-        var topInset = messagesCollectionView.contentInset.top
-        if #available(iOS 11.0, *) {
-            topInset += view.safeAreaInsets.top
-        }
-        return -topInset
-    }
-    
-    var heightAfterContentInsets: CGFloat {
-        var height = messagesCollectionView.bounds.size.height
-        height -= messagesCollectionView.contentInset.top
-        height -= messagesCollectionView.contentInset.bottom
-        if #available(iOS 11.0, *) {
-            height -= view.safeAreaInsets.top
-            height -= view.safeAreaInsets.bottom
-        }
-        return height
-    }
 
     /// The bottom constraint of the scroll to bottom button that is tied to the
     /// content inset of the collection view.
@@ -300,18 +269,8 @@ extension MessagesViewController: UIScrollViewDelegate {
         updateScrollToBottomButton(in: scrollView)
     }
     
-    /// Checks if the collection view is at most `threshold` distance away from the bottom.
-    func isNearBottom(threshold: CGFloat) -> Bool {
-        return messagesCollectionView.contentOffset.y >= verticalOffsetForBottom - threshold
-    }
-    
-    /// Checks if the collection view is at most `threshold` distance away from the top.
-    func isNearTop(threshold: CGFloat) -> Bool {
-        return messagesCollectionView.contentOffset.y <= verticalOffsetForTop + threshold
-    }
-    
     func updateScrollToBottomButton(in scrollView: UIScrollView) {
-        let shouldHideButton = isNearBottom(threshold: heightAfterContentInsets / 2)
+        let shouldHideButton = messagesCollectionView.isNearBottom(threshold: messagesCollectionView.heightAfterContentInsets / 2)
         if shouldHideButton != scrollToBottomButton.isHidden {
             UIView.transition(
                 with: scrollToBottomButton,
