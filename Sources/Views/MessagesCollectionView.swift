@@ -135,7 +135,14 @@ open class MessagesCollectionView: UICollectionView {
     }
     
     public func reloadDataAndKeepOffset() {
-        let beforeDistanceToBottom = contentSize.height - contentOffset.y - bounds.size.height
+        let beforeContentSize = collectionViewLayout.collectionViewContentSize
+        if beforeContentSize.height <= heightAfterContentInsets { // content at bottom
+            reloadData()
+            layoutIfNeeded()
+            scrollToBottom()
+            return
+        }
+        let beforeDistanceToBottom = beforeContentSize.height - contentOffset.y - bounds.size.height
         reloadData()
         layoutIfNeeded()
         let newYOffset = contentSize.height - bounds.size.height - beforeDistanceToBottom
