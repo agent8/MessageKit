@@ -73,6 +73,9 @@ public protocol MessagesDisplayDelegate: AnyObject {
     ///   - indexPath: The `IndexPath` of the header.
     ///   - messagesCollectionView: The `MessagesCollectionView` in which this header will be displayed.
     func shouldDisplayHeader(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> Bool
+    
+    /// See `shouldDisplayHeader`.
+    func shouldDisplayFooter(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> Bool
 
     /// The section footer to use for a given `MessageType`.
     ///
@@ -204,6 +207,10 @@ public extension MessagesDisplayDelegate {
         let previousMessage = dataSource.messageForItem(at: previousIndexPath, in: messagesCollectionView)
         let timeIntervalSinceLastMessage = message.sentDate.timeIntervalSince(previousMessage.sentDate)
         return timeIntervalSinceLastMessage >= messagesCollectionView.showsDateHeaderAfterTimeInterval
+    }
+    
+    func shouldDisplayFooter(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> Bool {
+        return false
     }
 
     func messageFooterView(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> MessageFooterView {
