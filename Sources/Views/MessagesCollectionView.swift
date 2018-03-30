@@ -118,9 +118,21 @@ open class MessagesCollectionView: UICollectionView {
 
     public func scrollToBottom(animated: Bool = false) {
         let collectionViewContentHeight = collectionViewLayout.collectionViewContentSize.height
-
+        
         performBatchUpdates(nil) { _ in
-            self.scrollRectToVisible(CGRect(0.0, collectionViewContentHeight - 1.0, 1.0, 1.0), animated: animated)
+            let bottom = CGRect(0.0, collectionViewContentHeight - 1.0, 1.0, 1.0)
+            if !animated {
+                self.scrollRectToVisible(bottom, animated: false)
+            } else if self.isNearBottom(threshold: self.heightAfterContentInsets * 2) {
+                self.scrollRectToVisible(bottom, animated: true)
+            } else { // for long scrolls, use transition animations for a smoother effect
+                let transition = CATransition()
+                transition.duration = 0.2
+                transition.type = kCATransitionPush
+                transition.subtype = kCATransitionFromTop
+                self.layer.add(transition, forKey: "scrollToBottom")
+                self.scrollRectToVisible(bottom, animated: false)
+            }
         }
     }
     
