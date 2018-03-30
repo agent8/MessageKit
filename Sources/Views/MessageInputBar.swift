@@ -32,7 +32,12 @@ open class MessageInputBar: UIView {
     /// A delegate to broadcast notifications from the MessageInputBar
     open weak var delegate: MessageInputBarDelegate?
     
-    open var attachments = [ChatAttachment]() //SZ: documents, images to be sent
+    //SZ: documents, images to be sent
+    open var attachments = [ChatAttachment]() {
+        didSet {
+            attachmentViewDidChange()
+        }
+    }
     
     /// The background UIView anchored to the bottom, left, and right of the MessageInputBar
     /// with a top anchor equal to the bottom of the top InputStackView
@@ -747,17 +752,14 @@ open class MessageInputBar: UIView {
     /// Invalidates the intrinsicContentSize
     @objc
     open func textViewDidChange() {
-        let trimmedText = inputTextView.text.trimmingCharacters(in: .whitespacesAndNewlines)
         
-        if shouldManageSendButtonEnabledState {
-            let shouldHide = trimmedText.isEmpty && attachments.count == 0
-            sendButton.setIsHidden(shouldHide, animated: true)
-        }
+        sendableContentDidChange()
+        
         inputTextView.placeholderLabel.isHidden = !inputTextView.text.isEmpty
         
         items.forEach { $0.textViewDidChangeAction(with: inputTextView) }
         
-        delegate?.messageInputBar(self, textViewTextDidChangeTo: trimmedText)
+        delegate?.messageInputBar(self, textViewTextDidChangeTo: inputTextView.trimmedText)
         
         if requiredInputTextViewHeight != inputTextView.bounds.height {
             // Prevent un-needed content size invalidation
@@ -776,6 +778,18 @@ open class MessageInputBar: UIView {
     @objc
     open func textViewDidEndEditing() {
         items.forEach { $0.keyboardEditingEndsAction() }
+    }
+    
+    private func attachmentViewDidChange() {
+        sendableContentDidChange()
+    }
+    
+    
+    private func sendableContentDidChange() {
+        if shouldManageSendButtonEnabledState {
+            let shouldHide = inputTextView.trimmedText.isEmpty && attachments.isEmpty
+            sendButton.setIsHidden(shouldHide, animated: true)
+        }
     }
     
     // MARK: - User Actions
