@@ -258,7 +258,16 @@ open class MessagesViewController: UIViewController {
     }
     
     @objc private func didTapScrollToBottomButton() {
-        messagesCollectionView.scrollToBottom(animated: true)
+        if messagesCollectionView.isNearBottom(threshold: messagesCollectionView.heightAfterContentInsets * 2) {
+            messagesCollectionView.scrollToBottom(animated: true)
+        } else {
+            let transition = CATransition()
+            transition.duration = 0.2
+            transition.type = kCATransitionPush
+            transition.subtype = kCATransitionFromTop
+            messagesCollectionView.layer.add(transition, forKey: "scrollToBottom")
+            messagesCollectionView.scrollToBottom()
+        }
     }
 }
 
