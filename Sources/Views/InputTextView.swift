@@ -44,6 +44,10 @@ open class InputTextView: UITextView {
         }
     }
     
+    open var trimmedText: String {
+        return text.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+    
     open override var attributedText: NSAttributedString! {
         didSet {
             postTextViewDidChangeNotification()
