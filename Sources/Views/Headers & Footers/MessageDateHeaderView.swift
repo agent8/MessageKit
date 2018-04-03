@@ -28,7 +28,7 @@ open class MessageDateHeaderView: MessageHeaderView {
     open override class func reuseIdentifier() -> String { return "messagekit.header.date" }
 
     public override func preferredHeight() -> CGFloat {
-        return 15
+        return 18
     }
     
     // MARK: - Properties
