@@ -64,19 +64,6 @@ public protocol MessagesDisplayDelegate: AnyObject {
     /// The default value returned by this method is a `MessageDateHeaderView`.
     func messageHeaderView(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> MessageHeaderView
 
-    /// Used by the `MessageLayoutDelegate` method `headerViewSize(_:_:_:)` to determine if a header should be displayed.
-    /// This method checks `MessageCollectionView`'s `showsDateHeaderAfterTimeInterval` property and returns the type if
-    /// the current messages sent date occurs after the specified time interval when compared to the previous message.
-    ///
-    /// - Parameters:
-    ///   - message: The `MessageType` that will be displayed for this header.
-    ///   - indexPath: The `IndexPath` of the header.
-    ///   - messagesCollectionView: The `MessagesCollectionView` in which this header will be displayed.
-    func possibleHeaderTypes(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> [MessageHeaderView.Type]
-    
-    /// See `possibleHeaderTypes`.
-    func possibleFooterTypes(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> [MessageFooterView.Type]
-
     /// The section footer to use for a given `MessageType`.
     ///
     /// - Parameters:
@@ -194,38 +181,27 @@ public extension MessagesDisplayDelegate {
     }
     
     func messageHeaderView(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> MessageHeaderView {
-        let headerTypes = possibleHeaderTypes(for: message, at: indexPath, in: messagesCollectionView)
-        if headerTypes.contains(where: { $0 == MessageDateHeaderView.self}) {
-            let header = messagesCollectionView.dequeueReusableHeaderView(MessageDateHeaderView.self, for: indexPath)
-            header.dateLabel.text = MessageKitDateFormatter.shared.string(from: message.sentDate)
-            return header
-        }
-        
-        return messagesCollectionView.dequeueReusableHeaderView(MessageHeaderView.self, for: indexPath)
-    }
-
-    func possibleHeaderTypes(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> [MessageHeaderView.Type] {
         guard let dataSource = messagesCollectionView.messagesDataSource else {
-            return []
+            return messagesCollectionView.dequeueReusableHeaderView(MessageHeaderView.self, for: indexPath)
         }
         
         if indexPath.section == 0 {
-            return [MessageDateHeaderView.self]
+            let header = messagesCollectionView.dequeueReusableHeaderView(MessageDateHeaderView.self, for: indexPath)
+            header.dateLabel.text = MessageKitDateFormatter.shared.string(from: message.sentDate)
+            return header
         } else {
             let previousSection = indexPath.section - 1
             let previousIndexPath = IndexPath(item: 0, section: previousSection)
             let previousMessage = dataSource.messageForItem(at: previousIndexPath, in: messagesCollectionView)
             let timeIntervalSinceLastMessage = message.sentDate.timeIntervalSince(previousMessage.sentDate)
             if timeIntervalSinceLastMessage >= messagesCollectionView.showsDateHeaderAfterTimeInterval {
-                return [MessageDateHeaderView.self]
+                let header = messagesCollectionView.dequeueReusableHeaderView(MessageDateHeaderView.self, for: indexPath)
+                header.dateLabel.text = MessageKitDateFormatter.shared.string(from: message.sentDate)
+                return header
             }
         }
-        
-        return []
-    }
-    
-    func possibleFooterTypes(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> [MessageFooterView.Type] {
-        return []
+
+        return messagesCollectionView.dequeueReusableHeaderView(MessageHeaderView.self, for: indexPath)
     }
 
     func messageFooterView(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> MessageFooterView {
