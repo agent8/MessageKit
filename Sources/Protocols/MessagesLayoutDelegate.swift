@@ -228,15 +228,7 @@ public extension MessagesLayoutDelegate {
         guard let displayDelegate = messagesCollectionView.messagesDisplayDelegate else {
             fatalError(MessageKitError.nilMessagesDisplayDelegate)
         }
-        
-        let headerTypes = displayDelegate.possibleHeaderTypes(for: message, at: indexPath, in: messagesCollectionView)
         let headerView = displayDelegate.messageHeaderView(for: message, at: indexPath, in: messagesCollectionView)
-        
-        if let dateHeaderView = headerView as? MessageDateHeaderView,
-            headerTypes.contains(where: { $0 == MessageDateHeaderView.self }) {
-            return CGSize(width: messagesCollectionView.bounds.width, height: dateHeaderView.preferredHeight())
-        }
-        
         return CGSize(width: messagesCollectionView.bounds.width, height: headerView.preferredHeight())
     }
 
