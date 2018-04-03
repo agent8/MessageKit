@@ -29,6 +29,10 @@ public protocol CollectionViewReusable: AnyObject {
     static func reuseIdentifier() -> String
 }
 
+public protocol MessageSupplementaryView: AnyObject {
+    func preferredHeight() -> CGFloat
+}
+
 public extension MessagesCollectionView {
     /// Registers a particular cell using its reuse-identifier
     func register<CellType: UICollectionViewCell & CollectionViewReusable>(_ cellClass: CellType.Type) {
