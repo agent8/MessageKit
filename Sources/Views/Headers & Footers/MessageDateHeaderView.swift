@@ -27,6 +27,10 @@ import UIKit
 open class MessageDateHeaderView: MessageHeaderView {
     open override class func reuseIdentifier() -> String { return "messagekit.header.date" }
 
+    public override func preferredHeight() -> CGFloat {
+        return 15
+    }
+    
     // MARK: - Properties
 
     open let dateLabel = UILabel()

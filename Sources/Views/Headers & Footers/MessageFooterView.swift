@@ -24,8 +24,12 @@
 
 import UIKit
 
-open class MessageFooterView: UICollectionReusableView, CollectionViewReusable {
+open class MessageFooterView: UICollectionReusableView, CollectionViewReusable, MessageSupplementaryView {
     open class func reuseIdentifier() -> String { return "messagekit.footer.base" }
+    
+    public func preferredHeight() -> CGFloat {
+        return 0
+    }
 
     // MARK: - Initializers
 
