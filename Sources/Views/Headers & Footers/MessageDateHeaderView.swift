@@ -33,17 +33,47 @@ open class MessageDateHeaderView: MessageHeaderView {
     
     // MARK: - Properties
 
-    open let dateLabel = UILabel()
+    open let dateLabel: UILabel = {
+        let label = UILabel()
+        label.textAlignment = .center
+        label.font = .boldSystemFont(ofSize: 10)
+        label.textColor = .darkGray
+        label.numberOfLines = 0
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private let containerView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
 
     // MARK: - Initializers
 
     public override init(frame: CGRect) {
         super.init(frame: frame)
-        addSubview(dateLabel)
-        dateLabel.fillSuperview()
-        dateLabel.textAlignment = .center
-        dateLabel.font = .boldSystemFont(ofSize: 10)
-        dateLabel.textColor = .darkGray
+        
+        setupSubviews()
+        setupConstraints()
+    }
+    
+    private func setupSubviews() {
+        addSubview(containerView)
+        containerView.addSubview(dateLabel)
+    }
+    
+    private func setupConstraints() {
+        NSLayoutConstraint.activate([
+            containerView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            containerView.centerYAnchor.constraint(equalTo: centerYAnchor),
+            containerView.topAnchor.constraint(equalTo: topAnchor),
+            containerView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            containerView.widthAnchor.constraint(equalTo: widthAnchor),
+            dateLabel.topAnchor.constraint(greaterThanOrEqualTo: containerView.topAnchor, constant: 3),
+            dateLabel.bottomAnchor.constraint(lessThanOrEqualTo: containerView.bottomAnchor, constant: -3),
+            dateLabel.centerXAnchor.constraint(equalTo: containerView.centerXAnchor)
+        ])
     }
     
     public required init?(coder aDecoder: NSCoder) {
