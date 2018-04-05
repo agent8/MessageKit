@@ -60,8 +60,12 @@ open class MessageKitDateFormatter {
             iMessageDate.addAttribute(.font, value: boldFont, range: NSMakeRange(0, unboldRange.range.location - 1))
             iMessageDate.addAttribute(.font, value: normalFont, range: unboldRange.range)
         } else {
-            iMessageDate.addAttribute(.font, value: normalFont, range: NSRange(dateString.startIndex..., in: dateString))
+            iMessageDate.addAttribute(.font, value: normalFont, range: NSMakeRange(0, iMessageDate.length))
         }
+        
+        let centerStyle = NSMutableParagraphStyle()
+        centerStyle.alignment = .center
+        iMessageDate.addAttribute(.paragraphStyle, value: centerStyle, range: NSMakeRange(0, iMessageDate.length))
         
         return iMessageDate as NSAttributedString
     }
