@@ -47,6 +47,24 @@ open class MessageKitDateFormatter {
         let dateString = string(from: date)
         return NSAttributedString(string: dateString, attributes: attributes)
     }
+    
+    public func iMessageStyle(from date: Date, ofSize size: CGFloat = 10) -> NSAttributedString {
+        let dateString = string(from: date)
+        let pattern = "[0-9]{1,2}:[0-9]{1,2}\\s?(AM|PM)\\s?$" // bold everything but the numerical time
+        let iMessageDate = NSMutableAttributedString(string: dateString)
+        let boldFont: UIFont = .boldSystemFont(ofSize: size)
+        let normalFont: UIFont = .systemFont(ofSize: size)
+        
+        let regex = try? NSRegularExpression(pattern: pattern, options: NSRegularExpression.Options.caseInsensitive)
+        if let unboldRange = regex?.matches(in: dateString, range: NSRange(dateString.startIndex..., in: dateString)).first {
+            iMessageDate.addAttribute(.font, value: boldFont, range: NSMakeRange(0, unboldRange.range.location - 1))
+            iMessageDate.addAttribute(.font, value: normalFont, range: unboldRange.range)
+        } else {
+            iMessageDate.addAttribute(.font, value: normalFont, range: NSRange(dateString.startIndex..., in: dateString))
+        }
+        
+        return iMessageDate as NSAttributedString
+    }
 
     open func configureDateFormatter(for date: Date) {
         switch true {
