@@ -75,7 +75,7 @@ open class MessageKitDateFormatter {
         case Calendar.current.isDate(date, equalTo: Date(), toGranularity: .weekOfYear):
             formatter.dateFormat = "EEEE h:mm a"
         case Calendar.current.isDate(date, equalTo: Date(), toGranularity: .year):
-            formatter.dateFormat = "E, d MMM, h:mm a"
+            formatter.dateFormat = "EEEE, d MMM, h:mm a"
         default:
             formatter.dateFormat = "MMM d, yyyy, h:mm a"
         }
