@@ -37,10 +37,20 @@ open class MessageKitDateFormatter {
     private init() {}
 
     // MARK: - Methods
+    
+    private enum ConfigInfo {
+        case today, yesterday, none
+    }
 
     public func string(from date: Date) -> String {
-        configureDateFormatter(for: date)
-        return formatter.string(from: date)
+        switch configureDateFormatter(for: date) {
+        case .today:
+            return "Today \(formatter.string(from: date))"
+        case .yesterday:
+            return "Yesterday \(formatter.string(from: date))"
+        case .none:
+            return formatter.string(from: date)
+        }
     }
 
     public func attributedString(from date: Date, with attributes: [NSAttributedStringKey: Any]) -> NSAttributedString {
@@ -59,6 +69,10 @@ open class MessageKitDateFormatter {
         if let unboldRange = regex?.matches(in: dateString, range: NSRange(dateString.startIndex..., in: dateString)).first {
             iMessageDate.addAttribute(.font, value: boldFont, range: NSMakeRange(0, unboldRange.range.location - 1))
             iMessageDate.addAttribute(.font, value: normalFont, range: unboldRange.range)
+            let rangeEndLocation = unboldRange.range.location + unboldRange.range.length
+            if rangeEndLocation < iMessageDate.length {
+                iMessageDate.addAttribute(.font, value: boldFont, range: NSMakeRange(rangeEndLocation, iMessageDate.length - 1))
+            }
         } else {
             iMessageDate.addAttribute(.font, value: normalFont, range: NSMakeRange(0, iMessageDate.length))
         }
@@ -70,19 +84,22 @@ open class MessageKitDateFormatter {
         return iMessageDate as NSAttributedString
     }
 
-    open func configureDateFormatter(for date: Date) {
+    private func configureDateFormatter(for date: Date) -> ConfigInfo {
         switch true {
-        case Calendar.current.isDateInToday(date) || Calendar.current.isDateInYesterday(date):
-            formatter.doesRelativeDateFormatting = true
-            formatter.dateStyle = .short
-            formatter.timeStyle = .short
+        case Calendar.current.isDateInToday(date):
+            formatter.dateFormat = "h:mm a"
+            return .today
+        case Calendar.current.isDateInYesterday(date):
+            formatter.dateFormat = "h:mm a"
+            return .yesterday
         case Calendar.current.isDate(date, equalTo: Date(), toGranularity: .weekOfYear):
             formatter.dateFormat = "EEEE h:mm a"
         case Calendar.current.isDate(date, equalTo: Date(), toGranularity: .year):
-            formatter.dateFormat = "EEEE, d MMM, h:mm a"
+            formatter.dateFormat = "E, MMM d, h:mm a"
         default:
             formatter.dateFormat = "MMM d, yyyy, h:mm a"
         }
+        return .none
     }
     
 }
