@@ -31,13 +31,15 @@ open class MessageDateHeaderView: MessageHeaderView {
         return 18
     }
     
+    open static let dateFontSize: CGFloat = 10
+    
     // MARK: - Properties
 
     open let dateLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
-        label.font = .boldSystemFont(ofSize: 10)
-        label.textColor = .darkGray
+        label.font = .boldSystemFont(ofSize: dateFontSize)
+        label.textColor = COLOR_TEXT_DARK
         label.numberOfLines = 0
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -46,6 +48,7 @@ open class MessageDateHeaderView: MessageHeaderView {
     private let containerView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
+        view.clipsToBounds = true
         return view
     }()
 
@@ -70,10 +73,17 @@ open class MessageDateHeaderView: MessageHeaderView {
             containerView.topAnchor.constraint(equalTo: topAnchor),
             containerView.bottomAnchor.constraint(equalTo: bottomAnchor),
             containerView.widthAnchor.constraint(equalTo: widthAnchor),
-            dateLabel.topAnchor.constraint(greaterThanOrEqualTo: containerView.topAnchor, constant: 3),
-            dateLabel.bottomAnchor.constraint(lessThanOrEqualTo: containerView.bottomAnchor, constant: -3),
-            dateLabel.centerXAnchor.constraint(equalTo: containerView.centerXAnchor)
+            dateLabel.heightAnchor.constraint(lessThanOrEqualTo: containerView.heightAnchor, constant: -6),
+            dateLabel.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
+            dateLabel.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
+            dateLabel.widthAnchor.constraint(lessThanOrEqualTo: containerView.widthAnchor)
         ])
+    }
+    
+    open override func prepareForReuse() {
+        super.prepareForReuse()
+        dateLabel.text = nil
+        dateLabel.attributedText = nil
     }
     
     public required init?(coder aDecoder: NSCoder) {

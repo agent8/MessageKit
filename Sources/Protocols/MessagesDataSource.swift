@@ -77,6 +77,18 @@ public protocol MessagesDataSource: AnyObject {
     ///   - messagesCollectionView: The `MessagesCollectionView` in which this message is deleted from.
     ///   - indexPath: The `IndexPath` of the cell.
     func deleteMessage(in messagesCollectionView: MessagesCollectionView, at indexPath: IndexPath)
+    
+    /// The attributed label to be included in the footer view of this cell.
+    func cellAttributedFooterLabel(for message: MessageType, at indexPath: IndexPath) -> NSAttributedString?
+    
+    /// The height of the attributed label in the footer view of this cell.
+    func cellAttributedFooterLabelHeight(for message: MessageType, at indexPath: IndexPath) -> CGFloat
+    
+    /// The attributed label to be included in the header view of this cell.
+    func cellAttributedHeaderLabel(for message: MessageType, at indexPath: IndexPath) -> NSAttributedString?
+    
+    /// The height of the attributed label in the header view of this cell.
+    func cellAttributedHeaderLabelHeight(for message: MessageType, at indexPath: IndexPath) -> CGFloat
 }
 
 public extension MessagesDataSource {
@@ -91,6 +103,22 @@ public extension MessagesDataSource {
 
     func cellBottomLabelAttributedText(for message: MessageType, at indexPath: IndexPath) -> NSAttributedString? {
         return nil
+    }
+    
+    func cellAttributedFooterLabel(for message: MessageType, at indexPath: IndexPath) -> NSAttributedString? {
+        return nil
+    }
+    
+    func cellAttributedFooterLabelHeight(for message: MessageType, at indexPath: IndexPath) -> CGFloat {
+        return 0
+    }
+    
+    func cellAttributedHeaderLabel(for message: MessageType, at indexPath: IndexPath) -> NSAttributedString? {
+        return nil
+    }
+    
+    func cellAttributedHeaderLabelHeight(for message: MessageType, at indexPath: IndexPath) -> CGFloat {
+        return 0
     }
     
     func deleteMessage(in messagesCollectionView: MessagesCollectionView, at indexPath: IndexPath) {}

@@ -47,6 +47,28 @@ open class MessageKitDateFormatter {
         let dateString = string(from: date)
         return NSAttributedString(string: dateString, attributes: attributes)
     }
+    
+    public func iMessageStyle(from date: Date, ofSize size: CGFloat = 10) -> NSAttributedString {
+        let dateString = string(from: date)
+        let pattern = "[0-9]{1,2}:[0-9]{1,2}\\s?(AM|PM)\\s?$" // bold everything but the numerical time
+        let iMessageDate = NSMutableAttributedString(string: dateString)
+        let boldFont: UIFont = .boldSystemFont(ofSize: size)
+        let normalFont: UIFont = .systemFont(ofSize: size)
+        
+        let regex = try? NSRegularExpression(pattern: pattern, options: NSRegularExpression.Options.caseInsensitive)
+        if let unboldRange = regex?.matches(in: dateString, range: NSRange(dateString.startIndex..., in: dateString)).first {
+            iMessageDate.addAttribute(.font, value: boldFont, range: NSMakeRange(0, unboldRange.range.location - 1))
+            iMessageDate.addAttribute(.font, value: normalFont, range: unboldRange.range)
+        } else {
+            iMessageDate.addAttribute(.font, value: normalFont, range: NSMakeRange(0, iMessageDate.length))
+        }
+        
+        let centerStyle = NSMutableParagraphStyle()
+        centerStyle.alignment = .center
+        iMessageDate.addAttribute(.paragraphStyle, value: centerStyle, range: NSMakeRange(0, iMessageDate.length))
+        
+        return iMessageDate as NSAttributedString
+    }
 
     open func configureDateFormatter(for date: Date) {
         switch true {
@@ -57,7 +79,7 @@ open class MessageKitDateFormatter {
         case Calendar.current.isDate(date, equalTo: Date(), toGranularity: .weekOfYear):
             formatter.dateFormat = "EEEE h:mm a"
         case Calendar.current.isDate(date, equalTo: Date(), toGranularity: .year):
-            formatter.dateFormat = "E, d MMM, h:mm a"
+            formatter.dateFormat = "EEEE, d MMM, h:mm a"
         default:
             formatter.dateFormat = "MMM d, yyyy, h:mm a"
         }
