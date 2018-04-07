@@ -17,7 +17,7 @@ class PhotoMessageCell: MediaMessageCell {
                                  chatMsgId: downloadInfo.messageId,
                                  forThumb: downloadInfo.isThumbnail) { (messageId, filePath) in
                                     EDOMainthread {
-                                        var hasNonRecoveraleError = false
+                                        var hasNonRecoverableError = false
                                         if messageId == self.messageId {
                                             if let path = filePath,
                                                 let image = UIImage(contentsOfFile: path) {
@@ -26,14 +26,14 @@ class PhotoMessageCell: MediaMessageCell {
                                                 self.imageNotFound()
                                                 if self.hasNonRecoverableError() {
                                                     //TODO: find out if there is a non-recoverable error
-                                                    hasNonRecoveraleError = true
+                                                    hasNonRecoverableError = true
                                                 }
                                             }
                                         } else {
                                             XMPPMgrLog("image is no longer needed")
                                         }
                                         
-                                        finishedAndDoNotRetry?(hasNonRecoveraleError)
+                                        finishedAndDoNotRetry?(hasNonRecoverableError)
                                     }
                                     //Preload the full image, no callback needed
                                     XMPPAdapter.downloadData(accountId: downloadInfo.accountId, chatMsgId: downloadInfo.messageId)
