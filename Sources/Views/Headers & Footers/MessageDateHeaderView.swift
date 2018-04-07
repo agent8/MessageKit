@@ -73,7 +73,7 @@ open class MessageDateHeaderView: MessageHeaderView {
             containerView.topAnchor.constraint(equalTo: topAnchor),
             containerView.bottomAnchor.constraint(equalTo: bottomAnchor),
             containerView.widthAnchor.constraint(equalTo: widthAnchor),
-            dateLabel.heightAnchor.constraint(lessThanOrEqualTo: containerView.heightAnchor, constant: -6),
+            dateLabel.heightAnchor.constraint(equalTo: containerView.heightAnchor, constant: -6),
             dateLabel.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
             dateLabel.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
             dateLabel.widthAnchor.constraint(lessThanOrEqualTo: containerView.widthAnchor)
