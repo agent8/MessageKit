@@ -50,13 +50,24 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
         label.numberOfLines = 0
         return label
     }()
-
+    
+    open var replyLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.textColor = COLOR_TEXT_LIGHT_GRAY
+        label.font = .staticMedium()
+        label.text = "Reply"
+        label.isHidden = true
+        return label
+    }()
+    
     open weak var delegate: MessageCellDelegate?
 
     public override init(frame: CGRect) {
         super.init(frame: frame)
         contentView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         setupSubviews()
+        setupReplyLabelConstraint()
     }
 
     required public init?(coder aDecoder: NSCoder) {
@@ -68,8 +79,16 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
         contentView.addSubview(avatarView)
         contentView.addSubview(cellTopLabel)
         contentView.addSubview(cellBottomLabel)
+        addSubview(replyLabel)
     }
 
+    open func setupReplyLabelConstraint() {
+        NSLayoutConstraint.activate([
+            replyLabel.leftAnchor.constraint(equalTo: messageContainerView.rightAnchor, constant: 15),
+            replyLabel.centerYAnchor.constraint(equalTo: messageContainerView.centerYAnchor)
+        ])
+    }
+    
     open override func prepareForReuse() {
         super.prepareForReuse()
         cellTopLabel.text = nil
