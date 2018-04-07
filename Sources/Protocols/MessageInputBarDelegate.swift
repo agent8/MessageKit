@@ -56,6 +56,13 @@ public protocol MessageInputBarDelegate: AnyObject {
     ///   - inputBar: The MessageInputBar
     ///   - image: The UIImage pasted
     func messageInputBarTextViewDidPasteImage(_ image: UIImage)
+    
+    /// Called when the MessageInputBar's attachment is removed.
+    ///
+    /// - Parameters:
+    ///   - inputBar: The MessageInputBar
+    ///   - attachment: The attachment removed
+    func messageInputBar(_ inputBar: MessageInputBar, didRemoveAttachment attachment: ChatAttachment)
 }
 
 public extension MessageInputBarDelegate {
@@ -67,4 +74,6 @@ public extension MessageInputBarDelegate {
     func messageInputBar(_ inputBar: MessageInputBar, textViewTextDidChangeTo text: String) {}
     
     func messageInputBarTextViewDidPasteImage(_ image: UIImage) {}
+    
+    func messageInputBar(_ inputBar: MessageInputBar, didRemoveAttachment attachment: ChatAttachment) {}
 }
