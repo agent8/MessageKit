@@ -89,6 +89,9 @@ public protocol MessagesDataSource: AnyObject {
     
     /// The height of the attributed label in the header view of this cell.
     func cellAttributedHeaderLabelHeight(for message: MessageType, at indexPath: IndexPath) -> CGFloat
+    
+    /// Checks if this chat should show the empty chat view screen or not.
+    func shouldShowEmptyChatView() -> Bool
 }
 
 public extension MessagesDataSource {
