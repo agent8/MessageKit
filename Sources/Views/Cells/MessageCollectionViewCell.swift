@@ -113,6 +113,8 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
 
         cellTopLabel.attributedText = topText
         cellBottomLabel.attributedText = bottomText
+        
+        setupSwipeReplyGesture(delegate: messagesCollectionView)
     }
 
     /// Handle tap gesture on contentView and its subviews like messageContainerView, cellTopLabel, cellBottomLabel, avatarView ....
@@ -159,4 +161,19 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
     override open func delete(_ sender: Any?) {
         delegate?.didTapDeleteMenuItem(from: self)
     }
+    
+    open func setupSwipeReplyGesture(delegate: UIGestureRecognizerDelegate) {
+        let swipeReply = SwipeReplyPanGestureRecognizer(target: self, action: #selector(onSwipeReply))
+        contentView.addGestureRecognizer(swipeReply)
+        swipeReply.delegate = delegate
+    }
+    
+    @objc func onSwipeReply(gestureRecognizer: SwipeReplyPanGestureRecognizer) {
+        delegate?.didSwipeReply(from: self, gestureRecognizer: gestureRecognizer)
+    }
+}
+
+open class SwipeReplyPanGestureRecognizer: UIPanGestureRecognizer {
+    var beganCenterPoint: CGPoint?
+    var swipedIndexPath: IndexPath?
 }

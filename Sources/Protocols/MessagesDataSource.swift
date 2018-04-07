@@ -92,6 +92,9 @@ public protocol MessagesDataSource: AnyObject {
     
     /// Checks if this chat should show the empty chat view screen or not.
     func shouldShowEmptyChatView() -> Bool
+
+    /// Returns the indexPath for a message having the `messageId`.
+    func indexPath(for messageId: String) -> IndexPath?
 }
 
 public extension MessagesDataSource {
@@ -125,4 +128,8 @@ public extension MessagesDataSource {
     }
     
     func deleteMessage(in messagesCollectionView: MessagesCollectionView, at indexPath: IndexPath) {}
+    
+    func indexPath(for messageId: String) -> IndexPath? {
+        return nil
+    }
 }
