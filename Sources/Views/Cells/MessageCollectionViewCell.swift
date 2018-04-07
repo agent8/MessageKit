@@ -33,7 +33,7 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
     open var avatarView = AvatarView()
 
     open var messageContainerView: MessageContainerView = {
-        let containerView = MessageContainerView()
+        let containerView = MessageContainerView(frame: .zero)
         containerView.clipsToBounds = true
         containerView.layer.masksToBounds = true
         return containerView

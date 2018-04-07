@@ -58,15 +58,14 @@ open class MediaMessageCell: MessageCollectionViewCell {
     // MARK: - Methods
 
     open func setupConstraints() {
-        imageView.fillSuperview()
         playButtonView.centerInSuperview()
         playButtonView.constraint(equalTo: CGSize(width: 35, height: 35))
     }
 
     open override func setupSubviews() {
         super.setupSubviews()
-        messageContainerView.addSubview(imageView)
-        messageContainerView.addSubview(playButtonView)
+        messageContainerView.stackView.addArrangedSubview(imageView)
+        imageView.addSubview(playButtonView)
         setupConstraints()
     }
 

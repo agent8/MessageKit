@@ -28,8 +28,31 @@ open class MessageContainerView: UIImageView {
 
     // MARK: - Properties
 
+    public override init(frame: CGRect) {
+        super.init(frame: frame)
+        addSubview(stackView)
+        stackView.frame = bounds
+    }
+    
+    required public init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     private let imageMask = UIImageView()
 
+    open var stackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.autoresizingMask = [
+            .flexibleWidth,
+            .flexibleHeight,
+            .flexibleRightMargin,
+            .flexibleBottomMargin
+        ]
+        stackView.clipsToBounds = true
+        return stackView
+    }()
+    
     open var style: MessageStyle = .none {
         didSet {
             applyMessageStyle()
