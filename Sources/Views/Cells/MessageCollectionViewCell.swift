@@ -61,6 +61,12 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
         return label
     }()
     
+    lazy var replyView: ReplyView = {
+        let view = ReplyView(frame: .zero)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
     open weak var delegate: MessageCellDelegate?
 
     public override init(frame: CGRect) {
@@ -81,7 +87,11 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
         contentView.addSubview(cellBottomLabel)
         addSubview(replyLabel)
     }
-
+    
+    open func insertReplyView() {
+        messageContainerView.stackView.insertArrangedSubview(replyView, at: 0)
+    }
+    
     open func setupReplyLabelConstraint() {
         NSLayoutConstraint.activate([
             replyLabel.leftAnchor.constraint(equalTo: messageContainerView.rightAnchor, constant: 15),
@@ -95,6 +105,7 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
         cellTopLabel.attributedText = nil
         cellBottomLabel.text = nil
         cellBottomLabel.attributedText = nil
+        replyView.removeFromSuperview()
     }
 
     // MARK: - Configuration
@@ -179,6 +190,11 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
     
     override open func delete(_ sender: Any?) {
         delegate?.didTapDeleteMenuItem(from: self)
+    }
+    
+    @objc
+    open func reply(_ sender: Any?) {
+        delegate?.didTapReplyMenuItem(from: self)
     }
     
     open func setupSwipeReplyGesture(delegate: UIGestureRecognizerDelegate) {

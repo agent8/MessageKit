@@ -75,6 +75,9 @@ public protocol MessageCellDelegate: MessageLabelDelegate {
     
     /// A handler for when the "Delete" menu item is selected.
     func didTapDeleteMenuItem(from cell: MessageCollectionViewCell)
+    
+    /// A handler for when the cell is panned horizontally to swipe reply.
+    func didSwipeReply(from cell: MessageCollectionViewCell, gestureRecognizer: SwipeReplyPanGestureRecognizer)
 }
 
 public extension MessageCellDelegate {
@@ -94,5 +97,8 @@ public extension MessageCellDelegate {
     func didTapCopyMenuItem(from cell: MessageCollectionViewCell) {}
     
     func didTapDeleteMenuItem(from cell: MessageCollectionViewCell) {}
+
+    
+    func didSwipeReply(from cell: MessageCollectionViewCell, gestureRecognizer: SwipeReplyPanGestureRecognizer) {}
 
 }

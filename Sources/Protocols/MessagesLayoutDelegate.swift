@@ -185,6 +185,11 @@ public protocol MessagesLayoutDelegate: AnyObject {
     /// The default value returned by this method is `false`.
     func shouldCacheLayoutAttributes(for message: MessageType) -> Bool
 
+    /// Specifies the extra height for a `MessageContainerView` to account for a `ReplyView`
+    func replyViewHeight(at indexPath: IndexPath, with maxWidth: CGFloat, in messagesCollectionView: MessagesCollectionView) -> CGFloat
+    
+    /// Specifies the extra width for a `MessageContainerView` to account for a `ReplyView`
+    func replyViewWidth(at indexPath: IndexPath, maxWidth: CGFloat, in messagesCollectionView: MessagesCollectionView) -> CGFloat
 }
 
 public extension MessagesLayoutDelegate {
@@ -274,4 +279,15 @@ public extension MessagesLayoutDelegate {
     func widthForLocation(message: MessageType, at indexPath: IndexPath, with maxWidth: CGFloat, in messagesCollectionView: MessagesCollectionView) -> CGFloat {
         return maxWidth
     }
+    
+    // MARK: - Reply View Defaults
+    
+    func replyViewHeight(at indexPath: IndexPath, with maxWidth: CGFloat, in messagesCollectionView: MessagesCollectionView) -> CGFloat {
+        return 0
+    }
+    
+    func replyViewWidth(at indexPath: IndexPath, maxWidth: CGFloat, in messagesCollectionView: MessagesCollectionView) -> CGFloat {
+        return 0
+    }
+
 }
