@@ -73,6 +73,7 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
         super.init(frame: frame)
         contentView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         setupSubviews()
+        setupCustomMenuItems()
         setupReplyLabelConstraint()
     }
 
@@ -90,6 +91,11 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
     
     open func insertReplyView() {
         messageContainerView.stackView.insertArrangedSubview(replyView, at: 0)
+    }
+    
+    open func setupCustomMenuItems() {
+        let reply = UIMenuItem(title: "Reply", action: #selector(reply(_:)))
+        UIMenuController.shared.menuItems = [reply]
     }
     
     open func setupReplyLabelConstraint() {
