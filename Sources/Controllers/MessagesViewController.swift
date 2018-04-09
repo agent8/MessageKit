@@ -73,7 +73,7 @@ open class MessagesViewController: UIViewController {
             updateScrollToBottomButtonBottomConstraint(
                 oldBottomInset: oldValue,
                 newBottomInset: messageCollectionViewBottomInset)
-            updateScrollToBottomButton(in: messagesCollectionView)
+            updateScrollToBottomButton()
         }
     }
 
@@ -266,10 +266,10 @@ open class MessagesViewController: UIViewController {
 extension MessagesViewController: UIScrollViewDelegate {
     
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        updateScrollToBottomButton(in: scrollView)
+        updateScrollToBottomButton()
     }
     
-    func updateScrollToBottomButton(in scrollView: UIScrollView) {
+    func updateScrollToBottomButton() {
         let shouldHideButton = messagesCollectionView.isNearBottom(threshold: messagesCollectionView.heightAfterContentInsets / 2)
         if shouldHideButton != scrollToBottomButton.isHidden {
             UIView.transition(
