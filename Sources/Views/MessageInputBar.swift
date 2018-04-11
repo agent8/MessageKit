@@ -392,15 +392,15 @@ open class MessageInputBar: UIView {
         topStackViewLayoutSet = NSLayoutConstraintSet(
             top:    topStackView.topAnchor.constraint(equalTo: topAnchor, constant: topStackViewPadding.top),
             bottom: topStackView.bottomAnchor.constraint(equalTo: contentView.topAnchor, constant: -padding.top),
-            left:   topStackView.leftAnchor.constraint(equalTo: leftAnchor, constant: topStackViewPadding.left),
-            right:  topStackView.rightAnchor.constraint(equalTo: rightAnchor, constant: -topStackViewPadding.right)
+            right:  topStackView.rightAnchor.constraint(equalTo: rightAnchor, constant: -topStackViewPadding.right),
+            width:  topStackView.widthAnchor.constraint(equalTo: widthAnchor, constant: -(topStackViewPadding.left + topStackViewPadding.right))
         )
         
         contentViewLayoutSet = NSLayoutConstraintSet(
             top:    contentView.topAnchor.constraint(equalTo: topStackView.bottomAnchor, constant: padding.top),
             bottom: contentView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -padding.bottom),
-            left:   contentView.leftAnchor.constraint(equalTo: leftAnchor, constant: padding.left),
-            right:  contentView.rightAnchor.constraint(equalTo: rightAnchor, constant: -padding.right)
+            right:  contentView.rightAnchor.constraint(equalTo: rightAnchor, constant: -padding.right),
+            width:  contentView.widthAnchor.constraint(equalTo: widthAnchor, constant: -(padding.left + padding.right))
         )
         
         borderViewLayoutSet = NSLayoutConstraintSet(
@@ -413,10 +413,10 @@ open class MessageInputBar: UIView {
         if #available(iOS 11.0, *) {
             // Switch to safeAreaLayoutGuide
             contentViewLayoutSet?.bottom = contentView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -padding.bottom)
-            contentViewLayoutSet?.left = contentView.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor, constant: padding.left)
+            contentViewLayoutSet?.width = contentView.widthAnchor.constraint(equalTo: safeAreaLayoutGuide.widthAnchor, constant: -(padding.left + padding.right))
             contentViewLayoutSet?.right = contentView.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -padding.right)
             
-            topStackViewLayoutSet?.left = topStackView.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor, constant: topStackViewPadding.left)
+            topStackViewLayoutSet?.width = topStackView.widthAnchor.constraint(equalTo: safeAreaLayoutGuide.widthAnchor, constant: -(topStackViewPadding.left + topStackViewPadding.right))
             topStackViewLayoutSet?.right = topStackView.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -topStackViewPadding.right)
         }
         
