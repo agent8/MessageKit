@@ -312,7 +312,8 @@ open class MessageInputBar: UIView {
     private var attachmentViewLayoutSet: NSLayoutConstraintSet?
     private var windowAnchor: NSLayoutConstraint?
     private var backgroundViewBottomAnchor: NSLayoutConstraint?
-    
+    private var backgroundViewWidthAnchor: NSLayoutConstraint?
+
     // MARK: - Initialization
     
     public convenience init() {
@@ -387,7 +388,10 @@ open class MessageInputBar: UIView {
         separatorLine.addConstraints(inputTextView.topAnchor, left: inputTextView.leftAnchor, right: inputTextView.rightAnchor, heightConstant: 0.5)
         backgroundViewBottomAnchor = backgroundView.bottomAnchor.constraint(equalTo: bottomAnchor)
         backgroundViewBottomAnchor?.isActive = true
-        backgroundView.addConstraints(topAnchor, left: leftAnchor, right: rightAnchor)
+        backgroundView.addConstraints(topAnchor, right: rightAnchor)
+        
+        backgroundViewWidthAnchor = backgroundView.widthAnchor.constraint(equalTo: widthAnchor)
+        backgroundViewWidthAnchor?.isActive = true
         
         topStackViewLayoutSet = NSLayoutConstraintSet(
             top:    topStackView.topAnchor.constraint(equalTo: topAnchor, constant: topStackViewPadding.top),
@@ -630,6 +634,7 @@ open class MessageInputBar: UIView {
         topStackViewLayoutSet?.activate()
         borderViewLayoutSet?.activate()
         attachmentViewLayoutSet?.activate()
+        backgroundViewWidthAnchor?.isActive = true
     }
     
     /// Deactivates the NSLayoutConstraintSet's
@@ -642,6 +647,7 @@ open class MessageInputBar: UIView {
         topStackViewLayoutSet?.deactivate()
         borderViewLayoutSet?.deactivate()
         attachmentViewLayoutSet?.deactivate()
+        backgroundViewWidthAnchor?.isActive = false
     }
     
     // MARK: - UIStackView InputBarItem Methods
