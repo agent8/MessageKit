@@ -807,3 +807,41 @@ open class MessageInputBar: UIView {
         delegate?.messageInputBar(self, didPressSendButtonWith: inputTextView.text)
     }
 }
+
+// MARK: - Split View
+
+extension MessageInputBar {
+    func updateConstraintsForSplitView(to frame: CGRect) {
+        performLayout(false) {
+            let newWidth = frame.size.width
+            guard newWidth > 0 else {
+                return
+            }
+            
+            self.backgroundViewWidthAnchor = self.backgroundView.widthAnchor.constraint(equalToConstant: newWidth)
+            self.topStackViewLayoutSet?.width = nil
+            self.contentViewLayoutSet?.width = nil
+            
+            var safePadding: UIEdgeInsets = .zero
+            if #available(iOS 11.0, *) {
+                safePadding = self.safeAreaInsets
+            }
+            
+            // only care about right safe padding since this split VC is right pinned
+            self.topStackView.addConstraints(widthConstant:
+                newWidth - self.topStackViewPadding.left - self.topStackViewPadding.right - safePadding.right)
+            self.contentView.addConstraints(widthConstant:
+                newWidth - self.padding.left - self.padding.right - safePadding.right)
+            
+            guard self.superview != nil else {
+                return
+            }
+            
+            self.layoutIfNeeded()
+        }
+    }
+    
+    open override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        return backgroundView.frame.contains(point) ? super.hitTest(point, with: event) : nil
+    }
+}
