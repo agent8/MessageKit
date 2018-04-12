@@ -819,8 +819,6 @@ extension MessageInputBar {
             }
             
             self.backgroundViewWidthAnchor = self.backgroundView.widthAnchor.constraint(equalToConstant: newWidth)
-            self.topStackViewLayoutSet?.width = nil
-            self.contentViewLayoutSet?.width = nil
             
             var safePadding: UIEdgeInsets = .zero
             if #available(iOS 11.0, *) {
@@ -828,10 +826,18 @@ extension MessageInputBar {
             }
             
             // only care about right safe padding since this split VC is right pinned
-            self.topStackView.addConstraints(widthConstant:
-                newWidth - self.topStackViewPadding.left - self.topStackViewPadding.right - safePadding.right)
-            self.contentView.addConstraints(widthConstant:
-                newWidth - self.padding.left - self.padding.right - safePadding.right)
+            let topStackViewWidth = newWidth
+                - self.topStackViewPadding.left
+                - self.topStackViewPadding.right
+                - safePadding.right
+            
+            let contentViewWidth = newWidth
+                - self.padding.left
+                - self.padding.right
+                - safePadding.right
+            
+            self.topStackViewLayoutSet?.width = self.topStackView.widthAnchor.constraint(equalToConstant: topStackViewWidth)
+            self.contentViewLayoutSet?.width = self.contentView.widthAnchor.constraint(equalToConstant: contentViewWidth)
             
             guard self.superview != nil else {
                 return
@@ -842,6 +848,10 @@ extension MessageInputBar {
     }
     
     open override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        guard isInSplitViewMode() else {
+            return super.hitTest(point, with: event)
+        }
+        
         return backgroundView.frame.contains(point) ? super.hitTest(point, with: event) : nil
     }
 }
