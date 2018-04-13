@@ -25,14 +25,15 @@ class DocumentMessageCell: MediaMessageCell {
         
         XMPPAdapter.downloadData(accountId: downloadInfo.accountId,
                                  chatMsgId: downloadInfo.messageId) { (messageId, filePath) in
-                                    if let path = filePath, let data = NSData(contentsOfFile: path) as Data? {
-                                        EmailAdapter.convertEmailDataFromChatToEdoMessage(data: data, emailId: messageId, mailAcctId: mailAcctId)
-                                        BroadcastCenter.postNotification(.NewEmailFetched, information: [.MessageId: messageId])
-                                    }
-                                    
-                                    EDOMainthread {
-                                        finishedAndDoNotRetry?(false)
-                                    }
+            if let path = filePath,
+                let data = NSData(contentsOfFile: path) as Data? {
+                EmailAdapter.convertEmailDataFromChatToEdoMessage(data: data, emailId: messageId, mailAcctId: mailAcctId)
+                BroadcastCenter.postNotification(.NewEmailFetched, information: [.MessageId: messageId])
+            }
+            
+            EDOMainthread {
+                finishedAndDoNotRetry?(false)
+            }
         }
     }
     
