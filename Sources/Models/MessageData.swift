@@ -82,9 +82,9 @@ public enum MessageData {
         case .location(_):
             return "Location"
         case .emoji(_):
-            return "emoji"
-        case .attachment(let data):
-            return data.textInfo
+            return "Emoji"
+        case .attachment(_):
+            return "Email"
         }
     }
 }
