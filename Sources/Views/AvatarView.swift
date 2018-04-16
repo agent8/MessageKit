@@ -160,7 +160,7 @@ open class AvatarView: UIImageView {
         backgroundColor = .clear
         contentMode = .scaleAspectFill
         layer.masksToBounds = true
-        clipsToBounds = true
+        clipsToBounds = false
         setCorner(radius: nil)
     }
 
