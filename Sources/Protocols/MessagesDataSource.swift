@@ -24,6 +24,11 @@
 
 import UIKit
 
+public enum MessagesDataSourceIndexPath {
+    case loaded(IndexPath) // loaded and an indexPath is ready for this item
+    case needsLoading // not loaded yet, perhaps existing in the local database.
+}
+
 public protocol MessagesDataSource: AnyObject {
 
     /// The `Sender` of new messages in the `MessagesCollectionView`.
@@ -92,9 +97,11 @@ public protocol MessagesDataSource: AnyObject {
     
     /// Checks if this chat should show the empty chat view screen or not.
     func shouldShowEmptyChatView() -> Bool
-
-    /// Returns the indexPath for a message having the `messageId`.
-    func indexPath(for messageId: String) -> IndexPath?
+    
+    /// Returns `.loaded(indexPath)` if the message is loaded and ready.
+    /// Returns `.needsLoading` if the message needs loading and is not ready.
+    /// Returns `nil` if the message does not exist at all.
+    func indexPath(for messageId: String) -> MessagesDataSourceIndexPath?
 }
 
 public extension MessagesDataSource {
@@ -129,7 +136,7 @@ public extension MessagesDataSource {
     
     func deleteMessage(in messagesCollectionView: MessagesCollectionView, at indexPath: IndexPath) {}
     
-    func indexPath(for messageId: String) -> IndexPath? {
+    func indexPath(for messageId: String) -> MessagesDataSourceIndexPath? {
         return nil
     }
 }
