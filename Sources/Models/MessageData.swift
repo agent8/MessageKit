@@ -64,4 +64,27 @@ public enum MessageData {
 //    
 //    case placeholder
 
+    
+    var displayText: String {
+        return getDisplayText()
+    }
+    
+    private func getDisplayText() -> String {
+        switch self {
+        case .text(let text):
+            return text
+        case .attributedText(let attributedStr):
+            return attributedStr.string
+        case .photo(_):
+            return "Photo"
+        case .video(_, _):
+            return "Video"
+        case .location(_):
+            return "Location"
+        case .emoji(_):
+            return "Emoji"
+        case .attachment(_):
+            return "Email"
+        }
+    }
 }

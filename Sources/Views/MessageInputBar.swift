@@ -82,6 +82,12 @@ open class MessageInputBar: UIView {
         tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
     }()
+
+    lazy var replyView: InputBarReplyView = {
+        let view = InputBarReplyView(frame: .zero)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
     
     /**
      A UIVisualEffectView that adds a blur effect to make the view appear transparent.
@@ -805,6 +811,10 @@ open class MessageInputBar: UIView {
     /// Invalidates each of the inputManagers
     open func didSelectSendButton() {
         delegate?.messageInputBar(self, didPressSendButtonWith: inputTextView.text)
+    }
+    
+    open func insertReplyView() {
+        topStackView.addArrangedSubview(replyView)
     }
 }
 

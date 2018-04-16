@@ -33,7 +33,7 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
     open var avatarView = AvatarView()
 
     open var messageContainerView: MessageContainerView = {
-        let containerView = MessageContainerView()
+        let containerView = MessageContainerView(frame: .zero)
         containerView.clipsToBounds = true
         containerView.layer.masksToBounds = true
         return containerView
@@ -50,13 +50,31 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
         label.numberOfLines = 0
         return label
     }()
-
+    
+    open var replyLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.textColor = COLOR_TEXT_LIGHT_GRAY
+        label.font = .staticMedium()
+        label.text = "Reply"
+        label.isHidden = true
+        return label
+    }()
+    
+    lazy var replyView: ReplyView = {
+        let view = ReplyView(frame: .zero)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
     open weak var delegate: MessageCellDelegate?
 
     public override init(frame: CGRect) {
         super.init(frame: frame)
         contentView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         setupSubviews()
+        setupCustomMenuItems()
+        setupReplyLabelConstraint()
     }
 
     required public init?(coder aDecoder: NSCoder) {
@@ -68,14 +86,32 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
         contentView.addSubview(avatarView)
         contentView.addSubview(cellTopLabel)
         contentView.addSubview(cellBottomLabel)
+        addSubview(replyLabel)
     }
-
+    
+    open func insertReplyView() {
+        messageContainerView.stackView.insertArrangedSubview(replyView, at: 0)
+    }
+    
+    open func setupCustomMenuItems() {
+        let reply = UIMenuItem(title: "Reply", action: #selector(reply(_:)))
+        UIMenuController.shared.menuItems = [reply]
+    }
+    
+    open func setupReplyLabelConstraint() {
+        NSLayoutConstraint.activate([
+            replyLabel.leftAnchor.constraint(equalTo: messageContainerView.rightAnchor, constant: 15),
+            replyLabel.centerYAnchor.constraint(equalTo: messageContainerView.centerYAnchor)
+        ])
+    }
+    
     open override func prepareForReuse() {
         super.prepareForReuse()
         cellTopLabel.text = nil
         cellTopLabel.attributedText = nil
         cellBottomLabel.text = nil
         cellBottomLabel.attributedText = nil
+        replyView.removeFromSuperview()
     }
 
     // MARK: - Configuration
@@ -113,6 +149,8 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
 
         cellTopLabel.attributedText = topText
         cellBottomLabel.attributedText = bottomText
+        
+        setupSwipeReplyGesture(delegate: messagesCollectionView)
     }
 
     /// Handle tap gesture on contentView and its subviews like messageContainerView, cellTopLabel, cellBottomLabel, avatarView ....
@@ -121,7 +159,7 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
 
         switch true {
         case messageContainerView.frame.contains(touchLocation) && !cellContentView(canHandle: convert(touchLocation, to: messageContainerView)):
-            delegate?.didTapMessage(in: self)
+            delegate?.didTapMessage(in: self, touchLocation: touchLocation)
         case avatarView.frame.contains(touchLocation):
             delegate?.didTapAvatar(in: self)
         case cellTopLabel.frame.contains(touchLocation):
@@ -159,4 +197,24 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
     override open func delete(_ sender: Any?) {
         delegate?.didTapDeleteMenuItem(from: self)
     }
+    
+    @objc
+    open func reply(_ sender: Any?) {
+        delegate?.didTapReplyMenuItem(from: self)
+    }
+    
+    open func setupSwipeReplyGesture(delegate: UIGestureRecognizerDelegate) {
+        let swipeReply = SwipeReplyPanGestureRecognizer(target: self, action: #selector(onSwipeReply))
+        contentView.addGestureRecognizer(swipeReply)
+        swipeReply.delegate = delegate
+    }
+    
+    @objc func onSwipeReply(gestureRecognizer: SwipeReplyPanGestureRecognizer) {
+        delegate?.didSwipeReply(from: self, gestureRecognizer: gestureRecognizer)
+    }
+}
+
+open class SwipeReplyPanGestureRecognizer: UIPanGestureRecognizer {
+    var beganCenterPoint: CGPoint?
+    var swipedIndexPath: IndexPath?
 }

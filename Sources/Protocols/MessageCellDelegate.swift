@@ -35,7 +35,7 @@ public protocol MessageCellDelegate: MessageLabelDelegate {
     /// You can get a reference to the `MessageType` for the cell by using `UICollectionView`'s
     /// `indexPath(for: cell)` method. Then using the returned `IndexPath` with the `MessagesDataSource`
     /// method `messageForItem(at:indexPath:messagesCollectionView)`.
-    func didTapMessage(in cell: MessageCollectionViewCell)
+    func didTapMessage(in cell: MessageCollectionViewCell, touchLocation: CGPoint)
 
     /// Triggered when a touch occurs in the `AvatarView`.
     ///
@@ -75,11 +75,17 @@ public protocol MessageCellDelegate: MessageLabelDelegate {
     
     /// A handler for when the "Delete" menu item is selected.
     func didTapDeleteMenuItem(from cell: MessageCollectionViewCell)
+    
+    /// A handler for when the "Reply" menu item is selected.
+    func didTapReplyMenuItem(from cell: MessageCollectionViewCell)
+    
+    /// A handler for when the cell is panned horizontally to swipe reply.
+    func didSwipeReply(from cell: MessageCollectionViewCell, gestureRecognizer: SwipeReplyPanGestureRecognizer)
 }
 
 public extension MessageCellDelegate {
 
-    func didTapMessage(in cell: MessageCollectionViewCell) {}
+    func didTapMessage(in cell: MessageCollectionViewCell, touchLocation: CGPoint) {}
 
     func didTapAvatar(in cell: MessageCollectionViewCell) {}
 
@@ -94,5 +100,9 @@ public extension MessageCellDelegate {
     func didTapCopyMenuItem(from cell: MessageCollectionViewCell) {}
     
     func didTapDeleteMenuItem(from cell: MessageCollectionViewCell) {}
+
+    func didTapReplyMenuItem(from cell: MessageCollectionViewCell) {}
+    
+    func didSwipeReply(from cell: MessageCollectionViewCell, gestureRecognizer: SwipeReplyPanGestureRecognizer) {}
 
 }

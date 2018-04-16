@@ -448,8 +448,16 @@ private extension MessagesCollectionViewFlowLayout {
             messageContainerSize = CGSize(width: width, height: height)
         }
         
-        return messageContainerSize
+        messageContainerSize.height += messagesLayoutDelegate.replyViewHeight(at: indexPath,
+                                                                              with: maxWidth,
+                                                                              in: messagesCollectionView)
         
+        let replyViewWidth = messagesLayoutDelegate.replyViewWidth(at: indexPath,
+                                                                   maxWidth: maxWidth,
+                                                                   in: messagesCollectionView)
+        
+        messageContainerSize.width = max(messageContainerSize.width, replyViewWidth)
+        return messageContainerSize
     }
     
 }

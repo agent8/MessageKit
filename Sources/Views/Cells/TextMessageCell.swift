@@ -45,7 +45,6 @@ open class TextMessageCell: MessageCollectionViewCell {
         if let attributes = layoutAttributes as? MessagesCollectionViewLayoutAttributes {
             messageLabel.textInsets = attributes.messageLabelInsets
             messageLabel.font = attributes.messageLabelFont
-            messageLabel.frame = messageContainerView.bounds
         }
     }
 
@@ -57,7 +56,8 @@ open class TextMessageCell: MessageCollectionViewCell {
 
     open override func setupSubviews() {
         super.setupSubviews()
-        messageContainerView.addSubview(messageLabel)
+        messageLabel.translatesAutoresizingMaskIntoConstraints = false
+        messageContainerView.stackView.addArrangedSubview(messageLabel)
     }
 
     open override func configure(with message: MessageType, at indexPath: IndexPath, and messagesCollectionView: MessagesCollectionView) {
@@ -92,5 +92,9 @@ open class TextMessageCell: MessageCollectionViewCell {
     /// Handle `ContentView`'s tap gesture, return false when `ContentView` don't needs to handle gesture
     open override func cellContentView(canHandle touchPoint: CGPoint) -> Bool {
         return messageLabel.handleGesture(touchPoint)
+    }
+    
+    open override func insertReplyView() {
+        super.insertReplyView()
     }
 }

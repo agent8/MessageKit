@@ -24,7 +24,7 @@
 
 import UIKit
 
-open class MessagesCollectionView: UICollectionView {
+open class MessagesCollectionView: UICollectionView, UIGestureRecognizerDelegate {
 
     /// Minimum insets of this UICollectionView.
     let minimumTopContentInset: CGFloat = 5
@@ -159,5 +159,29 @@ open class MessagesCollectionView: UICollectionView {
         layoutIfNeeded()
         let newYOffset = contentSize.height - bounds.size.height - beforeDistanceToBottom
         contentOffset.y = newYOffset
+    }
+    
+    // MARK:- UIGestureRecognizerDelegate
+
+    open override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        if let panGesture = gestureRecognizer as? UIPanGestureRecognizer {
+            if panGesture is SwipeReplyPanGestureRecognizer {
+                let velocity = panGesture.velocity(in: panGesture.view)
+                if abs(velocity.y) > abs(velocity.x) {
+                    return false
+                }
+                
+                if let indexPath = indexPathForItem(at: panGesture.location(in: self)),
+                    let cell = cellForItem(at: indexPath) as? MessageCollectionViewCell {
+                    let rect = CGRect(x: cell.frame.origin.x,
+                                      y: cell.frame.origin.y + cell.messageContainerView.frame.origin.y,
+                                      width: cell.frame.size.width,
+                                      height: cell.messageContainerView.frame.size.height)
+                    return rect.contains(panGesture.location(in: self))
+                }
+            }
+        }
+
+        return true
     }
 }
