@@ -420,20 +420,26 @@ private extension MessagesCollectionViewFlowLayout {
         let maxWidth = attributes.messageContainerMaxWidth
         
         var messageContainerSize: CGSize = .zero
+
+        let replyWithLabelInsets = attributes.messageLabelHorizontalInsets +
+            messagesLayoutDelegate.replyViewWidth(at: indexPath, maxWidth: maxWidth, in: messagesCollectionView)
         
         switch attributes.message.data {
         case .text(let text):
             messageContainerSize = labelSize(for: text, considering: maxWidth, and: messageLabelFont)
             messageContainerSize.width += attributes.messageLabelHorizontalInsets
             messageContainerSize.height += attributes.messageLabelVerticalInsets
+            messageContainerSize.width = max(messageContainerSize.width, replyWithLabelInsets)
         case .attributedText(let text):
             messageContainerSize = labelSize(for: text, considering: maxWidth)
             messageContainerSize.width += attributes.messageLabelHorizontalInsets
             messageContainerSize.height += attributes.messageLabelVerticalInsets
+            messageContainerSize.width = max(messageContainerSize.width, replyWithLabelInsets)
         case .emoji(let text):
             messageContainerSize = labelSize(for: text, considering: maxWidth, and: emojiLabelFont)
             messageContainerSize.width += attributes.messageLabelHorizontalInsets
             messageContainerSize.height += attributes.messageLabelVerticalInsets
+            messageContainerSize.width = max(messageContainerSize.width, replyWithLabelInsets)
         case .photo, .video:
             let width = messagesLayoutDelegate.widthForMedia(message: message, at: indexPath, with: maxWidth, in: messagesCollectionView)
             let height = messagesLayoutDelegate.heightForMedia(message: message, at: indexPath, with: maxWidth, in: messagesCollectionView)
@@ -452,14 +458,8 @@ private extension MessagesCollectionViewFlowLayout {
                                                                               with: maxWidth,
                                                                               in: messagesCollectionView)
         
-        let replyViewWidth = messagesLayoutDelegate.replyViewWidth(at: indexPath,
-                                                                   maxWidth: maxWidth,
-                                                                   in: messagesCollectionView)
-        
-        messageContainerSize.width = max(messageContainerSize.width, replyViewWidth)
         return messageContainerSize
     }
-    
 }
 
 // MARK: - Cell Bottom Label Calculations  [ I - K ]
