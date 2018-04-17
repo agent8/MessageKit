@@ -56,6 +56,14 @@ public protocol MessagesDataSource: AnyObject {
     ///   - messagesCollectionView: The `MessagesCollectionView` in which the messages will be displayed.
     func numberOfMessages(in messagesCollectionView: MessagesCollectionView) -> Int
 
+    /// A chance to config a cell before it's presented e.g. customize accessoryView.
+    ///
+    /// - Parameters:
+    ///     - cell: The `MessageCollectionViewCell` that can be configured.
+    ///     - message: The `MessageType` that will be displayed by this cell.
+    ///     - indexPath: The `IndexPath` of the cell.
+    func configCell(_ cell: MessageCollectionViewCell, for message: MessageType, at indexPath: IndexPath)
+    
     /// The attributed text to be used for cell's top label.
     ///
     /// - Parameters:
@@ -110,6 +118,8 @@ public extension MessagesDataSource {
         return message.sender == currentSender()
     }
 
+    func configCell(_ cell: MessageCollectionViewCell, for message: MessageType, at indexPath: IndexPath) {}
+    
     func cellTopLabelAttributedText(for message: MessageType, at indexPath: IndexPath) -> NSAttributedString? {
         return nil
     }

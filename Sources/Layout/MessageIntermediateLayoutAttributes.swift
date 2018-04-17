@@ -72,6 +72,31 @@ final class MessageIntermediateLayoutAttributes {
         
     }()
 
+    // AccessoryView
+    var accessoryViewSize: CGSize = .zero
+    var accessoryViewPadding: UIEdgeInsets = .zero
+    
+    lazy var accessoryViewFrame: CGRect = {
+        
+        guard accessoryViewSize != .zero else { return .zero }
+        
+        var origin: CGPoint = .zero
+        origin.y = messageContainerFrame.origin.y + messageContainerSize.height * 0.5 -
+            accessoryViewSize.height * 0.5
+        
+        switch avatarPosition.horizontal {
+        case .cellLeading:
+            origin.x = messageContainerFrame.maxX + accessoryViewPadding.left
+        case .cellTrailing:
+            origin.x = messageContainerFrame.minX - accessoryViewPadding.right - accessoryViewSize.width
+        case .natural:
+            fatalError(MessageKitError.avatarPositionUnresolved)
+        }
+        
+        return CGRect(origin: origin, size: accessoryViewSize)
+        
+    }()
+    
     // MessageContainerView
     var messageContainerSize: CGSize = .zero
     var messageContainerMaxWidth: CGFloat = 0
@@ -209,6 +234,10 @@ extension MessageIntermediateLayoutAttributes {
     
     var messageHorizontalPadding: CGFloat {
         return messageContainerPadding.left + messageContainerPadding.right
+    }
+    
+    var accessoryHorizontalPadding: CGFloat {
+        return accessoryViewPadding.left + accessoryViewPadding.right
     }
 
 }

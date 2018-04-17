@@ -239,6 +239,10 @@ fileprivate extension MessagesCollectionViewFlowLayout {
         attributes.messageContainerPadding = messageContainerPadding(for: attributes)
         attributes.messageLabelInsets = messageLabelInsets(for: attributes)
         
+        // AccessoryView
+        attributes.accessoryViewSize = accessoryViewSize(for: attributes)
+        attributes.accessoryViewPadding = accessoryViewPadding(for: attributes)
+        
         // MessageContainerView
         attributes.messageContainerMaxWidth = messageContainerMaxWidth(for: attributes)
         attributes.messageContainerSize = messageContainerSize(for: attributes)
@@ -275,6 +279,7 @@ fileprivate extension MessagesCollectionViewFlowLayout {
         attributes.bottomLabelFrame = intermediateAttributes.bottomLabelFrame
         attributes.avatarFrame = intermediateAttributes.avatarFrame
         attributes.messageLabelInsets = intermediateAttributes.messageLabelInsets
+        attributes.accessoryViewFrame = intermediateAttributes.accessoryViewFrame
         
         switch intermediateAttributes.message.data {
         case .emoji:
@@ -398,13 +403,15 @@ private extension MessagesCollectionViewFlowLayout {
     ///   - attributes: The `MessageIntermediateLayoutAttributes` to consider when calculating the max width.
     func messageContainerMaxWidth(for attributes: MessageIntermediateLayoutAttributes) -> CGFloat {
         
+        let baseMaxWidth: CGFloat = itemWidth -
+            attributes.avatarSize.width - attributes.messageHorizontalPadding -
+            attributes.accessoryViewSize.width - attributes.accessoryHorizontalPadding
         switch attributes.message.data {
         case .text, .attributedText:
-            return itemWidth - attributes.avatarSize.width - attributes.messageHorizontalPadding - attributes.messageLabelHorizontalInsets
+            return baseMaxWidth - attributes.messageLabelHorizontalInsets
         default:
-            return itemWidth - attributes.avatarSize.width - attributes.messageHorizontalPadding
+            return baseMaxWidth
         }
-        
     }
     
     // G
@@ -608,6 +615,31 @@ private extension MessagesCollectionViewFlowLayout {
 
     }
     
+}
+
+// MARK: - Accessory View [ O - P ]
+
+fileprivate extension MessagesCollectionViewFlowLayout {
+    
+    // O
+    
+    /// Returns the size of the `AccessoryView` for a given `MessageType`.
+    ///
+    /// - Parameters:
+    ///   - attributes: The `MessageIntermediateLayoutAttributes` containing the `MessageType` object.
+    func accessoryViewSize(for attributes: MessageIntermediateLayoutAttributes) -> CGSize {
+        return messagesLayoutDelegate.accessoryViewSize(for: attributes.message, at: attributes.indexPath, in: messagesCollectionView)
+    }
+    
+    // P
+    
+    /// Returns the padding to be used around the `MessageContainerView` for a given `MessageType`.
+    ///
+    /// - Parameters:
+    ///   - attributes: The `MessageIntermediateLayoutAttributes` containing the `MessageType` object.
+    func accessoryViewPadding(for attributes: MessageIntermediateLayoutAttributes) -> UIEdgeInsets {
+        return messagesLayoutDelegate.accessoryViewPadding(for: attributes.message, at: attributes.indexPath, in: messagesCollectionView)
+    }
 }
 
 // MARK: - Cell Sizing

@@ -45,6 +45,16 @@ public protocol MessagesLayoutDelegate: AnyObject {
     /// All other Senders: `UIEdgeInsets(top: 0, left: 4, bottom: 0, right: 30)`
     func messagePadding(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIEdgeInsets
     
+    /// Specifies the padding around the `AccessoryView` in a `MessageCollectionViewCell`.
+    ///
+    /// - Parameters:
+    ///   - message: The `MessageType` that will be displayed by this cell.
+    ///   - indexPath: The `IndexPath` of the cell.
+    ///   - messagesCollectionView: The `MessagesCollectionView` in which this cell will be displayed.
+    ///
+    /// The default value returned by this method is zero.
+    func accessoryViewPadding(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIEdgeInsets
+    
     /// Specifies the vertical and horizontal alignment for the `AvatarView` in a `MessageCollectionViewCell`.
     ///
     /// - Parameters:
@@ -94,6 +104,16 @@ public protocol MessagesLayoutDelegate: AnyObject {
     /// The default value returned by this method is a size of `30 x 30`.
     func avatarSize(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CGSize
 
+    /// Specifies the size of the `AccessoryView` in a `MessageCollectionViewCell`.
+    ///
+    /// - Parameters:
+    ///   - message: The `MessageType` that will be displayed by this cell.
+    ///   - indexPath: The `IndexPath` of the cell.
+    ///   - messagesCollectionView: The `MessagesCollectionView` in which this cell will be displayed.
+    ///
+    /// The default value returned by this method is a size of `0 x 0`.
+    func accessoryViewSize(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CGSize
+    
     /// Specifies the size to use for a `MessageHeaderView`.
     ///
     /// - Parameters:
@@ -207,6 +227,10 @@ public extension MessagesLayoutDelegate {
         }
     }
 
+    func accessoryViewPadding(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIEdgeInsets {
+        return .zero
+    }
+    
     func cellTopLabelAlignment(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> LabelAlignment {
         guard let dataSource = messagesCollectionView.messagesDataSource else {
             fatalError(MessageKitError.nilMessagesDataSource)
@@ -229,6 +253,10 @@ public extension MessagesLayoutDelegate {
         return AvatarPosition(horizontal: .natural, vertical: .messageBottom)
     }
 
+    func accessoryViewSize(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CGSize {
+        return .zero
+    }
+    
     func headerViewSize(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CGSize {
         guard let displayDelegate = messagesCollectionView.messagesDisplayDelegate else {
             fatalError(MessageKitError.nilMessagesDisplayDelegate)

@@ -31,6 +31,9 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
     }
 
     open var avatarView = AvatarView()
+    
+    // Should only add customized subviews, but not change this view itself
+    open var accessoryView = UIView()
 
     open var messageContainerView: MessageContainerView = {
         let containerView = MessageContainerView(frame: .zero)
@@ -84,6 +87,7 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
     open func setupSubviews() {
         contentView.addSubview(messageContainerView)
         contentView.addSubview(avatarView)
+        contentView.addSubview(accessoryView)
         contentView.addSubview(cellTopLabel)
         contentView.addSubview(cellBottomLabel)
         addSubview(replyLabel)
@@ -112,8 +116,18 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
         cellBottomLabel.text = nil
         cellBottomLabel.attributedText = nil
         replyView.removeFromSuperview()
+        accessoryView.subviews.forEach( { $0.removeFromSuperview() })
     }
 
+    open func loadingView() -> UIActivityIndicatorView? {
+        for view in accessoryView.subviews {
+            if let loadingIndicator = view as? UIActivityIndicatorView {
+                return loadingIndicator
+            }
+        }
+        return nil
+    }
+    
     // MARK: - Configuration
 
     open override func apply(_ layoutAttributes: UICollectionViewLayoutAttributes) {
@@ -123,6 +137,7 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
             cellTopLabel.frame = attributes.topLabelFrame
             cellBottomLabel.frame = attributes.bottomLabelFrame
             messageContainerView.frame = attributes.messageContainerFrame
+            accessoryView.frame = attributes.accessoryViewFrame
         }
     }
 
