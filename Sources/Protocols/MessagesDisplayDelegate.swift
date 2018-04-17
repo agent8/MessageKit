@@ -154,6 +154,12 @@ public protocol MessagesDisplayDelegate: AnyObject {
     ///   - messagesCollectionView: The collection view requesting the information
     /// - Returns: Your customized animation block.
     func animationBlockForLocation(message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> ((UIImageView) -> Void)?
+    
+    /// Called when bounds of this collectionView changes.
+    func boundsDidChange(from: CGRect)
+    
+    /// Called when bounds of this collectionView will change.
+    func boundsWillChange(to: CGRect)
 }
 
 public extension MessagesDisplayDelegate {
@@ -242,5 +248,9 @@ public extension MessagesDisplayDelegate {
     func animationBlockForLocation(message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> ((UIImageView) -> Void)? {
         return nil
     }
+    
+    func boundsDidChange(from: CGRect) {}
+    
+    func boundsWillChange(to: CGRect) {}
 
 }

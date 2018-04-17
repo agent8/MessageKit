@@ -42,6 +42,19 @@ open class MessagesCollectionView: UICollectionView, UIGestureRecognizerDelegate
 
     open var showsDateHeaderAfterTimeInterval: TimeInterval = 3600
 
+    open override var bounds: CGRect {
+        didSet {
+            if oldValue.size.width != bounds.size.width {
+                messagesDisplayDelegate?.boundsDidChange(from: oldValue)
+            }
+        }
+        
+        willSet {
+            if newValue.size.width != bounds.size.width {
+                messagesDisplayDelegate?.boundsWillChange(to: newValue)
+            }
+        }
+    }
     var indexPathForLastItem: IndexPath? {
 
         let lastSection = numberOfSections - 1
