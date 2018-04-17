@@ -147,6 +147,20 @@ open class MessagesCollectionView: UICollectionView, UIGestureRecognizerDelegate
     }
     
     public func reloadDataAndKeepOffset() {
+        // calculate the offset and reloadData
+        let beforeContentSize = contentSize
+        reloadData()
+        layoutIfNeeded()
+        let afterContentSize = contentSize
+        
+        // reset the contentOffset after data is updated
+        let newOffset = CGPoint(
+            x: contentOffset.x + (afterContentSize.width - beforeContentSize.width),
+            y: contentOffset.y + (afterContentSize.height - beforeContentSize.height))
+        contentOffset = newOffset
+
+        /* My previous implementation (it works too but above seems more consistent for some reason) */
+        /*
         let beforeContentSize = collectionViewLayout.collectionViewContentSize
         if beforeContentSize.height <= heightAfterContentInsets { // content at bottom
             reloadData()
@@ -159,6 +173,7 @@ open class MessagesCollectionView: UICollectionView, UIGestureRecognizerDelegate
         layoutIfNeeded()
         let newYOffset = contentSize.height - bounds.size.height - beforeDistanceToBottom
         contentOffset.y = newYOffset
+         */
     }
     
     // MARK:- UIGestureRecognizerDelegate
