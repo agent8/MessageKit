@@ -60,7 +60,7 @@ open class MessageKitDateFormatter {
     
     public func iMessageStyle(from date: Date, ofSize size: CGFloat = 10) -> NSAttributedString {
         let dateString = string(from: date)
-        let pattern = "[0-9]{1,2}:[0-9]{1,2}\\s?(AM|PM)\\s?$" // bold everything but the numerical time
+        let pattern = "(^|\\s*)[0-9]{1,2}:[0-9]{1,2}\\s*((AM|PM)\\s*)?$" // bold everything but the numerical time
         let iMessageDate = NSMutableAttributedString(string: dateString)
         let boldFont: UIFont = .boldSystemFont(ofSize: size)
         let normalFont: UIFont = .systemFont(ofSize: size)
