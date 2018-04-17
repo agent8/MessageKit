@@ -821,7 +821,7 @@ open class MessageInputBar: UIView {
 // MARK: - Split View
 
 extension MessageInputBar {
-    func updateConstraintsForSplitView(to frame: CGRect) {
+    func constraint(to frame: CGRect) {
         performLayout(false) {
             let newWidth = frame.size.width
             guard newWidth > 0 else {
