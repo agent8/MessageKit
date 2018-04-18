@@ -82,7 +82,7 @@ open class MessagesViewController: UIViewController {
     private var scrollToBottomButtonBottomConstraint: NSLayoutConstraint?
     
     /// A button that when tapped, scrolls the collection view to the bottom.
-    open var scrollToBottomButton: UIButton = UIButton()
+    open var scrollToBottomButtonView = ScrollToBottomButtonView()
     
     // MARK: - View Life Cycle
 
@@ -205,54 +205,37 @@ open class MessagesViewController: UIViewController {
         }
     }
     
-    private class RoundedButton: UIButton {
-        override func layoutSubviews() {
-            super.layoutSubviews()
-            layer.cornerRadius = frame.height / 2
-        }
-    }
-    
     private func setupScrollToBottomButton() {
-        let button = RoundedButton(type: .custom)
+
+        view.addSubview(scrollToBottomButtonView)
         
-        view.addSubview(button)
-        
-        let buttonWidth: CGFloat = 40
         let padding = messagesCollectionView.scrollIndicatorInsets.right + 8
         
         if #available(iOS 11.0, *) {
             scrollToBottomButtonBottomConstraint =
                 view.safeAreaLayoutGuide
                     .bottomAnchor
-                    .constraint(equalTo: button.bottomAnchor,
+                    .constraint(equalTo: scrollToBottomButtonView.bottomAnchor,
                                 constant: padding + messageCollectionViewBottomInset)
         } else {
             scrollToBottomButtonBottomConstraint =
-                NSLayoutConstraint.constraints(withVisualFormat: "V:[button]-(padding)-|",
+                NSLayoutConstraint.constraints(withVisualFormat: "V:[buttonView]-(padding)-|",
                                                options: LAYOUT_OPT_NONE,
                                                metrics: ["padding": padding + messageCollectionViewBottomInset],
-                                               views: ["button": button]).first
+                                               views: ["buttonView": scrollToBottomButtonView]).first
         }
         
         if let constraint = scrollToBottomButtonBottomConstraint {
             view.addConstraint(constraint)
         }
         
-        view.addConstraintsForDimensions([button], height: buttonWidth, width: buttonWidth)
-        view.addConstraintsForFloatRight(button, padding: padding, useSafeArea: true)
+        view.addConstraintsForFloatRight(scrollToBottomButtonView, padding: padding, useSafeArea: true)
         
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.isHidden = true
-        button.addTarget(self, action: #selector(didTapScrollToBottomButton), for: .touchUpInside)
-        button.clipsToBounds = true
-        button.backgroundColor = .white
-        button.alpha = 1
-        button.setImage(EdoTintImage("arrow-down-icon"), for: .normal)
-        button.imageView?.tintColor = .lightGray
-        button.layer.borderWidth = 0.5
-        button.layer.borderColor = UIColor.lightGray.cgColor
-        
-        scrollToBottomButton = button
+        scrollToBottomButtonView.translatesAutoresizingMaskIntoConstraints = false
+        scrollToBottomButtonView.isHidden = true
+        scrollToBottomButtonView.button.addTarget(self,
+                                                  action: #selector(didTapScrollToBottomButton),
+                                                  for: .touchUpInside)
     }
     
     @objc private func didTapScrollToBottomButton() {
@@ -270,13 +253,13 @@ extension MessagesViewController: UIScrollViewDelegate {
     
     func updateScrollToBottomButton() {
         let shouldHideButton = messagesCollectionView.isNearBottom(threshold: messagesCollectionView.heightAfterContentInsets / 2)
-        if shouldHideButton != scrollToBottomButton.isHidden {
+        if shouldHideButton != scrollToBottomButtonView.isHidden {
             UIView.transition(
-                with: scrollToBottomButton,
+                with: scrollToBottomButtonView,
                 duration: 0.25,
                 options: .transitionCrossDissolve,
                 animations: {
-                    self.scrollToBottomButton.isHidden = !self.scrollToBottomButton.isHidden
+                    self.scrollToBottomButtonView.isHidden = !self.scrollToBottomButtonView.isHidden
                 }
             )
         }
