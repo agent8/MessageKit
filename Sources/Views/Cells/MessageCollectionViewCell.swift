@@ -117,6 +117,7 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
         cellBottomLabel.attributedText = nil
         replyView.removeFromSuperview()
         accessoryView.subviews.forEach( { $0.removeFromSuperview() })
+        avatarView.image = nil
     }
 
     open func loadingView() -> UIActivityIndicatorView? {
