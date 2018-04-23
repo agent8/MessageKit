@@ -26,10 +26,6 @@ import UIKit
 
 open class MessageDateHeaderView: MessageHeaderView {
     open override class func reuseIdentifier() -> String { return "messagekit.header.date" }
-
-    public override func preferredHeight() -> CGFloat {
-        return 18
-    }
     
     open static let dateFontSize: CGFloat = 10
     

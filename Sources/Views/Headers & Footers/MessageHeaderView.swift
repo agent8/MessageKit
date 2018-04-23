@@ -24,10 +24,7 @@
 
 import UIKit
 
-open class MessageHeaderView: UICollectionReusableView, CollectionViewReusable, MessageSupplementaryView {
-    public func preferredHeight() -> CGFloat {
-        return 0
-    }
+open class MessageHeaderView: UICollectionReusableView, CollectionViewReusable {
     
     open class func reuseIdentifier() -> String { return "messagekit.header.base" }
 

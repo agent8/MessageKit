@@ -121,7 +121,7 @@ public protocol MessagesLayoutDelegate: AnyObject {
     ///   - indexPath: The `IndexPath` of the header.
     ///   - messagesCollectionView: The `MessagesCollectionView` in which this header will be displayed.
     ///
-    /// The default value returned by this method is the width of the `MessagesCollectionView` and a height of 12.
+    /// The default value returned by this method is a size of `GGSize.zero`.
     func headerViewSize(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CGSize
 
     /// Specifies the size to use for a `MessageFooterView`.
@@ -258,11 +258,7 @@ public extension MessagesLayoutDelegate {
     }
     
     func headerViewSize(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CGSize {
-        guard let displayDelegate = messagesCollectionView.messagesDisplayDelegate else {
-            fatalError(MessageKitError.nilMessagesDisplayDelegate)
-        }
-        let headerView = displayDelegate.messageHeaderView(for: message, at: indexPath, in: messagesCollectionView)
-        return CGSize(width: messagesCollectionView.bounds.width, height: headerView.preferredHeight())
+        return .zero
     }
 
     func footerViewSize(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CGSize {
