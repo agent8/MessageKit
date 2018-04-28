@@ -70,6 +70,9 @@ open class MediaMessageCell: MessageCollectionViewCell {
     }
 
     open override func configure(with message: MessageType, at indexPath: IndexPath, and messagesCollectionView: MessagesCollectionView) {
+        //czy：当收到长图片的时候，进行裁剪，以免图片显示被压缩
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
         super.configure(with: message, at: indexPath, and: messagesCollectionView)
         switch message.data {
         case .photo(let downloadInfo):

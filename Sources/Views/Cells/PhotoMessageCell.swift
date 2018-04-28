@@ -48,11 +48,12 @@ class PhotoMessageCell: MediaMessageCell {
     private func updateImage(img: UIImage?) {
         imageView.image = img
         
+        //czy：当收到长图片的时候，进行裁剪，以免图片显示被压缩
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
         if img != nil {
-            imageView.fadeIn(0.5)
-            //czy：当收到长图片的时候，进行裁剪，以免图片显示被压缩
-            imageView.contentMode = .scaleAspectFill
-            imageView.clipsToBounds = true
+           imageView.fadeIn(0.5)
+            
         }
     }
     
