@@ -63,11 +63,11 @@ open class ScrollToBottomButtonView: UIView {
                 self?.unreadBadgeCount.setTitle("", for: .normal)
             }
         } else {
-            unreadBadgeCount.setTitle(text, for: .normal)
             UIView.transition(with: unreadBadgeCount,
                               duration: animationDuration,
                               options: .transitionCrossDissolve,
                               animations: { [weak self] in
+                self?.unreadBadgeCount.setTitle(text, for: .normal)
                 self?.unreadBadgeCount.isHidden = false
             })
         }
