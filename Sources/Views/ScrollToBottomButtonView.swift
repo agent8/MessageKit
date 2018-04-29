@@ -35,20 +35,43 @@ open class ScrollToBottomButtonView: UIView {
         return view
     }()
     
-    let unreadBadgeCount: BadgeCountLabel = {
-        let label = BadgeCountLabel()
-        label.font = UIFont.staticBoldExtraSmall()
-        label.textAlignment = .center
-        label.isHidden = true
-        label.textColor = COLOR_TEXT_WHITE
-        label.backgroundColor = COLOR_TEXT_HIGHLIGHTED
-        label.layer.cornerRadius = 5
-        label.clipsToBounds = true
-        label.textInsets = UIEdgeInsetsMake(2, 4, 2, 4)
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.isUserInteractionEnabled = false
-        return label
+    let unreadBadgeCount: UIButton = {
+        let button = RoundButton(type: .custom)
+        button.backgroundColor = COLOR_TEXT_HIGHLIGHTED
+        button.setTitle("", for: .normal)
+        button.setTitleColor(.white, for: .normal)
+        button.titleLabel?.textAlignment = .center
+        button.titleLabel?.font = .staticBoldExtraSmall()
+        button.isUserInteractionEnabled = false
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.isHidden = true
+        button.titleEdgeInsets = .zero
+        button.imageEdgeInsets = .zero
+        button.contentEdgeInsets = UIEdgeInsetsMake(2, 3, 2, 3)
+        return button
     }()
+    
+    public func setUnreadText(_ text: String, animated: Bool = true) {
+        let animationDuration = animated ? 0.15 : 0
+        if text.isEmpty {
+            UIView.transition(with: unreadBadgeCount,
+                              duration: animationDuration,
+                              options: .transitionCrossDissolve,
+                              animations: { [weak self] in
+                 self?.unreadBadgeCount.isHidden = true
+            }) { [weak self] _ in
+                self?.unreadBadgeCount.setTitle("", for: .normal)
+            }
+        } else {
+            unreadBadgeCount.setTitle(text, for: .normal)
+            UIView.transition(with: unreadBadgeCount,
+                              duration: animationDuration,
+                              options: .transitionCrossDissolve,
+                              animations: { [weak self] in
+                self?.unreadBadgeCount.isHidden = false
+            })
+        }
+    }
     
     public override init(frame: CGRect) {
         super.init(frame: frame)
@@ -76,13 +99,13 @@ open class ScrollToBottomButtonView: UIView {
             containerView.rightAnchor.constraint(equalTo: rightAnchor)
         ])
         
-        let buttonWidth: CGFloat = 40
-        containerView.addConstraintsForDimensions([button], height: buttonWidth, width: buttonWidth)
-        
         NSLayoutConstraint.activate([
             button.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
             button.leftAnchor.constraint(equalTo: containerView.leftAnchor),
             button.rightAnchor.constraint(equalTo: containerView.rightAnchor),
+            button.widthAnchor.constraint(equalTo: button.heightAnchor),
+            button.heightAnchor.constraint(equalToConstant: 40),
+            unreadBadgeCount.widthAnchor.constraint(greaterThanOrEqualTo: unreadBadgeCount.heightAnchor),
             unreadBadgeCount.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
             unreadBadgeCount.centerYAnchor.constraint(equalTo: button.topAnchor),
             containerView.topAnchor.constraint(equalTo: unreadBadgeCount.topAnchor)
@@ -90,56 +113,3 @@ open class ScrollToBottomButtonView: UIView {
     }
 }
 
-extension BadgeCountLabel {
-    override var text: String? {
-        didSet {
-            if let text = text, !text.isEmpty { // show
-                if !isHidden {
-                    return
-                }
-                UIView.transition(with: self,
-                                  duration: 0.15,
-                                  options: .transitionCrossDissolve,
-                                  animations: {
-                    self.isHidden = false
-                })
-            } else { // hide
-                if isHidden {
-                    return
-                }
-                UIView.transition(with: self,
-                                  duration: 0.25,
-                                  options: .transitionCrossDissolve,
-                                  animations: {
-                    self.isHidden = true
-                })
-            }
-        }
-    }
-    
-    override var attributedText: NSAttributedString? {
-        didSet {
-            if let text = attributedText, !text.string.isEmpty {
-                if !isHidden {
-                    return
-                }
-                UIView.transition(with: self,
-                                  duration: 0.15,
-                                  options: .transitionCrossDissolve,
-                                  animations: {
-                    self.isHidden = false
-                })
-            } else {
-                if isHidden {
-                    return
-                }
-                UIView.transition(with: self,
-                                  duration: 0.25,
-                                  options: .transitionCrossDissolve,
-                                  animations: {
-                    self.isHidden = true
-                })
-            }
-        }
-    }
-}
