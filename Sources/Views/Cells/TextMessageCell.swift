@@ -93,8 +93,4 @@ open class TextMessageCell: MessageCollectionViewCell {
     open override func cellContentView(canHandle touchPoint: CGPoint) -> Bool {
         return messageLabel.handleGesture(touchPoint)
     }
-    
-    open override func insertReplyView() {
-        super.insertReplyView()
-    }
 }

@@ -93,8 +93,9 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
         addSubview(replyLabel)
     }
     
-    open func insertReplyView() {
+    open func insertReplyView(isOutgoing: Bool) {
         messageContainerView.stackView.insertArrangedSubview(replyView, at: 0)
+        replyView.layoutMargins.left = isOutgoing ? 15 : 20
     }
     
     open func setupCustomMenuItems() {
