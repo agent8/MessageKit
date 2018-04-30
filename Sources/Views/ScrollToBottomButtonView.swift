@@ -58,7 +58,7 @@ open class ScrollToBottomButtonView: UIView {
                               duration: animationDuration,
                               options: .transitionCrossDissolve,
                               animations: { [weak self] in
-                 self?.unreadBadgeCount.isHidden = true
+                self?.unreadBadgeCount.isHidden = true
             }) { [weak self] _ in
                 self?.unreadBadgeCount.setTitle("", for: .normal)
             }
