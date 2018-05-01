@@ -37,7 +37,7 @@ public protocol MessageCellDelegate: MessageLabelDelegate {
     /// method `messageForItem(at:indexPath:messagesCollectionView)`.
     func didTapMessage(in cell: MessageCollectionViewCell, touchLocation: CGPoint)
 
-    /// Triggered when a touch occurs in the `AvatarView`.
+    /// Triggered when a touch occurs in the `EdoProfileImageView`.
     ///
     /// - Parameters:
     ///   - cell: The cell where the touch occurred.

@@ -30,7 +30,12 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
         return "messagekit.cell.base-cell"
     }
 
-    open var avatarView = AvatarView()
+    open var avatarView: EdoProfileImageView = {
+        let view = EdoProfileImageView()
+        view.showOnlineStatusBadge = false
+        view.circular = true
+        return view
+    }()
     
     // Should only add customized subviews, but not change this view itself
     open var accessoryView = UIView()
@@ -118,7 +123,7 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
         cellBottomLabel.attributedText = nil
         replyView.removeFromSuperview()
         accessoryView.subviews.forEach( { $0.removeFromSuperview() })
-        avatarView.image = nil
+        avatarView.prepareForReuse()
     }
 
     open func loadingView() -> UIActivityIndicatorView? {
