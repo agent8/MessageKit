@@ -55,7 +55,7 @@ public protocol MessagesLayoutDelegate: AnyObject {
     /// The default value returned by this method is zero.
     func accessoryViewPadding(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIEdgeInsets
     
-    /// Specifies the vertical and horizontal alignment for the `EdoProfileImageView` in a `MessageCollectionViewCell`.
+    /// Specifies the vertical and horizontal alignment for the `EdisonProfileView` in a `MessageCollectionViewCell`.
     ///
     /// - Parameters:
     ///   - message: The `MessageType` that will be displayed by this cell.
@@ -94,7 +94,7 @@ public protocol MessagesLayoutDelegate: AnyObject {
     /// All other senders: .messageTrailing(.zero)
     func cellBottomLabelAlignment(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> LabelAlignment
 
-    /// Specifies the size of the `EdoProfileImageView` in a `MessageCollectionViewCell`.
+    /// Specifies the size of the `EdisonProfileView` in a `MessageCollectionViewCell`.
     ///
     /// - Parameters:
     ///   - message: The `MessageType` that will be displayed by this cell.

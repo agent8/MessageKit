@@ -30,8 +30,8 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
         return "messagekit.cell.base-cell"
     }
 
-    open var avatarView: EdoProfileImageView = {
-        let view = EdoProfileImageView()
+    open var avatarView: EdisonProfileView = {
+        let view = EdisonProfileView()
         view.showOnlineStatusBadge = false
         view.circular = true
         return view

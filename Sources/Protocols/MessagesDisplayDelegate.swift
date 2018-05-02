@@ -74,16 +74,16 @@ public protocol MessagesDisplayDelegate: AnyObject {
     /// The default value returned by this method is a `MessageFooterView`.
     func messageFooterView(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> MessageFooterView
     
-    /// Configure `EdoProfileImageView`‘s image.
+    /// Configure `EdisonProfileView`‘s image.
     ///
     /// - Parameters:
-    ///   - avatarView: The `EdoProfileImageView` of the cell.
+    ///   - avatarView: The `EdisonProfileView` of the cell.
     ///   - message: The `MessageType` that will be displayed by this cell.
     ///   - indexPath: The `IndexPath` of the cell.
     ///   - messagesCollectionView: The `MessagesCollectionView` in which this cell will be displayed.
     ///
     /// The default image configured by this method is `?`.
-    func configureAvatarView(_ avatarView: EdoProfileImageView, for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView)
+    func configureAvatarView(_ avatarView: EdisonProfileView, for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView)
 
     // MARK: - Text Messages
 
@@ -214,7 +214,7 @@ public extension MessagesDisplayDelegate {
         return messagesCollectionView.dequeueReusableFooterView(MessageFooterView.self, for: indexPath)
     }
     
-    func configureAvatarView(_ avatarView: EdoProfileImageView, for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) {}
+    func configureAvatarView(_ avatarView: EdisonProfileView, for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) {}
 
     // MARK: - Text Messages Defaults
 
