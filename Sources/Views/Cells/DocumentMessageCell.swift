@@ -43,8 +43,8 @@ class DocumentMessageCell: MediaMessageCell {
         messageContainerView.addSubview(documentView)
         
         NSLayoutConstraint.activate([
-            // -5 padding to account for the gap between start of message bubble PNG to actual bubble background
-            documentView.widthAnchor.constraint(equalTo: messageContainerView.widthAnchor, constant: -5),
+            // padding to account for the gap between start of message bubble PNG to actual bubble background
+            documentView.widthAnchor.constraint(equalTo: messageContainerView.widthAnchor, constant: -5.5),
             documentView.heightAnchor.constraint(equalTo: messageContainerView.heightAnchor),
             documentView.topAnchor.constraint(equalTo: messageContainerView.topAnchor)
         ])
