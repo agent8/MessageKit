@@ -37,11 +37,25 @@ class DocumentMessageCell: MediaMessageCell {
         }
     }
     
-    open func load(attachment: ChatAttachment) {
-        let v = ChatDocumentView(attachment: attachment)
-        messageContainerView.addSubview(v)
-        v.fillSuperview()
-        attachmentView = v
+    open func load(attachment: ChatAttachment, isOutgoing: Bool) {
+        let documentView = ChatDocumentView(attachment: attachment)
+        documentView.translatesAutoresizingMaskIntoConstraints = false
+        messageContainerView.addSubview(documentView)
+        
+        NSLayoutConstraint.activate([
+            // -5 padding to account for the gap between start of message bubble PNG to actual bubble background
+            documentView.widthAnchor.constraint(equalTo: messageContainerView.widthAnchor, constant: -5),
+            documentView.heightAnchor.constraint(equalTo: messageContainerView.heightAnchor),
+            documentView.topAnchor.constraint(equalTo: messageContainerView.topAnchor)
+        ])
+        
+        if isOutgoing {
+            documentView.leftAnchor.constraint(equalTo: messageContainerView.leftAnchor).isActive = true
+        } else {
+            documentView.rightAnchor.constraint(equalTo: messageContainerView.rightAnchor).isActive = true
+        }
+        
+        attachmentView = documentView
     }
     
     override func prepareForReuse() {
