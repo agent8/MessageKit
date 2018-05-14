@@ -163,6 +163,13 @@ open class MessageInputBar: UIView {
         textView.messageInputBar = self
         return textView
     }()
+    
+    open var inputVoiceButton: UIView = {
+        let textView = UIView()
+        textView.backgroundColor = UIColor.red
+        textView.translatesAutoresizingMaskIntoConstraints = false
+        return textView
+    }()
 
     /// A InputBarButtonItem used as the send button and initially placed in the rightStackView
     open var sendButton: InputBarButtonItem = {
@@ -383,13 +390,19 @@ open class MessageInputBar: UIView {
         contentView.addSubview(bottomStackView)
         contentView.addSubview(attachmentsView)
         contentView.addSubview(separatorLine)
+        separatorLine.backgroundColor = UIColor.red
         separatorLine.isHidden = true
-        setStackViewItems([sendButton], forStack: .right, animated: false)
+        
+        contentView.addSubview(sendButton)
+        contentView.addSubview(inputVoiceButton)
+        inputVoiceButton.isHidden = true
+//        setStackViewItems([sendButton], forStack: .right, animated: false)
     }
     
     /// Sets up the initial constraints of each subview
     private func setupConstraints() {
-        
+        inputVoiceButton.addConstraints(inputTextView.topAnchor, left: inputTextView.leftAnchor, bottom: inputTextView.bottomAnchor, right:inputTextView.rightAnchor)
+        sendButton.addConstraints(bottom:inputTextView.bottomAnchor, right: inputTextView.rightAnchor, rightConstant: 2, widthConstant: 38, heightConstant: 38)
         // The constraints within the MessageInputBar
         separatorLine.addConstraints(inputTextView.topAnchor, left: inputTextView.leftAnchor, right: inputTextView.rightAnchor, heightConstant: 0.5)
         backgroundViewBottomAnchor = backgroundView.bottomAnchor.constraint(equalTo: bottomAnchor)
@@ -810,6 +823,10 @@ open class MessageInputBar: UIView {
     /// Assumes that the InputTextView's text has been set to empty and calls `inputTextViewDidChange()`
     /// Invalidates each of the inputManagers
     open func didSelectSendButton() {
+        delegate?.messageInputBar(self, didPressSendButtonWith: inputTextView.text)
+    }
+    
+    open func didSelectInputVoiceButton() {
         delegate?.messageInputBar(self, didPressSendButtonWith: inputTextView.text)
     }
     
