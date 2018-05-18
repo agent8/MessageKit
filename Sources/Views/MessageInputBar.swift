@@ -152,9 +152,8 @@ open class MessageInputBar: UIView {
      
      ## Important Notes ##
      1. It's axis is initially set to .horizontal
-     2. It's spacing is initially set to 15
      */
-    open let bottomStackView = InputStackView(axis: .horizontal, spacing: 15)
+    open let bottomStackView = InputStackView(axis: .horizontal, spacing: 0)
     
     /// The InputTextView a user can input a message in
     open lazy var inputTextView: InputTextView = {
