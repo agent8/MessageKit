@@ -57,6 +57,13 @@ public protocol MessageInputBarDelegate: AnyObject {
     ///   - image: The UIImage pasted
     func messageInputBarTextViewDidPasteImage(_ image: UIImage)
     
+    /// Called when a gif is pasted into InputTextView.
+    ///
+    /// - Parameters:
+    ///   - inputBar: The MessageInputBar
+    ///   - gif: The Gif pasted
+    func messageInputBarTextViewDidPasteGif(_ gif: FLAnimatedImage)
+    
     /// Called when the MessageInputBar's attachment is removed.
     ///
     /// - Parameters:
@@ -74,6 +81,8 @@ public extension MessageInputBarDelegate {
     func messageInputBar(_ inputBar: MessageInputBar, textViewTextDidChangeTo text: String) {}
     
     func messageInputBarTextViewDidPasteImage(_ image: UIImage) {}
+    
+    func messageInputBarTextViewDidPasteGif(_ gif: FLAnimatedImage) {}
     
     func messageInputBar(_ inputBar: MessageInputBar, didRemoveAttachment attachment: ChatAttachment) {}
 }

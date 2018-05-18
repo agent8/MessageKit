@@ -50,10 +50,11 @@ open class MediaMessageCell: MessageCollectionViewCell {
     
     open lazy var playButtonView: PlayButtonView = {
         let playButtonView = PlayButtonView()
+        playButtonView.isHidden = true
         return playButtonView
     }()
 
-    open var imageView = UIImageView()
+    open var imageView = FLAnimatedImageView()
 
     // MARK: - Methods
 
@@ -101,6 +102,19 @@ open class MediaMessageCell: MessageCollectionViewCell {
                 if let msg = message as? EdisonMessage {
                     downloadData(for: DownloadInfo(accountId: msg.accountId, messageId: msg.messageId))
                 }
+            }
+        case .gif(let downloadInfo):
+            if let message: ChatMessage = EmailDAL.getChatMessage(accountId: downloadInfo.accountId,
+                                                                  msgId: downloadInfo.messageId),
+                let image = FLAnimatedImage(animatedGIFData: try?
+                    Data(contentsOf: URL(fileURLWithPath: message.mediaPath))) {
+                EDOMainthread { [weak self] in
+                    self?.imageView.animatedImage = image
+                }
+            } else {
+                // placeholder image
+                imageView.image = UIImage().from(color: COLOR_TABLE_BACKGROUND, size: CGSize(width: 210, height: 150))
+                downloadData(for: downloadInfo)
             }
         default:
             break

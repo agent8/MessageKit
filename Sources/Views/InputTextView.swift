@@ -222,10 +222,23 @@ open class InputTextView: UITextView {
     
     open override func paste(_ sender: Any?) {
         
+        if let data = UIPasteboard.general.data(forPasteboardType: "com.compuserve.gif"),
+            let gif = FLAnimatedImage(animatedGIFData: data) {
+            pasteGifInTextContainer(with: gif)
+            return
+        }
+        
         guard let image = UIPasteboard.general.image else {
             return super.paste(sender)
         }
         pasteImageInTextContainer(with: image)
+    }
+    
+    private func pasteGifInTextContainer(with gif: FLAnimatedImage) {
+        messageInputBar?.delegate?.messageInputBarTextViewDidPasteGif(gif)
+        
+        // Broadcast a notification to receivers such as the MessageInputBar which will handle resizing
+        NotificationCenter.default.post(name: .UITextViewTextDidChange, object: self)
     }
     
     /// Addes a new UIImage to the NSTextContainer as an NSTextAttachment
@@ -263,7 +276,7 @@ open class InputTextView: UITextView {
         */
         messageInputBar?.delegate?.messageInputBarTextViewDidPasteImage(image)
     
-        // Broadcast a notification to recievers such as the MessageInputBar which will handle resizing
+        // Broadcast a notification to receivers such as the MessageInputBar which will handle resizing
         NotificationCenter.default.post(name: .UITextViewTextDidChange, object: self)
     }
     

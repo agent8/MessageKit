@@ -42,6 +42,9 @@ public enum MessageData {
 
     /// A photo message.
     case photo(downloadInfo: DownloadInfo)
+    
+    /// A gif.
+    case gif(downloadInfo: DownloadInfo)
 
     /// A video message.
     case video(file: URL, thumbnail: UIImage)
@@ -85,6 +88,8 @@ public enum MessageData {
             return "Emoji"
         case .attachment(_):
             return "Email"
+        case .gif(_):
+            return "Gif"
         }
     }
 }
