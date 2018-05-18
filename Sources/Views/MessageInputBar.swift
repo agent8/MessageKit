@@ -165,10 +165,10 @@ open class MessageInputBar: UIView {
     }()
     
     open var inputVoiceButton: UIView = {
-        let textView = UIView()
-        textView.backgroundColor = UIColor.red
-        textView.translatesAutoresizingMaskIntoConstraints = false
-        return textView
+        let inputVoiceButton = UIView()
+        inputVoiceButton.backgroundColor = UIColor.red
+        inputVoiceButton.translatesAutoresizingMaskIntoConstraints = false
+        return inputVoiceButton
     }()
 
     /// A InputBarButtonItem used as the send button and initially placed in the rightStackView
@@ -392,8 +392,6 @@ open class MessageInputBar: UIView {
         contentView.addSubview(separatorLine)
         separatorLine.backgroundColor = UIColor.red
         separatorLine.isHidden = true
-        
-        contentView.addSubview(sendButton)
         contentView.addSubview(inputVoiceButton)
         inputVoiceButton.isHidden = true
 //        setStackViewItems([sendButton], forStack: .right, animated: false)
@@ -402,7 +400,6 @@ open class MessageInputBar: UIView {
     /// Sets up the initial constraints of each subview
     private func setupConstraints() {
         inputVoiceButton.addConstraints(inputTextView.topAnchor, left: inputTextView.leftAnchor, bottom: inputTextView.bottomAnchor, right:inputTextView.rightAnchor)
-        sendButton.addConstraints(bottom:inputTextView.bottomAnchor, right: inputTextView.rightAnchor, rightConstant: 2, widthConstant: 38, heightConstant: 38)
         // The constraints within the MessageInputBar
         separatorLine.addConstraints(inputTextView.topAnchor, left: inputTextView.leftAnchor, right: inputTextView.rightAnchor, heightConstant: 0.5)
         backgroundViewBottomAnchor = backgroundView.bottomAnchor.constraint(equalTo: bottomAnchor)
@@ -622,6 +619,9 @@ open class MessageInputBar: UIView {
             case .top:
                 topStackView.setNeedsLayout()
                 topStackView.layoutIfNeeded()
+            case .other:
+                rightStackView.setNeedsLayout()
+                rightStackView.layoutIfNeeded()
             }
         }
     }
@@ -721,6 +721,16 @@ open class MessageInputBar: UIView {
                 }
                 guard superview != nil else { return }
                 topStackView.layoutIfNeeded()
+            case .other:
+                rightStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
+                rightStackViewItems = items
+                rightStackViewItems.forEach {
+                    $0.messageInputBar = self
+                    $0.parentStackViewPosition = position
+                    rightStackView.addArrangedSubview($0)
+                }
+                guard superview != nil else { return }
+                rightStackView.layoutIfNeeded()
             }
             invalidateIntrinsicContentSize()
         }
@@ -823,10 +833,6 @@ open class MessageInputBar: UIView {
     /// Assumes that the InputTextView's text has been set to empty and calls `inputTextViewDidChange()`
     /// Invalidates each of the inputManagers
     open func didSelectSendButton() {
-        delegate?.messageInputBar(self, didPressSendButtonWith: inputTextView.text)
-    }
-    
-    open func didSelectInputVoiceButton() {
         delegate?.messageInputBar(self, didPressSendButtonWith: inputTextView.text)
     }
     
