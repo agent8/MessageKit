@@ -106,10 +106,11 @@ open class MediaMessageCell: MessageCollectionViewCell {
         case .gif(let downloadInfo):
             if let message: ChatMessage = EmailDAL.getChatMessage(accountId: downloadInfo.accountId,
                                                                   msgId: downloadInfo.messageId),
-                let image = FLAnimatedImage(animatedGIFData: try?
+                !message.mediaPath.isEmpty,
+                let gif = FLAnimatedImage(animatedGIFData: try?
                     Data(contentsOf: URL(fileURLWithPath: message.mediaPath))) {
                 EDOMainthread { [weak self] in
-                    self?.imageView.animatedImage = image
+                    self?.imageView.animatedImage = gif
                 }
             } else {
                 // placeholder image
