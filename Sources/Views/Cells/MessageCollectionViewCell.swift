@@ -46,7 +46,13 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
         containerView.layer.masksToBounds = true
         return containerView
     }()
-
+    
+    open lazy var voiceTimeView: UILabel = {
+        let voiceTimeView = UILabel()
+//        voiceTimeView.text = "0s"
+        voiceTimeView.translatesAutoresizingMaskIntoConstraints = false
+        return voiceTimeView
+    }()
     open var cellTopLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
@@ -83,6 +89,7 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
         setupSubviews()
         setupCustomMenuItems()
         setupReplyLabelConstraint()
+        setupVoiceTimeViewonstraint()
     }
 
     required public init?(coder aDecoder: NSCoder) {
@@ -91,6 +98,7 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
 
     open func setupSubviews() {
         contentView.addSubview(messageContainerView)
+        contentView.addSubview(voiceTimeView)
         contentView.addSubview(avatarView)
         contentView.addSubview(accessoryView)
         contentView.addSubview(cellTopLabel)
@@ -100,6 +108,7 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
     
     open func insertReplyView(isOutgoing: Bool) {
         messageContainerView.stackView.insertArrangedSubview(replyView, at: 0)
+        replyView.backgroundColor = UIColor.red
         replyView.layoutMargins.left = isOutgoing ? 15 : 20
     }
     
@@ -113,6 +122,12 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
             replyLabel.leftAnchor.constraint(equalTo: messageContainerView.rightAnchor, constant: 15),
             replyLabel.centerYAnchor.constraint(equalTo: messageContainerView.centerYAnchor)
         ])
+    }
+    open func setupVoiceTimeViewonstraint() {
+        NSLayoutConstraint.activate([
+            voiceTimeView.rightAnchor.constraint(equalTo: messageContainerView.leftAnchor, constant: -3),
+            voiceTimeView.centerYAnchor.constraint(equalTo: messageContainerView.centerYAnchor)
+            ])
     }
     
     open override func prepareForReuse() {

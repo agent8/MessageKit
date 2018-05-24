@@ -459,6 +459,10 @@ private extension MessagesCollectionViewFlowLayout {
             let width = messagesLayoutDelegate.widthForLocation(message: message, at: indexPath, with: maxWidth, in: messagesCollectionView)
             let height = messagesLayoutDelegate.heightForLocation(message: message, at: indexPath, with: maxWidth, in: messagesCollectionView)
             messageContainerSize = CGSize(width: width, height: height)
+        case .audio(let data):
+            let width: CGFloat = data.info["width"] as! CGFloat
+            let height = data.height
+            messageContainerSize = CGSize(width: width, height: height)
         }
         
         messageContainerSize.height += messagesLayoutDelegate.replyViewHeight(at: indexPath,

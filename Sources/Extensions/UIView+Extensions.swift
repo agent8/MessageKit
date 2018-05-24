@@ -54,6 +54,28 @@ extension UIView {
         ]
         NSLayoutConstraint.activate(constraints)
     }
+    func rightInSuperview(_ rightConstant: CGFloat = 0) {
+        guard let superview = self.superview else {
+            return
+        }
+        translatesAutoresizingMaskIntoConstraints = false
+        let constraints: [NSLayoutConstraint] = [
+            rightAnchor.constraint(equalTo: superview.rightAnchor,constant: rightConstant),
+            centerYAnchor.constraint(equalTo: superview.centerYAnchor)
+        ]
+        NSLayoutConstraint.activate(constraints)
+    }
+    func leftInSuperview(_ leftConstant: CGFloat = 0) {
+        guard let superview = self.superview else {
+            return
+        }
+        translatesAutoresizingMaskIntoConstraints = false
+        let constraints: [NSLayoutConstraint] = [
+            leftAnchor.constraint(equalTo: superview.leftAnchor,constant: leftConstant),
+            centerYAnchor.constraint(equalTo: superview.centerYAnchor)
+        ]
+        NSLayoutConstraint.activate(constraints)
+    }
     
     func constraint(equalTo size: CGSize) {
         guard superview != nil else { return }
