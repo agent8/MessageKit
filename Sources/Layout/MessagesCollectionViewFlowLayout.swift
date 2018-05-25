@@ -409,6 +409,9 @@ private extension MessagesCollectionViewFlowLayout {
         switch attributes.message.data {
         case .text, .attributedText:
             return baseMaxWidth - attributes.messageLabelHorizontalInsets
+        case .audio:
+            //czy: add voiceTimeLabel size 
+            return baseMaxWidth - attributes.messageLabelHorizontalInsets - 25
         default:
             return baseMaxWidth
         }
