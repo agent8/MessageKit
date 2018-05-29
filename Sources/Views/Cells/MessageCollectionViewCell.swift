@@ -53,6 +53,15 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
         voiceTimeView.translatesAutoresizingMaskIntoConstraints = false
         return voiceTimeView
     }()
+    
+    open lazy var voicePlayView: UIView = {
+        let voicePlayView = UIView()
+        voicePlayView.layer.cornerRadius = 2
+        voicePlayView.backgroundColor = UIColor.red
+        voicePlayView.isHidden = true
+        voicePlayView.translatesAutoresizingMaskIntoConstraints = false
+        return voicePlayView
+    }()
     open var cellTopLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
@@ -90,6 +99,7 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
         setupCustomMenuItems()
         setupReplyLabelConstraint()
         setupVoiceTimeViewonstraint()
+        setupVoicePlayViewonstraint()
     }
 
     required public init?(coder aDecoder: NSCoder) {
@@ -99,6 +109,7 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
     open func setupSubviews() {
         contentView.addSubview(messageContainerView)
         contentView.addSubview(voiceTimeView)
+        contentView.addSubview(voicePlayView)
         contentView.addSubview(avatarView)
         contentView.addSubview(accessoryView)
         contentView.addSubview(cellTopLabel)
@@ -125,8 +136,17 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
     }
     open func setupVoiceTimeViewonstraint() {
         NSLayoutConstraint.activate([
-            voiceTimeView.rightAnchor.constraint(equalTo: messageContainerView.leftAnchor, constant: -3),
+            voiceTimeView.rightAnchor.constraint(equalTo: messageContainerView.leftAnchor, constant: -4),
             voiceTimeView.centerYAnchor.constraint(equalTo: messageContainerView.centerYAnchor)
+            ])
+    }
+    open func setupVoicePlayViewonstraint() {
+        
+        NSLayoutConstraint.activate([
+            voicePlayView.rightAnchor.constraint(equalTo: voiceTimeView.rightAnchor),
+            voicePlayView.topAnchor.constraint(equalTo: messageContainerView.topAnchor, constant: 5),
+            voicePlayView.widthAnchor.constraint(equalToConstant: 4),
+            voicePlayView.heightAnchor.constraint(equalToConstant: 4),
             ])
     }
     

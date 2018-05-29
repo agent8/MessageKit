@@ -17,6 +17,8 @@ open class VoiceMessageCell: MessageCollectionViewCell {
     var isDownloadingData = false
     var giveUpRetry = false //if true, there is non-recoverable error, do not download data again
     var backgroundTask: UIBackgroundTaskIdentifier = UIBackgroundTaskInvalid
+    var duration = 0
+    var vociePlayed = false
     
     public override init(frame: CGRect) {
         super.init(frame: frame)
@@ -34,7 +36,6 @@ open class VoiceMessageCell: MessageCollectionViewCell {
 
     open lazy var voiceImageView: UIImageView = {
         let voiceImageView = UIImageView()
-        voiceImageView.image = EdoImageNoCache("chat-image-attachment-icon")
         voiceImageView.translatesAutoresizingMaskIntoConstraints = false
         return voiceImageView
     }()
@@ -72,8 +73,44 @@ open class VoiceMessageCell: MessageCollectionViewCell {
         super.configure(with: message, at: indexPath, and: messagesCollectionView)
         switch message.data {
         case .audio(let data):
+            vociePlayed = data.voicePlayed
+            if !vociePlayed {
+                self.voicePlayView.isHidden = false
+            } else {
+                self.voicePlayView.isHidden = true
+            }
+            duration = data.duration
             super.voiceTimeView.text = "\(data.duration)s"
             super.voiceTimeView.textColor = UIColor.lightGray
+            
+            var isOwn = false
+            if let bool = messagesCollectionView.messagesDataSource?.isFromCurrentSender(message: message) {
+                isOwn = bool
+            }
+            if isOwn {
+                voiceImageView.image = EdoImageNoCache("im_voice_right_full")
+                voiceImageView.animationDuration = 1
+                var images=[UIImage]()
+                for i in 1...3{
+                    if let img = UIImage(named: "voice_paly_right_\(i)") {
+                         images.append(img)
+                    }
+                }
+                voiceImageView.animationImages = images
+                voiceImageView.animationRepeatCount=0
+                
+            }else {
+                voiceImageView.image = EdoImageNoCache("im_voice_pressed")
+                voiceImageView.animationDuration = 1
+                var images=[UIImage]()
+                for i in 1...3{
+                    if let img = UIImage(named: "voice_paly_left_\(i)") {
+                        images.append(img)
+                    }
+                }
+                voiceImageView.animationImages = images
+                voiceImageView.animationRepeatCount=0
+            }
             break
         default:
             break

@@ -463,7 +463,10 @@ private extension MessagesCollectionViewFlowLayout {
             let height = messagesLayoutDelegate.heightForLocation(message: message, at: indexPath, with: maxWidth, in: messagesCollectionView)
             messageContainerSize = CGSize(width: width, height: height)
         case .audio(let data):
-            let width: CGFloat = data.info["width"] as! CGFloat
+            var width = CGFloat()
+            if let w: CGFloat = data.info["width"] as? CGFloat {
+               width = w
+            }
             let height = data.height
             messageContainerSize = CGSize(width: width, height: height)
         }
