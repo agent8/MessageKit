@@ -243,6 +243,10 @@ fileprivate extension MessagesCollectionViewFlowLayout {
         attributes.accessoryViewSize = accessoryViewSize(for: attributes)
         attributes.accessoryViewPadding = accessoryViewPadding(for: attributes)
         
+        // voiceTimeView
+        attributes.voiceTimeViewSize = voiceTimeViewSize(for: attributes)
+        attributes.voiceTimeViewPadding = voiceTimeViewPadding(for: attributes)
+        
         // MessageContainerView
         attributes.messageContainerMaxWidth = messageContainerMaxWidth(for: attributes)
         attributes.messageContainerSize = messageContainerSize(for: attributes)
@@ -275,6 +279,7 @@ fileprivate extension MessagesCollectionViewFlowLayout {
         intermediateAttributes.cellFrame = attributes.frame
         
         attributes.messageContainerFrame = intermediateAttributes.messageContainerFrame
+        attributes.voiceTimeViewframe = intermediateAttributes.voiceTimeViewframe
         attributes.topLabelFrame = intermediateAttributes.topLabelFrame
         attributes.bottomLabelFrame = intermediateAttributes.bottomLabelFrame
         attributes.avatarFrame = intermediateAttributes.avatarFrame
@@ -411,7 +416,7 @@ private extension MessagesCollectionViewFlowLayout {
             return baseMaxWidth - attributes.messageLabelHorizontalInsets
         case .audio:
             //czy: add voiceTimeLabel size 
-            return baseMaxWidth - attributes.messageLabelHorizontalInsets - 25
+            return baseMaxWidth - attributes.messageLabelHorizontalInsets
         default:
             return baseMaxWidth
         }
@@ -463,11 +468,13 @@ private extension MessagesCollectionViewFlowLayout {
             let height = messagesLayoutDelegate.heightForLocation(message: message, at: indexPath, with: maxWidth, in: messagesCollectionView)
             messageContainerSize = CGSize(width: width, height: height)
         case .audio(let data):
-            var width = CGFloat()
-            if let w: CGFloat = data.info["width"] as? CGFloat {
-               width = w
-            }
-            let height = data.height
+            
+            //计算宽度或者固定宽度
+            let minWidth: CGFloat = 60
+            let maxWidth: CGFloat = screenWidth() > 320 ? 240 : 200
+            let proportion:CGFloat = CGFloat(Double(data.duration)/60.0)
+            let width: CGFloat = minWidth + proportion * maxWidth
+            let height: CGFloat = 35
             messageContainerSize = CGSize(width: width, height: height)
         }
         
@@ -649,6 +656,16 @@ fileprivate extension MessagesCollectionViewFlowLayout {
     ///   - attributes: The `MessageIntermediateLayoutAttributes` containing the `MessageType` object.
     func accessoryViewPadding(for attributes: MessageIntermediateLayoutAttributes) -> UIEdgeInsets {
         return messagesLayoutDelegate.accessoryViewPadding(for: attributes.message, at: attributes.indexPath, in: messagesCollectionView)
+        
+    }
+    
+    func voiceTimeViewSize(for attributes: MessageIntermediateLayoutAttributes) -> CGSize {
+        return messagesLayoutDelegate.voiceTimeViewSize(for: attributes.message, at: attributes.indexPath, in: messagesCollectionView)
+    }
+    
+    func voiceTimeViewPadding(for attributes: MessageIntermediateLayoutAttributes) -> UIEdgeInsets {
+        return messagesLayoutDelegate.voiceTimeViewPadding(for: attributes.message, at: attributes.indexPath, in: messagesCollectionView)
+        
     }
 }
 

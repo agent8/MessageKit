@@ -88,7 +88,7 @@ final class MessageIntermediateLayoutAttributes {
         case .cellLeading:
             origin.x = messageContainerFrame.maxX + accessoryViewPadding.left
         case .cellTrailing:
-            origin.x = messageContainerFrame.minX - accessoryViewPadding.right - accessoryViewSize.width
+            origin.x = messageContainerFrame.minX - accessoryViewPadding.right - accessoryViewSize.width - voiceTimeViewSize.width
         case .natural:
             fatalError(MessageKitError.avatarPositionUnresolved)
         }
@@ -99,6 +99,7 @@ final class MessageIntermediateLayoutAttributes {
     
     // MessageContainerView
     var messageContainerSize: CGSize = .zero
+
     var messageContainerMaxWidth: CGFloat = 0
     var messageContainerPadding: UIEdgeInsets = .zero
     var messageLabelInsets: UIEdgeInsets = .zero
@@ -121,6 +122,28 @@ final class MessageIntermediateLayoutAttributes {
         
         return CGRect(origin: origin, size: messageContainerSize)
         
+    }()
+    
+    var voiceTimeViewSize: CGSize = .zero
+    var voiceTimeViewPadding: UIEdgeInsets = .zero
+    lazy var voiceTimeViewframe: CGRect = {
+        
+        guard voiceTimeViewSize != .zero else { return .zero }
+        
+        var origin: CGPoint = .zero
+        origin.y = messageContainerFrame.origin.y + messageContainerSize.height * 0.5 -
+            voiceTimeViewSize.height * 0.5
+
+        switch avatarPosition.horizontal {
+        case .cellLeading:
+            origin.x = messageContainerFrame.maxX + voiceTimeViewPadding.left
+        case .cellTrailing:
+            origin.x = messageContainerFrame.minX - voiceTimeViewPadding.right - voiceTimeViewSize.width
+        case .natural:
+            fatalError(MessageKitError.avatarPositionUnresolved)
+        }
+        
+        return CGRect(origin: origin, size: voiceTimeViewSize)
     }()
     
     // Cell Top Label
