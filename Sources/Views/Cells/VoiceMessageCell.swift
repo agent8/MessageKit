@@ -69,14 +69,6 @@ open class VoiceMessageCell: MessageCollectionViewCell {
         setupConstraints()
     }
 
-    func changeVoicePlayed(voicePlay : Bool) {
-        if !voicePlay {
-            self.voicePlayView.isHidden = false
-        } else {
-            self.voicePlayView.isHidden = true
-        }
-    }
-
     open override func configure(with message: MessageType, at indexPath: IndexPath, and messagesCollectionView: MessagesCollectionView) {
         super.configure(with: message, at: indexPath, and: messagesCollectionView)
         switch message.data {
