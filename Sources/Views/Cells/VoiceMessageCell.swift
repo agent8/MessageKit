@@ -69,6 +69,14 @@ open class VoiceMessageCell: MessageCollectionViewCell {
         setupConstraints()
     }
 
+    func changeVoicePlayed(voicePlay : Bool) {
+        if !voicePlay {
+            self.voicePlayView.isHidden = false
+        } else {
+            self.voicePlayView.isHidden = true
+        }
+    }
+
     open override func configure(with message: MessageType, at indexPath: IndexPath, and messagesCollectionView: MessagesCollectionView) {
         super.configure(with: message, at: indexPath, and: messagesCollectionView)
         switch message.data {
@@ -149,7 +157,7 @@ open class VoiceMessageCell: MessageCollectionViewCell {
     
     //finished(doNotRetryDownload: Bool), if doNotRetryDownload is true, there is non-recoverable error, do not download data again
     func doDownloadData(for downloadInfo: DownloadInfo, finishedAndDoNotRetry: ((Bool)->())? = nil) {
-        guard let _ = EmailDAL.getChatMessage(msgId: downloadInfo.messageId) else {
+        guard let msg = EmailDAL.getChatMessage(msgId: downloadInfo.messageId) else {
             finishedAndDoNotRetry?(true) //do not download again
             return
         }
@@ -163,7 +171,7 @@ open class VoiceMessageCell: MessageCollectionViewCell {
 //                                        var hasNonRecoverableError = false
                                         if messageId == self.messageId {
                                             self.loadingView()?.stopAnimating()
-                                            BroadcastCenter.postNotification(.ChatFriendJoinedApp)
+                                            BroadcastCenter.postNotification(.MsgMessageVoiceUpdate, information: [.ConversationId: msg.conversationId])
                                         } else {
                                             XMPPMgrLog("voice is no longer needed")
                                         }
