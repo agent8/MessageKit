@@ -52,12 +52,20 @@ open class VoiceMessageCell: MessageCollectionViewCell {
 
     // MARK: - Methods
 
-    open func setupConstraints() {
+    open func setupRightConstraints() {
         voiceImageView.rightInSuperview(-5)
         voiceImageView.constraint(equalTo: CGSize(width: 35, height: 35))
         
 //        voiceTimeView.leftInSuperview(5)
 //        voiceTimeView.constraint(equalTo: CGSize(width: 35, height: 35))
+        
+    }
+    open func setupLeftConstraints() {
+        voiceImageView.leftInSuperview(5)
+        voiceImageView.constraint(equalTo: CGSize(width: 35, height: 35))
+        
+        //        voiceTimeView.leftInSuperview(5)
+        //        voiceTimeView.constraint(equalTo: CGSize(width: 35, height: 35))
         
     }
 
@@ -66,7 +74,7 @@ open class VoiceMessageCell: MessageCollectionViewCell {
         messageContainerView.stackView.addArrangedSubview(imageView)
         imageView.addSubview(voiceImageView)
 //        imageView.addSubview(voiceTimeView)
-        setupConstraints()
+        
     }
 
     open override func configure(with message: MessageType, at indexPath: IndexPath, and messagesCollectionView: MessagesCollectionView) {
@@ -74,11 +82,7 @@ open class VoiceMessageCell: MessageCollectionViewCell {
         switch message.data {
         case .audio(let data):
             vociePlayed = data.voicePlayed
-            if !vociePlayed {
-                self.voicePlayView.isHidden = false
-            } else {
-                self.voicePlayView.isHidden = true
-            }
+           
             duration = data.duration
             super.voiceTimeView.text = "\(data.duration)s"
             super.voiceTimeView.textColor = UIColor.lightGray
@@ -101,25 +105,32 @@ open class VoiceMessageCell: MessageCollectionViewCell {
                 voiceImageView.animationDuration = 1
                 var images=[UIImage]()
                 for i in 1...3{
-                    if let img = UIImage(named: "voice_paly_right_\(i)") {
+                    if let img = EdoImageNoCache("voice_paly_right_\(i)") {
                          images.append(img)
                     }
                 }
                 voiceImageView.animationImages = images
                 voiceImageView.animationRepeatCount=0
-                
+                setupRightConstraints()
             } else {
                 voiceImageView.image = EdoImageNoCache("im_voice_pressed")
                 voiceImageView.animationDuration = 1
                 var images=[UIImage]()
                 for i in 1...3{
-                    if let img = UIImage(named: "voice_paly_left_\(i)") {
+                    if let img = EdoImageNoCache("voice_paly_left_\(i)") {
                         images.append(img)
                     }
                 }
                 voiceImageView.animationImages = images
                 voiceImageView.animationRepeatCount=0
+                setupLeftConstraints()
+                if !vociePlayed {
+                    self.voicePlayView.isHidden = false
+                } else {
+                    self.voicePlayView.isHidden = true
+                }
             }
+            
             break
         default:
             break
