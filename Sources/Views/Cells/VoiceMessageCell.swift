@@ -82,7 +82,16 @@ open class VoiceMessageCell: MessageCollectionViewCell {
             duration = data.duration
             super.voiceTimeView.text = "\(data.duration)s"
             super.voiceTimeView.textColor = UIColor.lightGray
-            
+            if let msg = message as? EdisonMessage {
+                if isEmpty(msg.mediaPath) {
+                    let loading = UIActivityIndicatorView(activityIndicatorStyle: .gray)
+                    loading.frame = self.accessoryView.bounds
+                    self.accessoryView.addSubview(loading)
+                    loading.startAnimating()
+                    downloadData(for: DownloadInfo(accountId: msg.accountId, messageId: msg.messageId))
+                }
+            }
+
             var isOwn = false
             if let bool = messagesCollectionView.messagesDataSource?.isFromCurrentSender(message: message) {
                 isOwn = bool
@@ -99,7 +108,7 @@ open class VoiceMessageCell: MessageCollectionViewCell {
                 voiceImageView.animationImages = images
                 voiceImageView.animationRepeatCount=0
                 
-            }else {
+            } else {
                 voiceImageView.image = EdoImageNoCache("im_voice_pressed")
                 voiceImageView.animationDuration = 1
                 var images=[UIImage]()
@@ -140,8 +149,27 @@ open class VoiceMessageCell: MessageCollectionViewCell {
     
     //finished(doNotRetryDownload: Bool), if doNotRetryDownload is true, there is non-recoverable error, do not download data again
     func doDownloadData(for downloadInfo: DownloadInfo, finishedAndDoNotRetry: ((Bool)->())? = nil) {
-        finishedAndDoNotRetry?(true)
-        //To be override by subclass
+        guard let _ = EmailDAL.getChatMessage(msgId: downloadInfo.messageId) else {
+            finishedAndDoNotRetry?(true) //do not download again
+            return
+        }
+        guard let _ = EmailDAL.getChatAccount(accountId: downloadInfo.accountId) else {
+            finishedAndDoNotRetry?(true)
+            return
+        }
+        XMPPAdapter.downloadData(accountId: downloadInfo.accountId,
+                                 chatMsgId: downloadInfo.messageId) { (messageId, filePath) in
+                                    EDOMainthread {
+//                                        var hasNonRecoverableError = false
+                                        if messageId == self.messageId {
+                                            self.loadingView()?.stopAnimating()
+                                            BroadcastCenter.postNotification(.ChatFriendJoinedApp)
+                                        } else {
+                                            XMPPMgrLog("voice is no longer needed")
+                                        }
+                                        finishedAndDoNotRetry?(true)
+                                    }
+        }
     }
     
     @objc func appWillEnterBackground(noti:Notification) {

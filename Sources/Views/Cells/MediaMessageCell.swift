@@ -103,18 +103,18 @@ open class MediaMessageCell: MessageCollectionViewCell {
                 }
             }
 //        case .audio(let data):
-////            playButtonView.isHidden = true
-////            if let attachmentCell = self as? DocumentMessageCell {
-////                let isOutgoing =
-////                    messagesCollectionView.messagesDataSource?.isFromCurrentSender(message: message)
-////                        ?? true
-////
-////                attachmentCell.load(attachment: data, isOutgoing: isOutgoing)
-////                //Preload attachment data
-////                if let msg = message as? EdisonMessage {
-////                    downloadData(for: DownloadInfo(accountId: msg.accountId, messageId: msg.messageId))
-////                }
-////            }
+//            playButtonView.isHidden = true
+//            if let attachmentCell = self as? DocumentMessageCell {
+//                let isOutgoing =
+//                    messagesCollectionView.messagesDataSource?.isFromCurrentSender(message: message)
+//                        ?? true
+//
+//                attachmentCell.load(attachment: data, isOutgoing: isOutgoing)
+//                //Preload attachment data
+//                if let msg = message as? EdisonMessage {
+//                    downloadData(for: DownloadInfo(accountId: msg.accountId, messageId: msg.messageId))
+//                }
+//            }
 //           break
         default:
             break
