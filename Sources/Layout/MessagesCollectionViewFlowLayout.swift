@@ -243,6 +243,10 @@ fileprivate extension MessagesCollectionViewFlowLayout {
         attributes.accessoryViewSize = accessoryViewSize(for: attributes)
         attributes.accessoryViewPadding = accessoryViewPadding(for: attributes)
         
+        // voiceTimeView
+        attributes.voiceTimeViewSize = voiceTimeViewSize(for: attributes)
+        attributes.voiceTimeViewPadding = voiceTimeViewPadding(for: attributes)
+        
         // MessageContainerView
         attributes.messageContainerMaxWidth = messageContainerMaxWidth(for: attributes)
         attributes.messageContainerSize = messageContainerSize(for: attributes)
@@ -275,6 +279,7 @@ fileprivate extension MessagesCollectionViewFlowLayout {
         intermediateAttributes.cellFrame = attributes.frame
         
         attributes.messageContainerFrame = intermediateAttributes.messageContainerFrame
+        attributes.voiceTimeViewframe = intermediateAttributes.voiceTimeViewframe
         attributes.topLabelFrame = intermediateAttributes.topLabelFrame
         attributes.bottomLabelFrame = intermediateAttributes.bottomLabelFrame
         attributes.avatarFrame = intermediateAttributes.avatarFrame
@@ -649,6 +654,16 @@ fileprivate extension MessagesCollectionViewFlowLayout {
     ///   - attributes: The `MessageIntermediateLayoutAttributes` containing the `MessageType` object.
     func accessoryViewPadding(for attributes: MessageIntermediateLayoutAttributes) -> UIEdgeInsets {
         return messagesLayoutDelegate.accessoryViewPadding(for: attributes.message, at: attributes.indexPath, in: messagesCollectionView)
+        
+    }
+    
+    func voiceTimeViewSize(for attributes: MessageIntermediateLayoutAttributes) -> CGSize {
+        return messagesLayoutDelegate.voiceTimeViewSize(for: attributes.message, at: attributes.indexPath, in: messagesCollectionView)
+    }
+    
+    func voiceTimeViewPadding(for attributes: MessageIntermediateLayoutAttributes) -> UIEdgeInsets {
+        return messagesLayoutDelegate.voiceTimeViewPadding(for: attributes.message, at: attributes.indexPath, in: messagesCollectionView)
+        
     }
 }
 
