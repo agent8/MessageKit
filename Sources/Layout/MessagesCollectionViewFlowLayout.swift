@@ -416,7 +416,7 @@ private extension MessagesCollectionViewFlowLayout {
             return baseMaxWidth - attributes.messageLabelHorizontalInsets
         case .audio:
             //czy: add voiceTimeLabel size 
-            return baseMaxWidth - attributes.messageLabelHorizontalInsets - 25
+            return baseMaxWidth - attributes.messageLabelHorizontalInsets
         default:
             return baseMaxWidth
         }
@@ -468,11 +468,13 @@ private extension MessagesCollectionViewFlowLayout {
             let height = messagesLayoutDelegate.heightForLocation(message: message, at: indexPath, with: maxWidth, in: messagesCollectionView)
             messageContainerSize = CGSize(width: width, height: height)
         case .audio(let data):
-            var width = CGFloat()
-            if let w: CGFloat = data.info["width"] as? CGFloat {
-               width = w
-            }
-            let height = data.height
+            
+            //计算宽度或者固定宽度
+            let minWidth: CGFloat = 60
+            let maxWidth: CGFloat = screenWidth() > 320 ? 240 : 200
+            let proportion:CGFloat = CGFloat(Double(data.duration)/60.0)
+            let width: CGFloat = minWidth + proportion * maxWidth
+            let height: CGFloat = 35
             messageContainerSize = CGSize(width: width, height: height)
         }
         
