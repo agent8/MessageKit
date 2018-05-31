@@ -12,6 +12,9 @@ open class VoiceMessageCell: MessageCollectionViewCell {
     open override class func reuseIdentifier() -> String { return "messagekit.cell.voicemessage" }
     
     // MARK: - Properties
+    private var voiceImageViewRightConstraint = NSLayoutConstraint()
+    private var voiceImageViewLeftConstraint = NSLayoutConstraint()
+    private var voiceImageViewConstraints = [NSLayoutConstraint]()
     
     var messageId = ""
     var isDownloadingData = false
@@ -40,41 +43,38 @@ open class VoiceMessageCell: MessageCollectionViewCell {
         return voiceImageView
     }()
     
-//    open lazy var voiceTimeView: UILabel = {
-//        let voiceTimeView = UILabel()
-////        voiceTimeView.text = "0s"
-//        voiceTimeView.translatesAutoresizingMaskIntoConstraints = false
-//        return voiceTimeView
-//    }()
-
     open var imageView = UIImageView()
-
 
     // MARK: - Methods
 
     open func setupRightConstraints() {
-        voiceImageView.rightInSuperview(-5)
-        voiceImageView.constraint(equalTo: CGSize(width: 35, height: 35))
-        
-//        voiceTimeView.leftInSuperview(5)
-//        voiceTimeView.constraint(equalTo: CGSize(width: 35, height: 35))
+        NSLayoutConstraint.deactivate(voiceImageViewConstraints)
+        voiceImageViewRightConstraint = voiceImageView.rightAnchor.constraint(equalTo: imageView.rightAnchor, constant: -5)
+        voiceImageViewConstraints = [
+            voiceImageViewRightConstraint,
+            voiceImageView.centerYAnchor.constraint(equalTo: imageView.centerYAnchor)
+            ]
+        NSLayoutConstraint.activate(voiceImageViewConstraints)
         
     }
     open func setupLeftConstraints() {
-        voiceImageView.leftInSuperview(5)
-        voiceImageView.constraint(equalTo: CGSize(width: 35, height: 35))
-        
-        //        voiceTimeView.leftInSuperview(5)
-        //        voiceTimeView.constraint(equalTo: CGSize(width: 35, height: 35))
-        
+        NSLayoutConstraint.deactivate(voiceImageViewConstraints)
+        voiceImageViewLeftConstraint = voiceImageView.leftAnchor.constraint(equalTo: imageView.leftAnchor, constant: 5)
+        voiceImageViewConstraints = [
+            voiceImageViewLeftConstraint,
+            voiceImageView.centerYAnchor.constraint(equalTo: imageView.centerYAnchor)
+            ]
+        NSLayoutConstraint.activate(voiceImageViewConstraints)
     }
 
     open override func setupSubviews() {
         super.setupSubviews()
         messageContainerView.stackView.addArrangedSubview(imageView)
         imageView.addSubview(voiceImageView)
-//        imageView.addSubview(voiceTimeView)
         
+        voiceImageView.constraint(equalTo: CGSize(width: 35, height: 35))
+
+
     }
 
     func changeVoicePlayed(voicePlay : Bool) {
@@ -119,7 +119,10 @@ open class VoiceMessageCell: MessageCollectionViewCell {
                 }
                 voiceImageView.animationImages = images
                 voiceImageView.animationRepeatCount=0
+                
                 setupRightConstraints()
+                self.layoutIfNeeded()
+                self.layoutSubviews()
             } else {
                 voiceImageView.image = EdoImageNoCache("im_voice_pressed")
                 voiceImageView.animationDuration = 1
@@ -131,7 +134,11 @@ open class VoiceMessageCell: MessageCollectionViewCell {
                 }
                 voiceImageView.animationImages = images
                 voiceImageView.animationRepeatCount=0
+                
                 setupLeftConstraints()
+                self.layoutIfNeeded()
+                self.layoutSubviews()
+                
                 if !vociePlayed {
                     self.voicePlayView.isHidden = false
                 } else {

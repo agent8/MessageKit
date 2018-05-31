@@ -86,7 +86,7 @@ final class MessageIntermediateLayoutAttributes {
         
         switch avatarPosition.horizontal {
         case .cellLeading:
-            origin.x = messageContainerFrame.maxX + accessoryViewPadding.left
+            origin.x = messageContainerFrame.maxX + accessoryViewPadding.left + accessoryViewSize.width 
         case .cellTrailing:
             origin.x = messageContainerFrame.minX - accessoryViewPadding.right - accessoryViewSize.width - voiceTimeViewSize.width
         case .natural:
