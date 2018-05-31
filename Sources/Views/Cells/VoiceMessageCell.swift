@@ -96,10 +96,14 @@ open class VoiceMessageCell: MessageCollectionViewCell {
             super.voiceTimeView.textColor = UIColor.lightGray
             if let msg = message as? EdisonMessage {
                 if isEmpty(msg.mediaPath) {
-                    let loading = UIActivityIndicatorView(activityIndicatorStyle: .gray)
-                    loading.frame = self.accessoryView.bounds
-                    self.accessoryView.addSubview(loading)
-                    loading.startAnimating()
+                    if let loading = loadingView() {
+                        loading.startAnimating()
+                    } else {
+                        let loading = UIActivityIndicatorView(activityIndicatorStyle: .gray)
+                        loading.frame = self.accessoryView.bounds
+                        self.accessoryView.addSubview(loading)
+                        loading.startAnimating()
+                    }
                     downloadData(for: DownloadInfo(accountId: msg.accountId, messageId: msg.messageId))
                 }
             }
