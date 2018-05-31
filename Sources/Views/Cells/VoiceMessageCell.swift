@@ -123,7 +123,7 @@ open class VoiceMessageCell: MessageCollectionViewCell {
                 }
                 voiceImageView.animationImages = images
                 voiceImageView.animationRepeatCount=0
-                
+                self.voicePlayView.isHidden = true
                 setupRightConstraints()
                 self.layoutIfNeeded()
                 self.layoutSubviews()
