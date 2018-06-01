@@ -49,12 +49,7 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
     
     
     open var voiceTimeView = UILabel()
-//    open lazy var voiceTimeView: UILabel = {
-//        let voiceTimeView = UILabel()
-////        voiceTimeView.text = "0s"
-//        voiceTimeView.translatesAutoresizingMaskIntoConstraints = false
-//        return voiceTimeView
-//    }()
+
     
     open lazy var voicePlayView: UIView = {
         let voicePlayView = UIView()
@@ -100,7 +95,6 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
         setupSubviews()
         setupCustomMenuItems()
         setupReplyLabelConstraint()
-//        setupVoiceTimeViewonstraint()
         setupVoicePlayViewonstraint()
     }
 
@@ -110,6 +104,7 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
 
     open func setupSubviews() {
         contentView.addSubview(messageContainerView)
+        voiceTimeView.textAlignment = .center
         contentView.addSubview(voiceTimeView)
         contentView.addSubview(voicePlayView)
         contentView.addSubview(avatarView)
@@ -136,12 +131,7 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
             replyLabel.centerYAnchor.constraint(equalTo: messageContainerView.centerYAnchor)
         ])
     }
-//    open func setupVoiceTimeViewonstraint() {
-//        NSLayoutConstraint.activate([
-//            voiceTimeView.rightAnchor.constraint(equalTo: messageContainerView.leftAnchor, constant: -4),
-//            voiceTimeView.centerYAnchor.constraint(equalTo: messageContainerView.centerYAnchor)
-//            ])
-//    }
+    
     open func setupVoicePlayViewonstraint() {
         
         NSLayoutConstraint.activate([
@@ -181,7 +171,7 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
             cellTopLabel.frame = attributes.topLabelFrame
             cellBottomLabel.frame = attributes.bottomLabelFrame
             messageContainerView.frame = attributes.messageContainerFrame
-            voiceTimeView.frame = attributes.voiceTimeViewframe 
+            voiceTimeView.frame = attributes.voiceTimeViewframe
             accessoryView.frame = attributes.accessoryViewFrame
         }
     }
