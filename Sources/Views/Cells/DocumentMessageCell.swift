@@ -24,7 +24,7 @@ class DocumentMessageCell: MediaMessageCell {
         let mailAcctId = chatAcct.mailAcctId
         
         XMPPAdapter.downloadData(accountId: downloadInfo.accountId,
-                                 chatMsgId: downloadInfo.messageId) { (messageId, filePath) in
+                                 chatMsgId: downloadInfo.messageId) { (messageId, filePath, _) in
             if let path = filePath,
                 let data = NSData(contentsOfFile: path) as Data? {
                 EmailAdapter.convertEmailDataFromChatToEdoMessage(data: data, emailId: messageId, mailAcctId: mailAcctId)

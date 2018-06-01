@@ -15,7 +15,7 @@ class PhotoMessageCell: MediaMessageCell {
     override func doDownloadData(for downloadInfo: DownloadInfo, finishedAndDoNotRetry:((Bool)->())? = nil) {
         XMPPAdapter.downloadData(accountId: downloadInfo.accountId,
                                  chatMsgId: downloadInfo.messageId,
-                                 forThumb: downloadInfo.isThumbnail) { (messageId, filePath) in
+                                 forThumb: downloadInfo.isThumbnail) { (messageId, filePath, _) in
                                     EDOMainthread {
                                         var hasNonRecoverableError = false
                                         if messageId == self.messageId {

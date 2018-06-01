@@ -96,14 +96,6 @@ open class VoiceMessageCell: MessageCollectionViewCell {
             super.voiceTimeView.textColor = UIColor.lightGray
             if let msg = message as? EdisonMessage {
                 if isEmpty(msg.mediaPath) {
-                    if let loading = loadingView() {
-                        loading.startAnimating()
-                    } else {
-                        let loading = UIActivityIndicatorView(activityIndicatorStyle: .gray)
-                        loading.frame = self.accessoryView.bounds
-                        self.accessoryView.addSubview(loading)
-                        loading.startAnimating()
-                    }
                     downloadData(for: DownloadInfo(accountId: msg.accountId, messageId: msg.messageId))
                 }
             }
@@ -161,6 +153,17 @@ open class VoiceMessageCell: MessageCollectionViewCell {
         guard !isDownloadingData && !giveUpRetry else { return }
         messageId = downloadInfo.messageId
         self.isDownloadingData = true
+        if let loading = loadingView() {
+            loading.startAnimating()
+        } else {
+            for view in self.accessoryView.subviews {
+                view.removeFromSuperview()
+            }
+            let loading = UIActivityIndicatorView(activityIndicatorStyle: .gray)
+            loading.frame = self.accessoryView.bounds
+            self.accessoryView.addSubview(loading)
+            loading.startAnimating()
+        }
         self.doDownloadData(for: downloadInfo) { doNotRetryDownload in
             self.giveUpRetry = doNotRetryDownload
             self.isDownloadingData = false
@@ -188,12 +191,15 @@ open class VoiceMessageCell: MessageCollectionViewCell {
             return
         }
         XMPPAdapter.downloadData(accountId: downloadInfo.accountId,
-                                 chatMsgId: downloadInfo.messageId) { (messageId, filePath) in
+                                 chatMsgId: downloadInfo.messageId) { (messageId, filePath, success) in
                                     EDOMainthread {
 //                                        var hasNonRecoverableError = false
                                         if messageId == self.messageId {
                                             self.loadingView()?.stopAnimating()
                                             BroadcastCenter.postNotification(.MsgMessageVoiceUpdate, information: [.ConversationId: msg.conversationId])
+                                            if !success {
+                                                //TODO: add a download failure warning
+                                            }
                                         } else {
                                             XMPPMgrLog("voice is no longer needed")
                                         }
