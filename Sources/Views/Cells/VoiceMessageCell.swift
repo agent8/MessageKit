@@ -22,6 +22,7 @@ open class VoiceMessageCell: MessageCollectionViewCell {
     var backgroundTask: UIBackgroundTaskIdentifier = UIBackgroundTaskInvalid
     var duration = 0
     var vociePlayed = false
+    var downloadInfo = DownloadInfo(accountId: "", messageId: "")
     
     public override init(frame: CGRect) {
         super.init(frame: frame)
@@ -96,7 +97,8 @@ open class VoiceMessageCell: MessageCollectionViewCell {
             super.voiceTimeView.textColor = UIColor.lightGray
             if let msg = message as? EdisonMessage {
                 if isEmpty(msg.mediaPath) {
-                    downloadData(for: DownloadInfo(accountId: msg.accountId, messageId: msg.messageId))
+                    self.downloadInfo = DownloadInfo(accountId: msg.accountId, messageId: msg.messageId)
+                    downloadData(for: self.downloadInfo)
                 }
             }
 
@@ -173,7 +175,7 @@ open class VoiceMessageCell: MessageCollectionViewCell {
             }
         }
     }
-    
+
     //If download data process has a non-recoverable error, so that it won't retry
     //To be overriden by subclass
     func hasNonRecoverableError() -> Bool {
@@ -207,7 +209,12 @@ open class VoiceMessageCell: MessageCollectionViewCell {
                                     }
         }
     }
-    
+
+    //TODO: retry download
+    func retrydownload() {
+        downloadData(for: self.downloadInfo)
+    }
+
     @objc func appWillEnterBackground(noti:Notification) {
         if isDownloadingData {
             backgroundTask = UIApplication.shared.beginBackgroundTask(expirationHandler: {
