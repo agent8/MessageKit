@@ -7,6 +7,10 @@
 //
 
 import UIKit
+public protocol VoiceMessageCellDelegate: MessageLabelDelegate {
+    func didTapTopAgainDownloadVoiceView(in cell: VoiceMessageCell)
+}
+
 
 open class VoiceMessageCell: MessageCollectionViewCell {
     open override class func reuseIdentifier() -> String { return "messagekit.cell.voicemessage" }
@@ -15,6 +19,8 @@ open class VoiceMessageCell: MessageCollectionViewCell {
     private var voiceImageViewRightConstraint = NSLayoutConstraint()
     private var voiceImageViewLeftConstraint = NSLayoutConstraint()
     private var voiceImageViewConstraints = [NSLayoutConstraint]()
+    
+    open weak var voiceMessageCellDelegate: VoiceMessageCellDelegate?
     
     var messageId = ""
     var isDownloadingData = false
@@ -46,6 +52,7 @@ open class VoiceMessageCell: MessageCollectionViewCell {
     
     open var imageView = UIImageView()
 
+    open var againDownloadVoiceView = UIView()
     // MARK: - Methods
 
     open func setupRightConstraints() {
@@ -70,14 +77,27 @@ open class VoiceMessageCell: MessageCollectionViewCell {
 
     open override func setupSubviews() {
         super.setupSubviews()
+        
         messageContainerView.stackView.addArrangedSubview(imageView)
         imageView.addSubview(voiceImageView)
         
         voiceImageView.constraint(equalTo: CGSize(width: 35, height: 35))
-
+        let alertVoiceImageView = UIImageView()
+        alertVoiceImageView.image = EdoImageNoCache("alert-icon")
+        alertVoiceImageView.translatesAutoresizingMaskIntoConstraints = false
+        alertVoiceImageView.frame = againDownloadVoiceView.frame
+        againDownloadVoiceView.isHidden = true
+        contentView.addSubview(againDownloadVoiceView)
+        againDownloadVoiceView.addSubview(alertVoiceImageView)
+        againDownloadVoiceView.addConstraintsForSubviewWithSameSize(alertVoiceImageView)
 
     }
-
+    open override func apply(_ layoutAttributes: UICollectionViewLayoutAttributes) {
+        super.apply(layoutAttributes)
+        if let attributes = layoutAttributes as? MessagesCollectionViewLayoutAttributes {
+            againDownloadVoiceView.frame = attributes.accessoryViewFrame
+        }
+    }
     func changeVoicePlayed(voicePlay : Bool) {
         if !voicePlay {
             self.voicePlayView.isHidden = false
@@ -87,6 +107,8 @@ open class VoiceMessageCell: MessageCollectionViewCell {
     }
 
     open override func configure(with message: MessageType, at indexPath: IndexPath, and messagesCollectionView: MessagesCollectionView) {
+        
+        self.voiceMessageCellDelegate = messagesCollectionView.voiceMessageCellDelegate
         super.configure(with: message, at: indexPath, and: messagesCollectionView)
         switch message.data {
         case .audio(let data):
@@ -121,6 +143,8 @@ open class VoiceMessageCell: MessageCollectionViewCell {
                 setupRightConstraints()
                 self.layoutIfNeeded()
                 self.layoutSubviews()
+                
+                self.againDownloadVoiceView.removeFromSuperview()
             } else {
                 voiceImageView.image = EdoImageNoCache("im_voice_pressed")
                 voiceImageView.animationDuration = 1
@@ -142,6 +166,9 @@ open class VoiceMessageCell: MessageCollectionViewCell {
                 } else {
                     self.voicePlayView.isHidden = true
                 }
+                let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.tapGestureRecognizer(_:)))
+                self.againDownloadVoiceView.addGestureRecognizer(tapGestureRecognizer)
+                self.contentView.addSubview(againDownloadVoiceView)
             }
             
             break
@@ -149,7 +176,9 @@ open class VoiceMessageCell: MessageCollectionViewCell {
             break
         }
     }
-    
+    @objc func tapGestureRecognizer(_ tapGesture :UITapGestureRecognizer) {
+        self.voiceMessageCellDelegate?.didTapTopAgainDownloadVoiceView(in: self)
+    }
     // MARK: - Download data logic
     func downloadData(for downloadInfo: DownloadInfo) {
         guard !isDownloadingData && !giveUpRetry else { return }
@@ -158,9 +187,6 @@ open class VoiceMessageCell: MessageCollectionViewCell {
         if let loading = loadingView() {
             loading.startAnimating()
         } else {
-            for view in self.accessoryView.subviews {
-                view.removeFromSuperview()
-            }
             let loading = UIActivityIndicatorView(activityIndicatorStyle: .gray)
             loading.frame = self.accessoryView.bounds
             self.accessoryView.addSubview(loading)
@@ -200,7 +226,10 @@ open class VoiceMessageCell: MessageCollectionViewCell {
                                             self.loadingView()?.stopAnimating()
                                             BroadcastCenter.postNotification(.MsgMessageVoiceUpdate, information: [.ConversationId: msg.conversationId])
                                             if !success {
+                                               
                                                 //TODO: add a download failure warning
+                                                self.againDownloadVoiceView.isHidden = false
+                                               
                                             }
                                         } else {
                                             XMPPMgrLog("voice is no longer needed")
@@ -211,7 +240,8 @@ open class VoiceMessageCell: MessageCollectionViewCell {
     }
 
     //TODO: retry download
-    func retrydownload() {
+    @objc func retrydownload() {
+        self.giveUpRetry = false
         downloadData(for: self.downloadInfo)
     }
 
