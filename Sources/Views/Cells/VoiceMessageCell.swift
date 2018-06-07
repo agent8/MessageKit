@@ -22,17 +22,15 @@ open class VoiceMessageCell: MessageCollectionViewCell {
     
     open weak var voiceMessageCellDelegate: VoiceMessageCellDelegate?
     
-    var messageId = ""
+    var message : EdisonMessage?
     var isDownloadingData = false
     var giveUpRetry = false //if true, there is non-recoverable error, do not download data again
     var backgroundTask: UIBackgroundTaskIdentifier = UIBackgroundTaskInvalid
     var duration = 0
     var vociePlayed = false
-    var downloadInfo = DownloadInfo(accountId: "", messageId: "")
     
     public override init(frame: CGRect) {
         super.init(frame: frame)
-//        BroadcastCenter.addObserver(self, selector: #selector(self.appWillEnterBackground(noti:)), notification: .AppPrepareEnterBackground)
     }
     
     required public init?(coder aDecoder: NSCoder) {
@@ -161,9 +159,6 @@ open class VoiceMessageCell: MessageCollectionViewCell {
                 } else {
                     self.voicePlayView.isHidden = true
                 }
-                let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.tapGestureRecognizer(_:)))
-                self.againDownloadVoiceView.addGestureRecognizer(tapGestureRecognizer)
-                self.contentView.addSubview(againDownloadVoiceView)
             }
             if let msg = message as? EdisonMessage {
                 switch msg.downloadState {
@@ -186,8 +181,11 @@ open class VoiceMessageCell: MessageCollectionViewCell {
                     if let loading = loadingView() {
                         loading.stopAnimating()
                     }
+                    self.message = msg
                     self.againDownloadVoiceView.isHidden = false
-                    
+                    let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.tapGestureRecognizer(_:)))
+                    self.againDownloadVoiceView.addGestureRecognizer(tapGestureRecognizer)
+                    self.contentView.addSubview(againDownloadVoiceView)
                     break
                 default: break
                     
@@ -202,85 +200,17 @@ open class VoiceMessageCell: MessageCollectionViewCell {
     @objc func tapGestureRecognizer(_ tapGesture :UITapGestureRecognizer) {
         self.voiceMessageCellDelegate?.didTapTopAgainDownloadVoiceView(in: self)
     }
-    // MARK: - Download data logic
-//    func downloadData(for downloadInfo: DownloadInfo) {
-//        guard !isDownloadingData && !giveUpRetry else { return }
-//        messageId = downloadInfo.messageId
-//        self.isDownloadingData = true
-//        if let loading = loadingView() {
-//            loading.startAnimating()
-//        } else {
-//            let loading = UIActivityIndicatorView(activityIndicatorStyle: .gray)
-//            loading.frame = self.accessoryView.bounds
-//            self.accessoryView.addSubview(loading)
-//            loading.startAnimating()
-//        }
-//        self.doDownloadData(for: downloadInfo) { doNotRetryDownload in
-//            self.giveUpRetry = doNotRetryDownload
-//            self.isDownloadingData = false
-//            if self.backgroundTask != UIBackgroundTaskInvalid {
-//                UIApplication.shared.endBackgroundTask(self.backgroundTask)
-//                self.backgroundTask = UIBackgroundTaskInvalid
-//            }
-//        }
-//    }
-
-    //If download data process has a non-recoverable error, so that it won't retry
-    //To be overriden by subclass
-    func hasNonRecoverableError() -> Bool {
-        return false
-    }
     
-    //finished(doNotRetryDownload: Bool), if doNotRetryDownload is true, there is non-recoverable error, do not download data again
-//    func doDownloadData(for downloadInfo: DownloadInfo, finishedAndDoNotRetry: ((Bool)->())? = nil) {
-//        guard let msg = EmailDAL.getChatMessage(msgId: downloadInfo.messageId) else {
-//            finishedAndDoNotRetry?(true) //do not download again
-//            return
-//        }
-//        guard let _ = EmailDAL.getChatAccount(accountId: downloadInfo.accountId) else {
-//            finishedAndDoNotRetry?(true)
-//            return
-//        }
-//        XMPPAdapter.downloadData(accountId: downloadInfo.accountId,
-//                                 chatMsgId: downloadInfo.messageId) { (messageId, filePath, success) in
-//                                    EDOMainthread {
-////                                        var hasNonRecoverableError = false
-//                                        if messageId == self.messageId {
-//                                            self.loadingView()?.stopAnimating()
-//                                            BroadcastCenter.postNotification(.MsgMessageVoiceUpdate, information: [.ConversationId: msg.conversationId])
-//                                            if !success {
-//
-//                                                //TODO: add a download failure warning
-//                                                self.againDownloadVoiceView.isHidden = false
-//
-//                                            }
-//                                        } else {
-//                                            XMPPMgrLog("voice is no longer needed")
-//                                        }
-//                                        finishedAndDoNotRetry?(true)
-//                                    }
-//        }
-//    }
-
-    //TODO: retry download
-    @objc func retrydownload() {
-//        self.giveUpRetry = false
-//        downloadData(for: self.downloadInfo)
+    //TODO: loadingView Animating
+    @objc func loadingViewAnimating() {
+        if let loading = loadingView() {
+            loading.startAnimating()
+        } else {
+            let loading = UIActivityIndicatorView(activityIndicatorStyle: .gray)
+            loading.frame = self.accessoryView.bounds
+            self.accessoryView.addSubview(loading)
+            loading.startAnimating()
+        }
     }
 
-//    @objc func appWillEnterBackground(noti:Notification) {
-//        if isDownloadingData {
-//            backgroundTask = UIApplication.shared.beginBackgroundTask(expirationHandler: {
-//                UIApplication.shared.endBackgroundTask(self.backgroundTask)
-//                NMLog("backgroundTask expired")
-//                self.backgroundTask = UIBackgroundTaskInvalid
-//            })
-//        }
-//    }
-
-//    override open func prepareForReuse() {
-//        super.prepareForReuse()
-//        isDownloadingData = false
-//        messageId = ""
-//    }
 }
