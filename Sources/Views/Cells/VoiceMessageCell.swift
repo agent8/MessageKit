@@ -168,6 +168,7 @@ open class VoiceMessageCell: MessageCollectionViewCell {
             if let msg = message as? EdisonMessage {
                 switch msg.downloadState {
                 case XMPPConstants.ChatMsgVoiceDownloadState.downloading:
+                     self.againDownloadVoiceView.isHidden = true
                     if let loading = loadingView() {
                         loading.startAnimating()
                     } else {
