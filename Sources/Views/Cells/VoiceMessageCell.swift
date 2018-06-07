@@ -32,7 +32,7 @@ open class VoiceMessageCell: MessageCollectionViewCell {
     
     public override init(frame: CGRect) {
         super.init(frame: frame)
-        BroadcastCenter.addObserver(self, selector: #selector(self.appWillEnterBackground(noti:)), notification: .AppPrepareEnterBackground)
+//        BroadcastCenter.addObserver(self, selector: #selector(self.appWillEnterBackground(noti:)), notification: .AppPrepareEnterBackground)
     }
     
     required public init?(coder aDecoder: NSCoder) {
@@ -117,12 +117,7 @@ open class VoiceMessageCell: MessageCollectionViewCell {
             duration = data.duration
             super.voiceTimeView.text = "\(data.duration)s"
             super.voiceTimeView.textColor = UIColor.lightGray
-            if let msg = message as? EdisonMessage {
-                if isEmpty(msg.mediaPath) {
-                    self.downloadInfo = DownloadInfo(accountId: msg.accountId, messageId: msg.messageId)
-                    downloadData(for: self.downloadInfo)
-                }
-            }
+           
 
             var isOwn = false
             if let bool = messagesCollectionView.messagesDataSource?.isFromCurrentSender(message: message) {
@@ -170,6 +165,33 @@ open class VoiceMessageCell: MessageCollectionViewCell {
                 self.againDownloadVoiceView.addGestureRecognizer(tapGestureRecognizer)
                 self.contentView.addSubview(againDownloadVoiceView)
             }
+            if let msg = message as? EdisonMessage {
+                switch msg.downloadState {
+                case XMPPConstants.ChatMsgVoiceDownloadState.downloading:
+                    if let loading = loadingView() {
+                        loading.startAnimating()
+                    } else {
+                        let loading = UIActivityIndicatorView(activityIndicatorStyle: .gray)
+                        loading.frame = self.accessoryView.bounds
+                        self.accessoryView.addSubview(loading)
+                        loading.startAnimating()
+                    }
+                    
+                    break
+                case XMPPConstants.ChatMsgVoiceDownloadState.downloadSuccess:
+                    self.againDownloadVoiceView.isHidden = true
+                    break
+                case XMPPConstants.ChatMsgVoiceDownloadState.downloadFailed:
+                    if let loading = loadingView() {
+                        loading.stopAnimating()
+                    }
+                    self.againDownloadVoiceView.isHidden = false
+                    
+                    break
+                default: break
+                    
+                }
+            }
             
             break
         default:
@@ -180,27 +202,27 @@ open class VoiceMessageCell: MessageCollectionViewCell {
         self.voiceMessageCellDelegate?.didTapTopAgainDownloadVoiceView(in: self)
     }
     // MARK: - Download data logic
-    func downloadData(for downloadInfo: DownloadInfo) {
-        guard !isDownloadingData && !giveUpRetry else { return }
-        messageId = downloadInfo.messageId
-        self.isDownloadingData = true
-        if let loading = loadingView() {
-            loading.startAnimating()
-        } else {
-            let loading = UIActivityIndicatorView(activityIndicatorStyle: .gray)
-            loading.frame = self.accessoryView.bounds
-            self.accessoryView.addSubview(loading)
-            loading.startAnimating()
-        }
-        self.doDownloadData(for: downloadInfo) { doNotRetryDownload in
-            self.giveUpRetry = doNotRetryDownload
-            self.isDownloadingData = false
-            if self.backgroundTask != UIBackgroundTaskInvalid {
-                UIApplication.shared.endBackgroundTask(self.backgroundTask)
-                self.backgroundTask = UIBackgroundTaskInvalid
-            }
-        }
-    }
+//    func downloadData(for downloadInfo: DownloadInfo) {
+//        guard !isDownloadingData && !giveUpRetry else { return }
+//        messageId = downloadInfo.messageId
+//        self.isDownloadingData = true
+//        if let loading = loadingView() {
+//            loading.startAnimating()
+//        } else {
+//            let loading = UIActivityIndicatorView(activityIndicatorStyle: .gray)
+//            loading.frame = self.accessoryView.bounds
+//            self.accessoryView.addSubview(loading)
+//            loading.startAnimating()
+//        }
+//        self.doDownloadData(for: downloadInfo) { doNotRetryDownload in
+//            self.giveUpRetry = doNotRetryDownload
+//            self.isDownloadingData = false
+//            if self.backgroundTask != UIBackgroundTaskInvalid {
+//                UIApplication.shared.endBackgroundTask(self.backgroundTask)
+//                self.backgroundTask = UIBackgroundTaskInvalid
+//            }
+//        }
+//    }
 
     //If download data process has a non-recoverable error, so that it won't retry
     //To be overriden by subclass
@@ -209,55 +231,55 @@ open class VoiceMessageCell: MessageCollectionViewCell {
     }
     
     //finished(doNotRetryDownload: Bool), if doNotRetryDownload is true, there is non-recoverable error, do not download data again
-    func doDownloadData(for downloadInfo: DownloadInfo, finishedAndDoNotRetry: ((Bool)->())? = nil) {
-        guard let msg = EmailDAL.getChatMessage(msgId: downloadInfo.messageId) else {
-            finishedAndDoNotRetry?(true) //do not download again
-            return
-        }
-        guard let _ = EmailDAL.getChatAccount(accountId: downloadInfo.accountId) else {
-            finishedAndDoNotRetry?(true)
-            return
-        }
-        XMPPAdapter.downloadData(accountId: downloadInfo.accountId,
-                                 chatMsgId: downloadInfo.messageId) { (messageId, filePath, success) in
-                                    EDOMainthread {
-//                                        var hasNonRecoverableError = false
-                                        if messageId == self.messageId {
-                                            self.loadingView()?.stopAnimating()
-                                            BroadcastCenter.postNotification(.MsgMessageVoiceUpdate, information: [.ConversationId: msg.conversationId])
-                                            if !success {
-                                               
-                                                //TODO: add a download failure warning
-                                                self.againDownloadVoiceView.isHidden = false
-                                               
-                                            }
-                                        } else {
-                                            XMPPMgrLog("voice is no longer needed")
-                                        }
-                                        finishedAndDoNotRetry?(true)
-                                    }
-        }
-    }
+//    func doDownloadData(for downloadInfo: DownloadInfo, finishedAndDoNotRetry: ((Bool)->())? = nil) {
+//        guard let msg = EmailDAL.getChatMessage(msgId: downloadInfo.messageId) else {
+//            finishedAndDoNotRetry?(true) //do not download again
+//            return
+//        }
+//        guard let _ = EmailDAL.getChatAccount(accountId: downloadInfo.accountId) else {
+//            finishedAndDoNotRetry?(true)
+//            return
+//        }
+//        XMPPAdapter.downloadData(accountId: downloadInfo.accountId,
+//                                 chatMsgId: downloadInfo.messageId) { (messageId, filePath, success) in
+//                                    EDOMainthread {
+////                                        var hasNonRecoverableError = false
+//                                        if messageId == self.messageId {
+//                                            self.loadingView()?.stopAnimating()
+//                                            BroadcastCenter.postNotification(.MsgMessageVoiceUpdate, information: [.ConversationId: msg.conversationId])
+//                                            if !success {
+//
+//                                                //TODO: add a download failure warning
+//                                                self.againDownloadVoiceView.isHidden = false
+//
+//                                            }
+//                                        } else {
+//                                            XMPPMgrLog("voice is no longer needed")
+//                                        }
+//                                        finishedAndDoNotRetry?(true)
+//                                    }
+//        }
+//    }
 
     //TODO: retry download
     @objc func retrydownload() {
-        self.giveUpRetry = false
-        downloadData(for: self.downloadInfo)
+//        self.giveUpRetry = false
+//        downloadData(for: self.downloadInfo)
     }
 
-    @objc func appWillEnterBackground(noti:Notification) {
-        if isDownloadingData {
-            backgroundTask = UIApplication.shared.beginBackgroundTask(expirationHandler: {
-                UIApplication.shared.endBackgroundTask(self.backgroundTask)
-                NMLog("backgroundTask expired")
-                self.backgroundTask = UIBackgroundTaskInvalid
-            })
-        }
-    }
-    
-    override open func prepareForReuse() {
-        super.prepareForReuse()
-        isDownloadingData = false
-        messageId = ""
-    }
+//    @objc func appWillEnterBackground(noti:Notification) {
+//        if isDownloadingData {
+//            backgroundTask = UIApplication.shared.beginBackgroundTask(expirationHandler: {
+//                UIApplication.shared.endBackgroundTask(self.backgroundTask)
+//                NMLog("backgroundTask expired")
+//                self.backgroundTask = UIBackgroundTaskInvalid
+//            })
+//        }
+//    }
+
+//    override open func prepareForReuse() {
+//        super.prepareForReuse()
+//        isDownloadingData = false
+//        messageId = ""
+//    }
 }
