@@ -8,7 +8,7 @@
 
 import UIKit
 public protocol VoiceMessageCellDelegate: MessageLabelDelegate {
-    func didTapTopAgainDownloadVoiceView(in cell: VoiceMessageCell)
+    func didTapTopAgainDownloadVoiceView(in messageId: String)
 }
 
 
@@ -159,36 +159,37 @@ open class VoiceMessageCell: MessageCollectionViewCell {
                 } else {
                     self.voicePlayView.isHidden = true
                 }
-            }
-            if let msg = message as? EdisonMessage {
-                switch msg.downloadState {
-                case XMPPConstants.ChatMsgVoiceDownloadState.downloading:
-                     self.againDownloadVoiceView.isHidden = true
-                    if let loading = loadingView() {
-                        loading.startAnimating()
-                    } else {
-                        let loading = UIActivityIndicatorView(activityIndicatorStyle: .gray)
-                        loading.frame = self.accessoryView.bounds
-                        self.accessoryView.addSubview(loading)
-                        loading.startAnimating()
+                
+                if let msg = message as? EdisonMessage {
+                    switch msg.downloadState {
+                    case XMPPConstants.ChatMsgVoiceDownloadState.downloading:
+                        self.againDownloadVoiceView.isHidden = true
+                        if let loading = loadingView() {
+                            loading.startAnimating()
+                        } else {
+                            let loading = UIActivityIndicatorView(activityIndicatorStyle: .gray)
+                            loading.frame = self.accessoryView.bounds
+                            self.accessoryView.addSubview(loading)
+                            loading.startAnimating()
+                        }
+                        
+                        break
+                    case XMPPConstants.ChatMsgVoiceDownloadState.downloadSuccess:
+                        self.againDownloadVoiceView.isHidden = true
+                        break
+                    case XMPPConstants.ChatMsgVoiceDownloadState.downloadFailed:
+                        if let loading = loadingView() {
+                            loading.stopAnimating()
+                        }
+                        self.message = msg
+                        self.againDownloadVoiceView.isHidden = false
+                        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.tapGestureRecognizer(_:)))
+                        self.againDownloadVoiceView.addGestureRecognizer(tapGestureRecognizer)
+                        self.contentView.addSubview(againDownloadVoiceView)
+                        break
+                    default: break
+                        
                     }
-                    
-                    break
-                case XMPPConstants.ChatMsgVoiceDownloadState.downloadSuccess:
-                    self.againDownloadVoiceView.isHidden = true
-                    break
-                case XMPPConstants.ChatMsgVoiceDownloadState.downloadFailed:
-                    if let loading = loadingView() {
-                        loading.stopAnimating()
-                    }
-                    self.message = msg
-                    self.againDownloadVoiceView.isHidden = false
-                    let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.tapGestureRecognizer(_:)))
-                    self.againDownloadVoiceView.addGestureRecognizer(tapGestureRecognizer)
-                    self.contentView.addSubview(againDownloadVoiceView)
-                    break
-                default: break
-                    
                 }
             }
             
@@ -198,7 +199,9 @@ open class VoiceMessageCell: MessageCollectionViewCell {
         }
     }
     @objc func tapGestureRecognizer(_ tapGesture :UITapGestureRecognizer) {
-        self.voiceMessageCellDelegate?.didTapTopAgainDownloadVoiceView(in: self)
+        if let messageId = self.message?.messageId {
+            self.voiceMessageCellDelegate?.didTapTopAgainDownloadVoiceView(in: messageId)
+        }
     }
     
     //TODO: loadingView Animating
