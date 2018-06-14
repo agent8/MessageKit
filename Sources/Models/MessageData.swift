@@ -93,7 +93,7 @@ public enum MessageData {
                 return data.info["name"] as? String ?? "File"
             }
         case .gif(_):
-            return "Gif"
+            return "GIF"
         }
     }
 }
