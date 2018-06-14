@@ -20,38 +20,39 @@ class GifMessageCell: MediaMessageCell {
         
         XMPPAdapter.downloadGifThumb(accountId: downloadInfo.accountId,
                                       chatMsgId: downloadInfo.messageId) { [weak self] (msgId, filePath) in
-                                        guard
-                                            self?.messageId == msgId,
-                                            self?.imageView.animatedImage == nil else {
-                                                return
-                                        }
-                                        
-                                        if let path = filePath,
-                                            let data = try? Data(contentsOf: URL(fileURLWithPath: path)),
-                                            let gif = FLAnimatedImage(animatedGIFData: data) {
-                                            EDOMainthread {
-                                                self?.imageView.animatedImage = gif
-                                            }
-                                        }
+            EDOMainthread {
+                guard
+                    self?.messageId == msgId,
+                    self?.imageView.animatedImage == nil else {
+                        finishedAndDoNotRetry?(false)
+                        return
+                }
+                
+                if let path = filePath,
+                    let data = try? Data(contentsOf: URL(fileURLWithPath: path)),
+                    let gif = FLAnimatedImage(animatedGIFData: data) {
+                    self?.imageView.animatedImage = gif
+                }
+            }
         }
         
         XMPPAdapter.downloadData(accountId: downloadInfo.accountId,
                                  chatMsgId: downloadInfo.messageId) { [weak self] (msgId, filePath) in
-                                    EDOMainthread {
-                                        defer {
-                                            finishedAndDoNotRetry?(false)
-                                        }
-                                        
-                                        guard self?.messageId == msgId else {
-                                                return
-                                        }
-                                        
-                                        if let path = filePath,
-                                            let data = try? Data(contentsOf: URL(fileURLWithPath: path)),
-                                            let gif = FLAnimatedImage(animatedGIFData: data) {
-                                                self?.imageView.animatedImage = gif
-                                        }
-                                    }
+            EDOMainthread {
+                defer {
+                    finishedAndDoNotRetry?(false)
+                }
+                
+                guard self?.messageId == msgId else {
+                        return
+                }
+                
+                if let path = filePath,
+                    let data = try? Data(contentsOf: URL(fileURLWithPath: path)),
+                    let gif = FLAnimatedImage(animatedGIFData: data) {
+                        self?.imageView.animatedImage = gif
+                }
+            }
         }
     }
     
