@@ -81,6 +81,11 @@ extension MessagesViewController: UICollectionViewDataSource {
             messagesDataSource.configCell(cell, for: message, at: indexPath)
             cell.configure(with: message, at: indexPath, and: messagesCollectionView)
             return cell
+        case .gif:
+            let cell = messagesCollectionView.dequeueReusableCell(GifMessageCell.self, for: indexPath)
+            messagesDataSource.configCell(cell, for: message, at: indexPath)
+            cell.configure(with: message, at: indexPath, and: messagesCollectionView)
+            return cell
         }
     }
 
