@@ -83,8 +83,12 @@ public enum MessageData {
             return "Location"
         case .emoji(_):
             return "Emoji"
-        case .attachment(_):
-            return "Email"
+        case .attachment(let data):
+            if data.type == .Email {
+                return "Email"
+            } else { // File
+                return data.info["name"] as? String ?? "File"
+            }
         }
     }
 }

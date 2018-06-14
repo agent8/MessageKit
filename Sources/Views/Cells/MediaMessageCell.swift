@@ -98,8 +98,10 @@ open class MediaMessageCell: MessageCollectionViewCell {
                 
                 attachmentCell.load(attachment: data, isOutgoing: isOutgoing)
                 //Preload attachment data
-                if let msg = message as? EdisonMessage {
-                    downloadData(for: DownloadInfo(accountId: msg.accountId, messageId: msg.messageId))
+                if let chatMsg = EmailDAL.getChatMessage(msgId: message.messageId),
+                    !isEmpty(chatMsg.mediaPath),
+                    !FileManager.default.fileExists(atPath: chatMsg.mediaPath) {
+                    downloadData(for: DownloadInfo(accountId: chatMsg.accountId, messageId: chatMsg.msgId))
                 }
             }
         default:
