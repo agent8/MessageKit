@@ -113,9 +113,11 @@ open class VoiceMessageCell: MessageCollectionViewCell {
             vociePlayed = data.voicePlayed
            
             duration = data.duration
-            super.voiceTimeView.text = "\(data.duration)s"
-            super.voiceTimeView.textColor = UIColor.lightGray
-           
+            //may not cause. If duration = 0,should be code or server bug.
+            if duration != 0 {
+                super.voiceTimeView.text = "\(data.duration)″"
+                super.voiceTimeView.textColor = UIColor.lightGray
+            }
 
             var isOwn = false
             if let bool = messagesCollectionView.messagesDataSource?.isFromCurrentSender(message: message) {
