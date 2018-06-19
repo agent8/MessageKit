@@ -54,7 +54,12 @@ open class MediaMessageCell: MessageCollectionViewCell {
         return playButtonView
     }()
 
-    open var imageView = FLAnimatedImageView()
+    open var imageView: FLAnimatedImageView = {
+        let imageView = FLAnimatedImageView()
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
+        return imageView
+    }()
 
     // MARK: - Methods
 
@@ -72,8 +77,6 @@ open class MediaMessageCell: MessageCollectionViewCell {
 
     open override func configure(with message: MessageType, at indexPath: IndexPath, and messagesCollectionView: MessagesCollectionView) {
         //czy：当收到长图片的时候，进行裁剪，以免图片显示被压缩
-        imageView.contentMode = .scaleAspectFill
-        imageView.clipsToBounds = true
         super.configure(with: message, at: indexPath, and: messagesCollectionView)
         switch message.data {
         case .photo(let downloadInfo):
@@ -106,18 +109,12 @@ open class MediaMessageCell: MessageCollectionViewCell {
                 }
             }
         case .gif(let downloadInfo):
-            if let message: ChatMessage = EmailDAL.getChatMessage(accountId: downloadInfo.accountId,
-                                                                  msgId: downloadInfo.messageId),
-                !message.mediaPath.isEmpty,
-                let gif = FLAnimatedImage(animatedGIFData: try?
-                    Data(contentsOf: URL(fileURLWithPath: message.mediaPath))) {
-                EDOMainthread { [weak self] in
-                    self?.imageView.animatedImage = gif
-                }
-            } else {
-                // placeholder image
-                imageView.image = UIImage().from(color: COLOR_TABLE_BACKGROUND, size: CGSize(width: 210, height: 150))
-                downloadData(for: downloadInfo)
+            configureGif(with: downloadInfo)
+        case .sticker(let downloadInfo):
+            configureGif(with: downloadInfo)
+            if let msg = message as? EdisonMessage,
+                !msg.isReplyMessage {
+                messageContainerView.backgroundColor = .clear
             }
         default:
             break
@@ -165,5 +162,23 @@ open class MediaMessageCell: MessageCollectionViewCell {
         super.prepareForReuse()
         isDownloadingData = false
         messageId = ""
+    }
+    
+    // MARK:- Helper functions
+    
+    private func configureGif(with downloadInfo: DownloadInfo) {
+        if let message: ChatMessage = EmailDAL.getChatMessage(accountId: downloadInfo.accountId,
+                                                              msgId: downloadInfo.messageId),
+            !message.mediaPath.isEmpty,
+            let gif = FLAnimatedImage(animatedGIFData: try?
+                Data(contentsOf: URL(fileURLWithPath: message.mediaPath))) {
+            EDOMainthread { [weak self] in
+                self?.imageView.animatedImage = gif
+            }
+        } else {
+            // placeholder image
+            imageView.image = UIImage().from(color: COLOR_TABLE_BACKGROUND, size: CGSize(width: 210, height: 150))
+            downloadData(for: downloadInfo)
+        }
     }
 }

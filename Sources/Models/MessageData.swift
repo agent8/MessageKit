@@ -45,6 +45,9 @@ public enum MessageData {
     
     /// A gif.
     case gif(downloadInfo: DownloadInfo)
+    
+    /// A sticker.
+    case sticker(downloadInfo: DownloadInfo)
 
     /// A video message.
     case video(file: URL, thumbnail: UIImage)
@@ -94,6 +97,8 @@ public enum MessageData {
             }
         case .gif(_):
             return "GIF"
+        case .sticker(_):
+            return "Sticker"
         }
     }
 }
