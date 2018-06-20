@@ -89,6 +89,8 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
     
     open weak var delegate: MessageCellDelegate?
 
+    open var isOwnToReply = false
+    
     public override init(frame: CGRect) {
         super.init(frame: frame)
         contentView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
@@ -173,6 +175,7 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
             messageContainerView.frame = attributes.messageContainerFrame
             voiceTimeView.frame = attributes.voiceTimeViewframe
             accessoryView.frame = attributes.accessoryViewFrame
+//            replyLabel.frame = attributes.accessoryViewFrame
         }
     }
 
@@ -201,6 +204,11 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
         cellBottomLabel.attributedText = bottomText
         
         setupSwipeReplyGesture(delegate: messagesCollectionView)
+        
+
+        if let bool = messagesCollectionView.messagesDataSource?.isFromCurrentSender(message: message) {
+            isOwnToReply = bool
+        }
     }
 
     /// Handle tap gesture on contentView and its subviews like messageContainerView, cellTopLabel, cellBottomLabel, avatarView ....
