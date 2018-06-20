@@ -113,14 +113,17 @@ open class VoiceMessageCell: MessageCollectionViewCell {
             vociePlayed = data.voicePlayed
            
             duration = data.duration
-            super.voiceTimeView.text = "\(data.duration)s"
-            super.voiceTimeView.textColor = UIColor.lightGray
-           
+            //may not cause. If duration = 0,should be code or server bug.
+            if duration != 0 {
+                super.voiceTimeView.text = "\(data.duration)″"
+                super.voiceTimeView.textColor = UIColor.lightGray
+            }
 
             var isOwn = false
             if let bool = messagesCollectionView.messagesDataSource?.isFromCurrentSender(message: message) {
                 isOwn = bool
             }
+            let isAnimation = ChatAudio.sharedInstance.messageId == message.messageId
             if isOwn {
                 voiceImageView.image = EdoImageNoCache("im_voice_right_full")
                 voiceImageView.animationDuration = 1
@@ -132,6 +135,9 @@ open class VoiceMessageCell: MessageCollectionViewCell {
                 }
                 voiceImageView.animationImages = images
                 voiceImageView.animationRepeatCount=0
+                if isAnimation {
+                    voiceImageView.startAnimating()
+                }
                 self.voicePlayView.isHidden = true
                 setupRightConstraints()
                 self.layoutIfNeeded()
@@ -149,7 +155,9 @@ open class VoiceMessageCell: MessageCollectionViewCell {
                 }
                 voiceImageView.animationImages = images
                 voiceImageView.animationRepeatCount=0
-                
+                if isAnimation {
+                    voiceImageView.startAnimating()
+                }
                 setupLeftConstraints()
                 self.layoutIfNeeded()
                 self.layoutSubviews()
