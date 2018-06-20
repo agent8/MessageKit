@@ -108,13 +108,19 @@ open class MediaMessageCell: MessageCollectionViewCell {
                     downloadData(for: DownloadInfo(accountId: chatMsg.accountId, messageId: chatMsg.msgId))
                 }
             }
-        case .gif(let downloadInfo):
-            configureGif(with: downloadInfo)
-        case .sticker(let downloadInfo):
-            configureGif(with: downloadInfo)
-            if let msg = message as? EdisonMessage,
-                !msg.isReplyMessage {
-                messageContainerView.backgroundColor = .clear
+        case .gif(let downloadInfo), .sticker(let downloadInfo):
+            if let message: ChatMessage = EmailDAL.getChatMessage(accountId: downloadInfo.accountId,
+                                                                  msgId: downloadInfo.messageId),
+                !message.mediaPath.isEmpty,
+                let gif = FLAnimatedImage(animatedGIFData: try?
+                    Data(contentsOf: URL(fileURLWithPath: message.mediaPath))) {
+                EDOMainthread { [weak self] in
+                    self?.imageView.animatedImage = gif
+                }
+            } else {
+                // placeholder image
+                imageView.image = UIImage().from(color: COLOR_TABLE_BACKGROUND, size: CGSize(width: 210, height: 150))
+                downloadData(for: downloadInfo)
             }
         default:
             break
@@ -162,23 +168,5 @@ open class MediaMessageCell: MessageCollectionViewCell {
         super.prepareForReuse()
         isDownloadingData = false
         messageId = ""
-    }
-    
-    // MARK:- Helper functions
-    
-    private func configureGif(with downloadInfo: DownloadInfo) {
-        if let message: ChatMessage = EmailDAL.getChatMessage(accountId: downloadInfo.accountId,
-                                                              msgId: downloadInfo.messageId),
-            !message.mediaPath.isEmpty,
-            let gif = FLAnimatedImage(animatedGIFData: try?
-                Data(contentsOf: URL(fileURLWithPath: message.mediaPath))) {
-            EDOMainthread { [weak self] in
-                self?.imageView.animatedImage = gif
-            }
-        } else {
-            // placeholder image
-            imageView.image = UIImage().from(color: COLOR_TABLE_BACKGROUND, size: CGSize(width: 210, height: 150))
-            downloadData(for: downloadInfo)
-        }
     }
 }
