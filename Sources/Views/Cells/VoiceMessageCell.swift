@@ -111,7 +111,9 @@ open class VoiceMessageCell: MessageCollectionViewCell {
         switch message.data {
         case .audio(let data):
             vociePlayed = data.voicePlayed
-           
+            self.tag = message.messageId.hashValue
+//            print("+++++++++self.tag:\(self.tag), messageID:\(message.messageId.hashValue)")
+
             duration = data.duration
             //may not cause. If duration = 0,should be code or server bug.
             if duration != 0 {
@@ -208,6 +210,7 @@ open class VoiceMessageCell: MessageCollectionViewCell {
     }
     @objc func tapGestureRecognizer(_ tapGesture :UITapGestureRecognizer) {
         if let messageId = self.message?.messageId {
+            print("+++++++++self.tag:\(self.tag), messageID:\(String(describing: self.message?.messageId.hashValue)), isequle:\(self.tag == self.message?.messageId.hashValue)")
             self.voiceMessageCellDelegate?.didTapTopAgainDownloadVoiceView(in: messageId)
         }
     }

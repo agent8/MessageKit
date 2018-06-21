@@ -83,7 +83,8 @@ extension MessagesViewController: UICollectionViewDataSource {
             return cell
         case .audio(_):
             let cell = messagesCollectionView.dequeueReusableCell(VoiceMessageCell.self, for: indexPath)
-            messagesDataSource.configCell(cell, for: message, at: indexPath)
+//            messagesDataSource.configCell(cell, for: message, at: indexPath)
+            print("++++++++++++cellForItem:\(String(describing: cell.message?.messageId)), indexPath.section:\(indexPath.section + 1)")
             cell.configure(with: message, at: indexPath, and: messagesCollectionView)
             return cell
         }

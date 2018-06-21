@@ -237,6 +237,9 @@ fileprivate extension MessagesCollectionViewFlowLayout {
         attributes.avatarPosition = avatarPosition(for: attributes)
         attributes.avatarSize = avatarSize(for: attributes)
         attributes.messageContainerPadding = messageContainerPadding(for: attributes)
+        
+        attributes.messageContainerBaseViewPadding = messageContainerPadding(for: attributes)
+        
         attributes.messageLabelInsets = messageLabelInsets(for: attributes)
         
         // AccessoryView
@@ -250,6 +253,10 @@ fileprivate extension MessagesCollectionViewFlowLayout {
         // MessageContainerView
         attributes.messageContainerMaxWidth = messageContainerMaxWidth(for: attributes)
         attributes.messageContainerSize = messageContainerSize(for: attributes)
+        
+        // messageContainerBaseViewFrame
+        attributes.messageContainerBaseViewMaxWidth = messageContainerMaxWidth(for: attributes)
+        attributes.messageContainerBaseViewSize = messageContainerSize(for: attributes, voiceReplyWidth: 40)
         
         // Cell Bottom Label
         attributes.bottomLabelAlignment = cellBottomLabelAlignment(for: attributes)
@@ -278,6 +285,7 @@ fileprivate extension MessagesCollectionViewFlowLayout {
         
         intermediateAttributes.cellFrame = attributes.frame
         
+        attributes.messageContainerBaseViewFrame = intermediateAttributes.messageContainerBaseViewFrame
         attributes.messageContainerFrame = intermediateAttributes.messageContainerFrame
         attributes.voiceTimeViewframe = intermediateAttributes.voiceTimeViewframe
         attributes.topLabelFrame = intermediateAttributes.topLabelFrame
@@ -428,7 +436,7 @@ private extension MessagesCollectionViewFlowLayout {
     ///
     /// - Parameters:
     ///   - attributes: The `MessageIntermediateLayoutAttributes` to consider when calculating the `MessageContainerView` size.
-    func messageContainerSize(for attributes: MessageIntermediateLayoutAttributes) -> CGSize {
+    func messageContainerSize(for attributes: MessageIntermediateLayoutAttributes, voiceReplyWidth: CGFloat = 0) -> CGSize {
         
         let message = attributes.message
         let indexPath = attributes.indexPath
@@ -476,7 +484,7 @@ private extension MessagesCollectionViewFlowLayout {
             let width: CGFloat = minWidth + proportion * maxWidth * 2/5.0
             let height: CGFloat = 35
             messageContainerSize = CGSize(width: width, height: height)
-            messageContainerSize.width = max(messageContainerSize.width, replyWithLabelInsets)
+            messageContainerSize.width = max(messageContainerSize.width, replyWithLabelInsets) + voiceReplyWidth
         }
         
         messageContainerSize.height += messagesLayoutDelegate.replyViewHeight(at: indexPath,

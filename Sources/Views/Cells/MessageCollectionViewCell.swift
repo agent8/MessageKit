@@ -50,6 +50,12 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
     
     open var voiceTimeView = UILabel()
 
+    open var messageContainerBaseView : UIView = {
+        let containerView = UIView()
+//        containerView.backgroundColor = UIColor.red
+        return containerView
+    }()
+    
     
     open lazy var voicePlayView: UIView = {
         let voicePlayView = UIView()
@@ -105,6 +111,9 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
     }
 
     open func setupSubviews() {
+        
+        contentView.addSubview(messageContainerBaseView)
+        
         contentView.addSubview(messageContainerView)
         voiceTimeView.textAlignment = .center
         contentView.addSubview(voiceTimeView)
@@ -129,8 +138,8 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
     
     open func setupReplyLabelConstraint() {
         NSLayoutConstraint.activate([
-            replyLabel.leftAnchor.constraint(equalTo: messageContainerView.rightAnchor, constant: 15),
-            replyLabel.centerYAnchor.constraint(equalTo: messageContainerView.centerYAnchor)
+            replyLabel.leftAnchor.constraint(equalTo: messageContainerBaseView.rightAnchor, constant: 15),
+            replyLabel.centerYAnchor.constraint(equalTo: messageContainerBaseView.centerYAnchor)
         ])
     }
     
@@ -172,10 +181,10 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
             avatarView.frame = attributes.avatarFrame
             cellTopLabel.frame = attributes.topLabelFrame
             cellBottomLabel.frame = attributes.bottomLabelFrame
+            messageContainerBaseView.frame = attributes.messageContainerBaseViewFrame
             messageContainerView.frame = attributes.messageContainerFrame
             voiceTimeView.frame = attributes.voiceTimeViewframe
             accessoryView.frame = attributes.accessoryViewFrame
-//            replyLabel.frame = attributes.accessoryViewFrame
         }
     }
 

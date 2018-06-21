@@ -34,6 +34,7 @@ final class MessagesCollectionViewLayoutAttributes: UICollectionViewLayoutAttrib
     var accessoryViewFrame: CGRect = .zero
     
     var messageLabelFont: UIFont = UIFont.preferredFont(forTextStyle: .body)
+    var messageContainerBaseViewFrame: CGRect = .zero
     var messageContainerFrame: CGRect = .zero
     var voiceTimeViewframe: CGRect = .zero
     var messageLabelInsets: UIEdgeInsets = .zero
@@ -49,6 +50,7 @@ final class MessagesCollectionViewLayoutAttributes: UICollectionViewLayoutAttrib
         copy.avatarFrame = avatarFrame
         copy.accessoryViewFrame = accessoryViewFrame
         copy.messageContainerFrame = messageContainerFrame
+        copy.messageContainerBaseViewFrame = messageContainerBaseViewFrame
         copy.voiceTimeViewframe = voiceTimeViewframe
         copy.messageLabelFont = messageLabelFont
         copy.messageLabelInsets = messageLabelInsets
