@@ -169,6 +169,19 @@ open class VoiceMessageCell: MessageCollectionViewCell {
                 }
                 
                 if let msg = message as? EdisonMessage {
+                    guard isEmpty(msg.mediaPath) else {
+                        self.againDownloadVoiceView.isHidden = true
+                        if msg.downloadState != XMPPConstants.ChatMsgVoiceDownloadState.downloadSuccess {
+                            EmailDAL.updateAsync(dbType:.ChatDB, { (db) in
+                                if let msg = EmailDAL.getChatMessage(accountId: msg.accountId, msgId: msg.messageId) {
+                                    db.write {
+                                        msg.downloadState  = XMPPConstants.ChatMsgVoiceDownloadState.downloadSuccess
+                                    }
+                                }
+                            })
+                        }
+                        return
+                    }
                     switch msg.downloadState {
                     case XMPPConstants.ChatMsgVoiceDownloadState.downloading:
                         self.againDownloadVoiceView.isHidden = true
