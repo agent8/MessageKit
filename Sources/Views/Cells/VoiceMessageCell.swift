@@ -200,16 +200,16 @@ open class VoiceMessageCell: MessageCollectionViewCell {
                     case XMPPConstants.ChatMsgVoiceDownloadState.downloadSuccess:
                         self.againDownloadVoiceView.isHidden = true
                         break
-                    case XMPPConstants.ChatMsgVoiceDownloadState.downloadFailed:
-                        if let loading = loadingView() {
-                            loading.stopAnimating()
-                        }
-                        self.message = msg
-                        self.againDownloadVoiceView.isHidden = false
-                        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.tapGestureRecognizer(_:)))
-                        self.againDownloadVoiceView.addGestureRecognizer(tapGestureRecognizer)
-                        self.contentView.addSubview(againDownloadVoiceView)
-                        break
+//                    case XMPPConstants.ChatMsgVoiceDownloadState.downloadFailed:
+//                        if let loading = loadingView() {
+//                            loading.stopAnimating()
+//                        }
+//                        self.message = msg
+//                        self.againDownloadVoiceView.isHidden = false
+//                        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.tapGestureRecognizer(_:)))
+//                        self.againDownloadVoiceView.addGestureRecognizer(tapGestureRecognizer)
+//                        self.contentView.addSubview(againDownloadVoiceView)
+//                        break
                     default: break
                         
                     }
