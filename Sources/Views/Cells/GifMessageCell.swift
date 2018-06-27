@@ -37,7 +37,7 @@ class GifMessageCell: MediaMessageCell {
         }
         
         XMPPAdapter.downloadData(accountId: downloadInfo.accountId,
-                                 chatMsgId: downloadInfo.messageId) { [weak self] (msgId, filePath) in
+                                 chatMsgId: downloadInfo.messageId) { [weak self] (msgId, filePath, _) in
             EDOMainthread {
                 defer {
                     finishedAndDoNotRetry?(false)
