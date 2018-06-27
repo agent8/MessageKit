@@ -13,7 +13,7 @@ class DocumentMessageCell: MediaMessageCell {
     private var attachmentView: ChatDocumentView?
     
     override func doDownloadData(for downloadInfo: DownloadInfo, finishedAndDoNotRetry: ((Bool)->())? = nil) {
-        guard let _ = EmailDAL.getChatMessage(msgId: downloadInfo.messageId) else {
+        guard let message = EmailDAL.getChatMessage(msgId: downloadInfo.messageId) else {
             finishedAndDoNotRetry?(true) //do not download again
             return
         }
@@ -25,13 +25,29 @@ class DocumentMessageCell: MediaMessageCell {
         
         XMPPAdapter.downloadData(accountId: downloadInfo.accountId,
                                  chatMsgId: downloadInfo.messageId) { (messageId, filePath, _) in
-            if let path = filePath,
-                let data = NSData(contentsOfFile: path) as Data? {
-                EmailAdapter.convertEmailDataFromChatToEdoMessage(data: data, emailId: messageId, mailAcctId: mailAcctId)
-                BroadcastCenter.postNotification(.NewEmailFetched, information: [.MessageId: messageId])
+            guard let path = filePath else {
+                return
             }
-            
+
             EDOMainthread {
+                if message.bodyType == XMPPConstants.BodyType.Email {
+                    if let data = NSData(contentsOfFile: path) as Data? {
+                        EDOBGthread {
+                            EmailAdapter.convertEmailDataFromChatToEdoMessage(data: data, emailId: messageId, mailAcctId: mailAcctId)
+                            BroadcastCenter.postNotification(.NewEmailFetched, information: [.MessageId: messageId])
+                        }
+                    }
+                } else { // File
+                    do {
+                        let name = URL(fileURLWithPath: path).lastPathComponent
+                        let localPath = edoGenerateChatMediaPath(chatAcctId: message.accountId, name: name)
+                        if !localPath.isEmpty, !FileManager.default.fileExists(atPath: localPath) {
+                            try FileManager.default.copyItem(atPath: message.mediaPath, toPath: localPath) //Copy file from 3rd party app sandbox to local
+                        }
+                    } catch let err as NSError {
+                        ErrorLog("Unable to get information of selected document: \(err)")
+                    }
+                }
                 finishedAndDoNotRetry?(false)
             }
         }

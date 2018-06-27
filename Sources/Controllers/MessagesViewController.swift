@@ -151,6 +151,7 @@ open class MessagesViewController: UIViewController {
         messagesCollectionView.register(PhotoMessageCell.self)
         messagesCollectionView.register(DocumentMessageCell.self)
         messagesCollectionView.register(VoiceMessageCell.self)
+        messagesCollectionView.register(GifMessageCell.self)
 
         messagesCollectionView.register(MessageFooterView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionFooter)
         messagesCollectionView.register(MessageHeaderView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader)

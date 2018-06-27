@@ -50,10 +50,16 @@ open class MediaMessageCell: MessageCollectionViewCell {
     
     open lazy var playButtonView: PlayButtonView = {
         let playButtonView = PlayButtonView()
+        playButtonView.isHidden = true
         return playButtonView
     }()
 
-    open var imageView = UIImageView()
+    open var imageView: FLAnimatedImageView = {
+        let imageView = FLAnimatedImageView()
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
+        return imageView
+    }()
 
     // MARK: - Methods
 
@@ -71,8 +77,6 @@ open class MediaMessageCell: MessageCollectionViewCell {
 
     open override func configure(with message: MessageType, at indexPath: IndexPath, and messagesCollectionView: MessagesCollectionView) {
         //czy：当收到长图片的时候，进行裁剪，以免图片显示被压缩
-        imageView.contentMode = .scaleAspectFill
-        imageView.clipsToBounds = true
         super.configure(with: message, at: indexPath, and: messagesCollectionView)
         switch message.data {
         case .photo(let downloadInfo):
@@ -98,24 +102,27 @@ open class MediaMessageCell: MessageCollectionViewCell {
                 
                 attachmentCell.load(attachment: data, isOutgoing: isOutgoing)
                 //Preload attachment data
-                if let msg = message as? EdisonMessage {
-                    downloadData(for: DownloadInfo(accountId: msg.accountId, messageId: msg.messageId))
+                if let chatMsg = EmailDAL.getChatMessage(msgId: message.messageId),
+                    !isEmpty(chatMsg.mediaPath),
+                    !FileManager.default.fileExists(atPath: chatMsg.mediaPath) {
+                    downloadData(for: DownloadInfo(accountId: chatMsg.accountId, messageId: chatMsg.msgId))
                 }
             }
-//        case .audio(let data):
-//            playButtonView.isHidden = true
-//            if let attachmentCell = self as? DocumentMessageCell {
-//                let isOutgoing =
-//                    messagesCollectionView.messagesDataSource?.isFromCurrentSender(message: message)
-//                        ?? true
-//
-//                attachmentCell.load(attachment: data, isOutgoing: isOutgoing)
-//                //Preload attachment data
-//                if let msg = message as? EdisonMessage {
-//                    downloadData(for: DownloadInfo(accountId: msg.accountId, messageId: msg.messageId))
-//                }
-//            }
-//           break
+
+        case .gif(let downloadInfo), .sticker(let downloadInfo):
+            if let message: ChatMessage = EmailDAL.getChatMessage(accountId: downloadInfo.accountId,
+                                                                  msgId: downloadInfo.messageId),
+                !message.mediaPath.isEmpty,
+                let gif = FLAnimatedImage(animatedGIFData: try?
+                    Data(contentsOf: URL(fileURLWithPath: message.mediaPath))) {
+                EDOMainthread { [weak self] in
+                    self?.imageView.animatedImage = gif
+                }
+            } else {
+                // placeholder image
+                imageView.image = UIImage().from(color: COLOR_TABLE_BACKGROUND, size: CGSize(width: 210, height: 150))
+                downloadData(for: downloadInfo)
+            }
         default:
             break
         }

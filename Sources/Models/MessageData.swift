@@ -42,6 +42,12 @@ public enum MessageData {
 
     /// A photo message.
     case photo(downloadInfo: DownloadInfo)
+    
+    /// A gif.
+    case gif(downloadInfo: DownloadInfo)
+    
+    /// A sticker.
+    case sticker(downloadInfo: DownloadInfo)
 
     /// A video message.
     case video(file: URL, thumbnail: UIImage)
@@ -84,10 +90,18 @@ public enum MessageData {
             return "Location"
         case .emoji(_):
             return "Emoji"
-        case .attachment(_):
-            return "Email"
         case .audio(_):
             return "Voice"
+        case .attachment(let data):
+            if data.type == .Email {
+                return "Email"
+            } else { // File
+                return data.info["name"] as? String ?? "File"
+            }
+        case .gif(_):
+            return "GIF"
+        case .sticker(_):
+            return "Sticker"
         }
     }
 }

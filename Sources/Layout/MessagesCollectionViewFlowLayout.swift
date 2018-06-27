@@ -463,10 +463,12 @@ private extension MessagesCollectionViewFlowLayout {
             messageContainerSize.width += attributes.messageLabelHorizontalInsets
             messageContainerSize.height += attributes.messageLabelVerticalInsets
             messageContainerSize.width = max(messageContainerSize.width, replyWithLabelInsets)
-        case .photo, .video:
-            let width = messagesLayoutDelegate.widthForMedia(message: message, at: indexPath, with: maxWidth, in: messagesCollectionView)
-            let height = messagesLayoutDelegate.heightForMedia(message: message, at: indexPath, with: maxWidth, in: messagesCollectionView)
-            messageContainerSize = CGSize(width: width, height: height)
+        case .photo, .video, .gif:
+            messageContainerSize = messagesLayoutDelegate.sizeForMedia(message: message, at: indexPath, with: maxWidth, in: messagesCollectionView)
+            messageContainerSize.width = max(messageContainerSize.width, replyWithLabelInsets)
+        case .sticker:
+            messageContainerSize = messagesLayoutDelegate.sizeForMedia(message: message, at: indexPath, with: 180, in: messagesCollectionView)
+            messageContainerSize.width = max(messageContainerSize.width, replyWithLabelInsets)
         case .attachment(let data):
             let width: CGFloat = screenWidth() > 320 ? 300 : 260
             let height = data.height
