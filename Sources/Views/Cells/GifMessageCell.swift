@@ -50,7 +50,9 @@ class GifMessageCell: MediaMessageCell {
                 if let path = filePath,
                     let data = try? Data(contentsOf: URL(fileURLWithPath: path)),
                     let gif = FLAnimatedImage(animatedGIFData: data) {
-                        self?.imageView.animatedImage = gif
+                    self?.imageView.animatedImage = gif
+                    //send gif invite mail when gif download success
+                    IMManager.sharedInstance.sendGifInviteMail(msgId: msgId)
                 } else {
                     self?.gifCorrupted()
                 }
