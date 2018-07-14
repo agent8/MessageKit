@@ -58,33 +58,33 @@ extension MessagesViewController: UICollectionViewDataSource {
         switch message.data {
         case .text, .attributedText, .emoji:
             let cell = messagesCollectionView.dequeueReusableCell(TextMessageCell.self, for: indexPath)
-            messagesDataSource.configCell(cell, for: message, at: indexPath)
             cell.configure(with: message, at: indexPath, and: messagesCollectionView)
+            messagesDataSource.configCell(cell, for: message, at: indexPath, in: messagesCollectionView)
             return cell
         case .video:
             let cell = messagesCollectionView.dequeueReusableCell(MediaMessageCell.self, for: indexPath)
-            messagesDataSource.configCell(cell, for: message, at: indexPath)
             cell.configure(with: message, at: indexPath, and: messagesCollectionView)
+            messagesDataSource.configCell(cell, for: message, at: indexPath, in: messagesCollectionView)
             return cell
         case .photo:
             let cell = messagesCollectionView.dequeueReusableCell(PhotoMessageCell.self, for: indexPath)
-            messagesDataSource.configCell(cell, for: message, at: indexPath)
             cell.configure(with: message, at: indexPath, and: messagesCollectionView)
+            messagesDataSource.configCell(cell, for: message, at: indexPath, in: messagesCollectionView)
             return cell
         case .attachment:
             let cell = messagesCollectionView.dequeueReusableCell(DocumentMessageCell.self, for: indexPath)
-            messagesDataSource.configCell(cell, for: message, at: indexPath)
             cell.configure(with: message, at: indexPath, and: messagesCollectionView)
+            messagesDataSource.configCell(cell, for: message, at: indexPath, in: messagesCollectionView)
             return cell
         case .location:
             let cell = messagesCollectionView.dequeueReusableCell(LocationMessageCell.self, for: indexPath)
-            messagesDataSource.configCell(cell, for: message, at: indexPath)
             cell.configure(with: message, at: indexPath, and: messagesCollectionView)
+            messagesDataSource.configCell(cell, for: message, at: indexPath, in: messagesCollectionView)
             return cell
         case .gif, .sticker:
             let cell = messagesCollectionView.dequeueReusableCell(GifMessageCell.self, for: indexPath)
-            messagesDataSource.configCell(cell, for: message, at: indexPath)
             cell.configure(with: message, at: indexPath, and: messagesCollectionView)
+            messagesDataSource.configCell(cell, for: message, at: indexPath, in: messagesCollectionView)
             return cell
         }
     }

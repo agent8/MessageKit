@@ -55,6 +55,8 @@ public protocol MessagesLayoutDelegate: AnyObject {
     /// The default value returned by this method is zero.
     func accessoryViewPadding(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIEdgeInsets
     
+    func messageStatusPadding(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIEdgeInsets
+    
     /// Specifies the vertical and horizontal alignment for the `EdisonProfileView` in a `MessageCollectionViewCell`.
     ///
     /// - Parameters:
@@ -114,6 +116,8 @@ public protocol MessagesLayoutDelegate: AnyObject {
     /// The default value returned by this method is a size of `0 x 0`.
     func accessoryViewSize(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CGSize
     
+    func messageStatusSize(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CGSize
+
     /// Specifies the size to use for a `MessageHeaderView`.
     ///
     /// - Parameters:
@@ -242,6 +246,10 @@ public extension MessagesLayoutDelegate {
         return .zero
     }
     
+    func messageStatusPadding(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIEdgeInsets {
+        return .zero
+    }
+    
     func cellTopLabelAlignment(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> LabelAlignment {
         guard let dataSource = messagesCollectionView.messagesDataSource else {
             fatalError(MessageKitError.nilMessagesDataSource)
@@ -265,6 +273,10 @@ public extension MessagesLayoutDelegate {
     }
 
     func accessoryViewSize(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CGSize {
+        return .zero
+    }
+    
+    func messageStatusSize(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CGSize {
         return .zero
     }
     

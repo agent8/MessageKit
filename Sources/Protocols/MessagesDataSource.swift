@@ -62,7 +62,8 @@ public protocol MessagesDataSource: AnyObject {
     ///     - cell: The `MessageCollectionViewCell` that can be configured.
     ///     - message: The `MessageType` that will be displayed by this cell.
     ///     - indexPath: The `IndexPath` of the cell.
-    func configCell(_ cell: MessageCollectionViewCell, for message: MessageType, at indexPath: IndexPath)
+    ///     - messagesCollectionView: The `MessagesCollectionView` in which this cell will be displayed.
+    func configCell(_ cell: MessageCollectionViewCell, for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView)
     
     /// The attributed text to be used for cell's top label.
     ///

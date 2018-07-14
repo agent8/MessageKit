@@ -30,6 +30,12 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
         return "messagekit.cell.base-cell"
     }
 
+    open var messageStatusView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.tintColor = COLOR_TEXT_HIGHLIGHTED
+        return imageView
+    }()
+    
     open var avatarView: EdisonProfileView = {
         let view = EdisonProfileView()
         view.showOnlineStatusBadge = false
@@ -95,6 +101,7 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
         contentView.addSubview(accessoryView)
         contentView.addSubview(cellTopLabel)
         contentView.addSubview(cellBottomLabel)
+        contentView.addSubview(messageStatusView)
         addSubview(replyLabel)
     }
     
@@ -124,6 +131,7 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
         replyView.removeFromSuperview()
         accessoryView.subviews.forEach( { $0.removeFromSuperview() })
         avatarView.prepareForReuse()
+        messageStatusView.image = nil
     }
 
     open func loadingView() -> UIActivityIndicatorView? {
@@ -145,6 +153,7 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
             cellBottomLabel.frame = attributes.bottomLabelFrame
             messageContainerView.frame = attributes.messageContainerFrame
             accessoryView.frame = attributes.accessoryViewFrame
+            messageStatusView.frame = attributes.messageStatusFrame
         }
     }
 

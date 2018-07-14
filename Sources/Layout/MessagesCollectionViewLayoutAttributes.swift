@@ -33,6 +33,8 @@ final class MessagesCollectionViewLayoutAttributes: UICollectionViewLayoutAttrib
 
     var accessoryViewFrame: CGRect = .zero
     
+    var messageStatusFrame: CGRect = .zero
+    
     var messageLabelFont: UIFont = UIFont.preferredFont(forTextStyle: .body)
     var messageContainerFrame: CGRect = .zero
     var messageLabelInsets: UIEdgeInsets = .zero
@@ -47,6 +49,7 @@ final class MessagesCollectionViewLayoutAttributes: UICollectionViewLayoutAttrib
         let copy = super.copy(with: zone) as! MessagesCollectionViewLayoutAttributes
         copy.avatarFrame = avatarFrame
         copy.accessoryViewFrame = accessoryViewFrame
+        copy.messageStatusFrame = messageStatusFrame
         copy.messageContainerFrame = messageContainerFrame
         copy.messageLabelFont = messageLabelFont
         copy.messageLabelInsets = messageLabelInsets

@@ -243,6 +243,10 @@ fileprivate extension MessagesCollectionViewFlowLayout {
         attributes.accessoryViewSize = accessoryViewSize(for: attributes)
         attributes.accessoryViewPadding = accessoryViewPadding(for: attributes)
         
+        // MessageStatusView
+        attributes.messageStatusSize = messageStatusSize(for: attributes)
+        attributes.messageStatusPadding = messageStatusPadding(for: attributes)
+        
         // MessageContainerView
         attributes.messageContainerMaxWidth = messageContainerMaxWidth(for: attributes)
         attributes.messageContainerSize = messageContainerSize(for: attributes)
@@ -280,6 +284,7 @@ fileprivate extension MessagesCollectionViewFlowLayout {
         attributes.avatarFrame = intermediateAttributes.avatarFrame
         attributes.messageLabelInsets = intermediateAttributes.messageLabelInsets
         attributes.accessoryViewFrame = intermediateAttributes.accessoryViewFrame
+        attributes.messageStatusFrame = intermediateAttributes.messageStatusFrame
         
         switch intermediateAttributes.message.data {
         case .emoji:
@@ -405,7 +410,8 @@ private extension MessagesCollectionViewFlowLayout {
         
         let baseMaxWidth: CGFloat = itemWidth -
             attributes.avatarSize.width - attributes.messageHorizontalPadding -
-            attributes.accessoryViewSize.width - attributes.accessoryHorizontalPadding
+            attributes.accessoryViewSize.width - attributes.accessoryHorizontalPadding -
+            attributes.messageStatusSize.width - attributes.messageStatusHorizontalPadding
         switch attributes.message.data {
         case .text, .attributedText:
             return baseMaxWidth - attributes.messageLabelHorizontalInsets
@@ -642,6 +648,24 @@ fileprivate extension MessagesCollectionViewFlowLayout {
     func accessoryViewPadding(for attributes: MessageIntermediateLayoutAttributes) -> UIEdgeInsets {
         return messagesLayoutDelegate.accessoryViewPadding(for: attributes.message, at: attributes.indexPath, in: messagesCollectionView)
     }
+}
+
+// MARK: - Message Status View [ Q - R ]
+
+fileprivate extension MessagesCollectionViewFlowLayout {
+    
+    // Q
+    
+    func messageStatusSize(for attributes: MessageIntermediateLayoutAttributes) -> CGSize {
+        return messagesLayoutDelegate.messageStatusSize(for: attributes.message, at: attributes.indexPath, in: messagesCollectionView)
+    }
+    
+    // R
+    
+    func messageStatusPadding(for attributes: MessageIntermediateLayoutAttributes) -> UIEdgeInsets {
+        return messagesLayoutDelegate.messageStatusPadding(for: attributes.message, at: attributes.indexPath, in: messagesCollectionView)
+    }
+    
 }
 
 // MARK: - Cell Sizing
