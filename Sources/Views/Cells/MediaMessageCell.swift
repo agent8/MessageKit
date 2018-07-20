@@ -108,6 +108,7 @@ open class MediaMessageCell: MessageCollectionViewCell {
                     downloadData(for: DownloadInfo(accountId: chatMsg.accountId, messageId: chatMsg.msgId))
                 }
             }
+
         case .gif(let downloadInfo), .sticker(let downloadInfo):
             if let message: ChatMessage = EmailDAL.getChatMessage(accountId: downloadInfo.accountId,
                                                                   msgId: downloadInfo.messageId),

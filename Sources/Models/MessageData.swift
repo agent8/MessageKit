@@ -58,11 +58,12 @@ public enum MessageData {
     /// An emoji message.
     case emoji(String)
     
+    
     case attachment(data: ChatAttachment)
 
     // MARK: - Not supported yet
 
-//    case audio(Data)
+    case audio(data: ChatAttachment)
 //
 //    case system(String)
 //    
@@ -89,6 +90,8 @@ public enum MessageData {
             return "Location"
         case .emoji(_):
             return "Emoji"
+        case .audio(_):
+            return "Voice"
         case .attachment(let data):
             if data.type == .Email {
                 return "Email"

@@ -46,7 +46,25 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
         containerView.layer.masksToBounds = true
         return containerView
     }()
+    
+    
+    open var voiceTimeView = UILabel()
 
+    open var messageContainerBaseView : UIView = {
+        let containerView = UIView()
+//        containerView.backgroundColor = UIColor.red
+        return containerView
+    }()
+    
+    
+    open lazy var voicePlayView: UIView = {
+        let voicePlayView = UIView()
+        voicePlayView.layer.cornerRadius = 2
+        voicePlayView.backgroundColor = UIColor.red
+        voicePlayView.isHidden = true
+        voicePlayView.translatesAutoresizingMaskIntoConstraints = false
+        return voicePlayView
+    }()
     open var cellTopLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
@@ -77,12 +95,15 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
     
     open weak var delegate: MessageCellDelegate?
 
+    open var isOwnToReply = false
+    
     public override init(frame: CGRect) {
         super.init(frame: frame)
         contentView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         setupSubviews()
         setupCustomMenuItems()
         setupReplyLabelConstraint()
+        setupVoicePlayViewonstraint()
     }
 
     required public init?(coder aDecoder: NSCoder) {
@@ -90,7 +111,13 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
     }
 
     open func setupSubviews() {
+        
+        contentView.addSubview(messageContainerBaseView)
+        
         contentView.addSubview(messageContainerView)
+        voiceTimeView.textAlignment = .center
+        contentView.addSubview(voiceTimeView)
+        contentView.addSubview(voicePlayView)
         contentView.addSubview(avatarView)
         contentView.addSubview(accessoryView)
         contentView.addSubview(cellTopLabel)
@@ -100,6 +127,7 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
     
     open func insertReplyView(isOutgoing: Bool) {
         messageContainerView.stackView.insertArrangedSubview(replyView, at: 0)
+        replyView.backgroundColor = UIColor.red
         replyView.layoutMargins.left = isOutgoing ? 15 : 20
     }
     
@@ -110,9 +138,19 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
     
     open func setupReplyLabelConstraint() {
         NSLayoutConstraint.activate([
-            replyLabel.leftAnchor.constraint(equalTo: messageContainerView.rightAnchor, constant: 15),
-            replyLabel.centerYAnchor.constraint(equalTo: messageContainerView.centerYAnchor)
+            replyLabel.leftAnchor.constraint(equalTo: messageContainerBaseView.rightAnchor, constant: 15),
+            replyLabel.centerYAnchor.constraint(equalTo: messageContainerBaseView.centerYAnchor)
         ])
+    }
+    
+    open func setupVoicePlayViewonstraint() {
+        
+        NSLayoutConstraint.activate([
+            voicePlayView.rightAnchor.constraint(equalTo: voiceTimeView.rightAnchor),
+            voicePlayView.topAnchor.constraint(equalTo: messageContainerView.topAnchor, constant: 5),
+            voicePlayView.widthAnchor.constraint(equalToConstant: 4),
+            voicePlayView.heightAnchor.constraint(equalToConstant: 4),
+            ])
     }
     
     open override func prepareForReuse() {
@@ -143,7 +181,9 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
             avatarView.frame = attributes.avatarFrame
             cellTopLabel.frame = attributes.topLabelFrame
             cellBottomLabel.frame = attributes.bottomLabelFrame
+            messageContainerBaseView.frame = attributes.messageContainerBaseViewFrame
             messageContainerView.frame = attributes.messageContainerFrame
+            voiceTimeView.frame = attributes.voiceTimeViewframe
             accessoryView.frame = attributes.accessoryViewFrame
         }
     }
@@ -173,6 +213,11 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
         cellBottomLabel.attributedText = bottomText
         
         setupSwipeReplyGesture(delegate: messagesCollectionView)
+        
+
+        if let bool = messagesCollectionView.messagesDataSource?.isFromCurrentSender(message: message) {
+            isOwnToReply = bool
+        }
     }
 
     /// Handle tap gesture on contentView and its subviews like messageContainerView, cellTopLabel, cellBottomLabel, avatarView ....

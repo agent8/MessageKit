@@ -39,6 +39,8 @@ open class MessagesCollectionView: UICollectionView, UIGestureRecognizerDelegate
     open weak var messagesLayoutDelegate: MessagesLayoutDelegate?
 
     open weak var messageCellDelegate: MessageCellDelegate?
+    
+    open weak var voiceMessageCellDelegate: VoiceMessageCellDelegate?
 
     open var showsDateHeaderAfterTimeInterval: TimeInterval = 3600
 

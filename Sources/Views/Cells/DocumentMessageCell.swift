@@ -24,7 +24,7 @@ class DocumentMessageCell: MediaMessageCell {
         let mailAcctId = chatAcct.mailAcctId
         
         XMPPAdapter.downloadData(accountId: downloadInfo.accountId,
-                                 chatMsgId: downloadInfo.messageId) { (messageId, filePath) in
+                                 chatMsgId: downloadInfo.messageId) { (messageId, filePath, _) in
             guard let path = filePath else {
                 return
             }
