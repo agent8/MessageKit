@@ -30,7 +30,7 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
         return "messagekit.cell.base-cell"
     }
 
-    open var avatarView: EdisonProfileView = {
+    lazy var avatarView: EdisonProfileView = {
         let view = EdisonProfileView()
         view.showOnlineStatusBadge = false
         view.circular = true
@@ -40,26 +40,26 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
     // Should only add customized subviews, but not change this view itself
     open var accessoryView = UIView()
 
-    open var messageContainerView: MessageContainerView = {
+    lazy var messageContainerView: MessageContainerView = {
         let containerView = MessageContainerView(frame: .zero)
         containerView.clipsToBounds = true
         containerView.layer.masksToBounds = true
         return containerView
     }()
 
-    open var cellTopLabel: UILabel = {
+    lazy var cellTopLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
         return label
     }()
 
-    open var cellBottomLabel: UILabel = {
+    lazy var cellBottomLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
         return label
     }()
     
-    open var replyLabel: UILabel = {
+    lazy var replyLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textColor = COLOR_TEXT_LIGHT_GRAY

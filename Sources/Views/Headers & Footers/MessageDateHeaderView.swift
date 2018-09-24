@@ -27,11 +27,11 @@ import UIKit
 open class MessageDateHeaderView: MessageHeaderView {
     open override class func reuseIdentifier() -> String { return "messagekit.header.date" }
     
-    open static let dateFontSize: CGFloat = 10
+    static let dateFontSize: CGFloat = 10
     
     // MARK: - Properties
 
-    open let dateLabel: UILabel = {
+    open var dateLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
         label.font = .boldSystemFont(ofSize: dateFontSize)
@@ -41,7 +41,7 @@ open class MessageDateHeaderView: MessageHeaderView {
         return label
     }()
     
-    private let containerView: UIView = {
+    private lazy var containerView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.clipsToBounds = true

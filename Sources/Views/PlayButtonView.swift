@@ -28,7 +28,7 @@ open class PlayButtonView: UIView {
 
     // MARK: - Properties
 
-    open let triangleView = UIView()
+    let triangleView = UIView()
 
     private var triangleCenterXConstraint: NSLayoutConstraint?
     private var cacheFrame: CGRect = .zero

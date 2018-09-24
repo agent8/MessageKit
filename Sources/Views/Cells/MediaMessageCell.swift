@@ -54,7 +54,7 @@ open class MediaMessageCell: MessageCollectionViewCell {
         return playButtonView
     }()
 
-    open var imageView: FLAnimatedImageView = {
+    open lazy var imageView: FLAnimatedImageView = {
         let imageView = FLAnimatedImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true

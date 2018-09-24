@@ -40,7 +40,7 @@ open class MessageContainerView: UIImageView {
     
     private let imageMask = UIImageView()
 
-    open var stackView: UIStackView = {
+    open lazy var stackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
         stackView.autoresizingMask = [

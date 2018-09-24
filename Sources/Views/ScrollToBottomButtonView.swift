@@ -17,7 +17,7 @@ open class ScrollToBottomButtonView: UIView {
         }
     }
     
-    let button: UIButton = {
+    lazy var button: UIButton = {
         let button = RoundButton(type: .custom)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.clipsToBounds = true
@@ -29,13 +29,13 @@ open class ScrollToBottomButtonView: UIView {
         return button
     }()
 
-    private let containerView: UIView = {
+    private lazy var containerView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
     
-    let unreadBadgeCount: UIButton = {
+    lazy var unreadBadgeCount: UIButton = {
         let button = RoundButton(type: .custom)
         button.backgroundColor = COLOR_TEXT_HIGHLIGHTED
         button.setTitle("", for: .normal)
