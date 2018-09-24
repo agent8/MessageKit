@@ -23,6 +23,7 @@
  */
 
 import UIKit
+import MobileCoreServices
 
 /**
  A UITextView that has a UILabel embedded for placeholder text
@@ -222,20 +223,22 @@ open class InputTextView: UITextView {
     
     open override func paste(_ sender: Any?) {
         
-        if let data = UIPasteboard.general.data(forPasteboardType: "com.compuserve.gif"),
+        if let data = UIPasteboard.general.data(forPasteboardType: kUTTypeGIF as String),
+            let type = UIPasteboard.general.strings?.first,
             let gif = FLAnimatedImage(animatedGIFData: data) {
-            pasteGifInTextContainer(with: gif)
+            pasteGifInTextContainer(with: gif, type: type)
+            return
+            
+        } else if let image = UIPasteboard.general.image  {
+            pasteImageInTextContainer(with: image)
             return
         }
         
-        guard let image = UIPasteboard.general.image else {
-            return super.paste(sender)
-        }
-        pasteImageInTextContainer(with: image)
+        return super.paste(sender)
     }
     
-    private func pasteGifInTextContainer(with gif: FLAnimatedImage) {
-        messageInputBar?.delegate?.messageInputBarTextViewDidPasteGif(gif)
+    private func pasteGifInTextContainer(with gif: FLAnimatedImage, type: String) {
+        messageInputBar?.delegate?.messageInputBarTextViewDidPasteGif(gif, type: type)
         
         // Broadcast a notification to receivers such as the MessageInputBar which will handle resizing
         NotificationCenter.default.post(name: .UITextViewTextDidChange, object: self)
