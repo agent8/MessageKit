@@ -857,7 +857,7 @@ extension MessageInputBar {
     }
     
     override open func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-        guard isInSplitViewMode() else {
+        guard !isSplitViewCollapsed else {
             return super.hitTest(point, with: event)
         }
         
