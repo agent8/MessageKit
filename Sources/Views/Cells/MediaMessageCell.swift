@@ -33,7 +33,7 @@ open class MediaMessageCell: MessageCollectionViewCell {
     var messageId = ""
     var isDownloadingData = false
     var giveUpRetry = false //if true, there is non-recoverable error, do not download data again
-    var backgroundTask: UIBackgroundTaskIdentifier = UIBackgroundTaskInvalid
+    var backgroundTask: UIBackgroundTaskIdentifier = UIBackgroundTaskIdentifier.invalid
     
     public override init(frame: CGRect) {
         super.init(frame: frame)
@@ -135,9 +135,9 @@ open class MediaMessageCell: MessageCollectionViewCell {
         self.doDownloadData(for: downloadInfo) { doNotRetryDownload in
             self.giveUpRetry = doNotRetryDownload
             self.isDownloadingData = false
-            if self.backgroundTask != UIBackgroundTaskInvalid {
+            if self.backgroundTask != UIBackgroundTaskIdentifier.invalid {
                 UIApplication.shared.endBackgroundTask(self.backgroundTask)
-                self.backgroundTask = UIBackgroundTaskInvalid
+                self.backgroundTask = UIBackgroundTaskIdentifier.invalid
             }
         }
     }
@@ -159,7 +159,7 @@ open class MediaMessageCell: MessageCollectionViewCell {
             backgroundTask = UIApplication.shared.beginBackgroundTask(expirationHandler: {
                 UIApplication.shared.endBackgroundTask(self.backgroundTask)
                 NMLog("backgroundTask expired")
-                self.backgroundTask = UIBackgroundTaskInvalid
+                self.backgroundTask = UIBackgroundTaskIdentifier.invalid
             })
         }
     }

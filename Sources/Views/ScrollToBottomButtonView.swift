@@ -47,7 +47,7 @@ open class ScrollToBottomButtonView: UIView {
         button.isHidden = true
         button.titleEdgeInsets = .zero
         button.imageEdgeInsets = .zero
-        button.contentEdgeInsets = UIEdgeInsetsMake(2, 3, 2, 3)
+        button.contentEdgeInsets = UIEdgeInsets(top: 2, left: 3, bottom: 2, right: 3)
         return button
     }()
     

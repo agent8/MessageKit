@@ -35,7 +35,7 @@ public enum MessageStyle {
         case topRight
         case bottomRight
 
-        var imageOrientation: UIImageOrientation {
+        var imageOrientation: UIImage.Orientation {
             switch self {
             case .bottomRight: return .up
             case .bottomLeft: return .upMirrored
@@ -51,7 +51,7 @@ public enum MessageStyle {
         
         case faceLeft, faceRight
         
-        var imageOrientation: UIImageOrientation {
+        var imageOrientation: UIImage.Orientation {
             switch self {
             case .faceLeft: return .up
             case .faceRight: return .upMirrored

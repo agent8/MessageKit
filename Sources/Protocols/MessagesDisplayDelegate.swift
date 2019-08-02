@@ -118,7 +118,7 @@ public protocol MessagesDisplayDelegate: AnyObject {
     ///   - message: A `MessageType` with a `MessageData` case of `.text` or `.attributedText`
     ///   to which the detectors will apply.
     ///   - indexPath: The `IndexPath` of the cell.
-    func detectorAttributes(for detector: DetectorType, and message: MessageType, at indexPath: IndexPath) -> [NSAttributedStringKey: Any]
+    func detectorAttributes(for detector: DetectorType, and message: MessageType, at indexPath: IndexPath) -> [NSAttributedString.Key: Any]
 
     // MARK: - Location Messages
 
@@ -229,7 +229,7 @@ public extension MessagesDisplayDelegate {
         return []
     }
 
-    func detectorAttributes(for detector: DetectorType, and message: MessageType, at indexPath: IndexPath) -> [NSAttributedStringKey: Any] {
+    func detectorAttributes(for detector: DetectorType, and message: MessageType, at indexPath: IndexPath) -> [NSAttributedString.Key: Any] {
         return MessageLabel.defaultAttributes
     }
 

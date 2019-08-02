@@ -104,7 +104,7 @@ open class MessagesCollectionViewFlowLayout: UICollectionViewFlowLayout {
 
         sectionInset = UIEdgeInsets(top: 4, left: 8, bottom: 4, right: 8)
 
-        NotificationCenter.default.addObserver(self, selector: #selector(MessagesCollectionViewFlowLayout.handleOrientationChange(_:)), name: .UIDeviceOrientationDidChange, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(MessagesCollectionViewFlowLayout.handleOrientationChange(_:)), name: UIDevice.orientationDidChangeNotification, object: nil)
     }
 
     required public init?(coder aDecoder: NSCoder) {
@@ -166,7 +166,7 @@ open class MessagesCollectionViewFlowLayout: UICollectionViewFlowLayout {
         guard let attributesArray = super.layoutAttributesForElements(in: rect) as? [MessagesCollectionViewLayoutAttributes] else { return nil }
 
         attributesArray.forEach { attributes in
-            if attributes.representedElementCategory == UICollectionElementCategory.cell {
+            if attributes.representedElementCategory == .cell {
                 configure(attributes: attributes)
             }
         }
@@ -178,7 +178,7 @@ open class MessagesCollectionViewFlowLayout: UICollectionViewFlowLayout {
 
         guard let attributes = super.layoutAttributesForItem(at: indexPath) as? MessagesCollectionViewLayoutAttributes else { return nil }
 
-        if attributes.representedElementCategory == UICollectionElementCategory.cell {
+        if attributes.representedElementCategory == .cell {
             configure(attributes: attributes)
         }
 

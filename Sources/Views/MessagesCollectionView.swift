@@ -141,8 +141,8 @@ open class MessagesCollectionView: UICollectionView, UIGestureRecognizerDelegate
             } else { // for long scrolls, use transition animations for a smoother effect
                 let transition = CATransition()
                 transition.duration = 0.2
-                transition.type = kCATransitionPush
-                transition.subtype = kCATransitionFromTop
+                transition.type = CATransitionType.push
+                transition.subtype = CATransitionSubtype.fromTop
                 self.layer.add(transition, forKey: "scrollToBottom")
                 self.scrollRectToVisible(bottom, animated: false)
             }
