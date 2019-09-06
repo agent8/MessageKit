@@ -35,7 +35,7 @@ open class MessageDateHeaderView: MessageHeaderView {
         let label = UILabel()
         label.textAlignment = .center
         label.font = .boldSystemFont(ofSize: dateFontSize)
-        label.textColor = COLOR_TEXT_DARK
+        label.textColor = EdoColor.dynamic.darkGrayText
         label.numberOfLines = 0
         label.translatesAutoresizingMaskIntoConstraints = false
         return label

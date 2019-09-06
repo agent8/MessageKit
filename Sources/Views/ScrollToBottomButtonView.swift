@@ -37,7 +37,7 @@ open class ScrollToBottomButtonView: UIView {
     
     lazy var unreadBadgeCount: UIButton = {
         let button = RoundButton(type: .custom)
-        button.backgroundColor = COLOR_TEXT_HIGHLIGHTED
+        button.backgroundColor = EdoColor.static.brandBlue
         button.setTitle("", for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.textAlignment = .center
