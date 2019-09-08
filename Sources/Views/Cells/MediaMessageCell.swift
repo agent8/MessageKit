@@ -86,7 +86,7 @@ open class MediaMessageCell: MessageCollectionViewCell {
                 imageView.image = image
             } else {
                 // placeholder image
-                imageView.image = UIImage().from(color: EdoColor.static.tableviewBackground, size: CGSize(width: 210, height: 150))
+                imageView.image = UIImage().from(color: EdoColor.dynamic.gray, size: CGSize(width: 210, height: 150))
                 downloadData(for: downloadInfo)
             }
             playButtonView.isHidden = true
@@ -119,7 +119,7 @@ open class MediaMessageCell: MessageCollectionViewCell {
                 }
             } else {
                 // placeholder image
-                imageView.image = UIImage().from(color: EdoColor.static.tableviewBackground, size: CGSize(width: 210, height: 150))
+                imageView.image = UIImage().from(color: EdoColor.dynamic.gray, size: CGSize(width: 210, height: 150))
                 downloadData(for: downloadInfo)
             }
         default:

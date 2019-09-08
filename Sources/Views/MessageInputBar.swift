@@ -44,7 +44,7 @@ open class MessageInputBar: UIView {
     lazy var backgroundView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = .inputBarGray
+        view.backgroundColor = EdoColor.dynamic.cardBackground
         return view
     }()
     
@@ -59,8 +59,8 @@ open class MessageInputBar: UIView {
     lazy var borderView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = .white
-        view.layer.borderColor = UIColor.lightGray.cgColor
+        view.backgroundColor = EdoColor.dynamic.cardBackground
+        view.layer.borderColor = EdoColor.dynamic.dividerLine.cgColor
         view.layer.borderWidth = 0.5
         view.layer.cornerRadius = 19
         view.layer.masksToBounds = true
@@ -76,7 +76,7 @@ open class MessageInputBar: UIView {
         tableView.showsHorizontalScrollIndicator = false
         tableView.showsVerticalScrollIndicator = false
         tableView.separatorStyle = .none
-        tableView.backgroundColor = .clear
+        tableView.backgroundColor = EdoColor.static.transparent
         tableView.layer.masksToBounds = true
         tableView.layer.cornerRadius = 19
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -110,7 +110,7 @@ open class MessageInputBar: UIView {
                 blurView.fillSuperview()
             }
             blurView.isHidden = !isTranslucent
-            let color: UIColor = backgroundView.backgroundColor ?? .inputBarGray
+            let color: UIColor = backgroundView.backgroundColor ?? EdoColor.dynamic.cardBackground
             backgroundView.backgroundColor = isTranslucent ? color.withAlphaComponent(0.75) : color.withAlphaComponent(1.0)
         }
     }
@@ -169,7 +169,7 @@ open class MessageInputBar: UIView {
             .onEnabled {
                 $0.imageView?.tintColor = nil
             }.onDisabled {
-                $0.imageView?.tintColor = EdoColor.dynamic.darkGrayBackground
+                $0.imageView?.tintColor = EdoColor.dynamic.gray
             }.configure {
                 $0.setSize(CGSize(width: 52, height: 28), animated: false)
                 $0.setIsHidden(true, animated: false)

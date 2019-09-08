@@ -205,7 +205,7 @@ open class InputBarButtonItem: UIButton {
         setContentHuggingPriority(UILayoutPriority(rawValue: 500), for: .vertical)
         setTitleColor(UIColor(red: 0, green: 122/255, blue: 1, alpha: 1), for: .normal)
         setTitleColor(UIColor(red: 0, green: 122/255, blue: 1, alpha: 0.3), for: .highlighted)
-        setTitleColor(.lightGray, for: .disabled)
+        setTitleColor(EdoColor.dynamic.lightText, for: .disabled)
         adjustsImageWhenHighlighted = false
         addTarget(self, action: #selector(InputBarButtonItem.touchUpInsideAction), for: .touchUpInside)
     }

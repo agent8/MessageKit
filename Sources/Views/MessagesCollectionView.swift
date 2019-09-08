@@ -98,7 +98,7 @@ open class MessagesCollectionView: UICollectionView, UIGestureRecognizerDelegate
 
     public override init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout) {
         super.init(frame: frame, collectionViewLayout: layout)
-        backgroundColor = .white
+        backgroundColor = EdoColor.dynamic.whiteBackground
         setupGestureRecognizers()
     }
     

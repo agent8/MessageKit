@@ -47,7 +47,7 @@ public protocol MessagesDisplayDelegate: AnyObject {
     ///   - indexPath: The `IndexPath` of the cell.
     ///   - messagesCollectionView: The `MessagesCollectionView` in which this cell will be displayed.
     ///
-    /// The default value is `UIColor.clear` for emoji messages. For all other `MessageData` cases, the color depends on the `Sender`:
+    /// The default value is `EdoColor.static.transparent` for emoji messages. For all other `MessageData` cases, the color depends on the `Sender`:
     ///
     /// Current Sender: Green
     ///

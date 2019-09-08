@@ -62,7 +62,7 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
     lazy var replyLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor = EdoColor.dynamic.lightGray
+        label.textColor = EdoColor.dynamic.secondaryText
         label.font = .staticMedium()
         label.text = "Reply"
         label.isHidden = true

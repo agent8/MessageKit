@@ -40,7 +40,7 @@ open class AvatarView: UIImageView {
         }
     }
 
-    open var placeholderTextColor: UIColor = .white {
+    open var placeholderTextColor: UIColor = EdoColor.dynamic.white {
         didSet {
             setImageFrom(initials: initials)
         }
@@ -157,7 +157,7 @@ open class AvatarView: UIImageView {
     // MARK: - Internal methods
 
     internal func prepareView() {
-        backgroundColor = .clear
+        backgroundColor = EdoColor.static.transparent
         contentMode = .scaleAspectFill
         layer.masksToBounds = true
         clipsToBounds = false
