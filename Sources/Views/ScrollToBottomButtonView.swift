@@ -21,11 +21,11 @@ open class ScrollToBottomButtonView: UIView {
         let button = RoundButton(type: .custom)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.clipsToBounds = true
-        button.backgroundColor = EdoColor.dynamic.cardBackground
+        button.backgroundColor = EdoColor.cardBackground
         button.setImage(EdoTintImage("arrow-down-icon"), for: .normal)
-        button.imageView?.tintColor = EdoColor.dynamic.gray
+        button.imageView?.tintColor = EdoColor.gray
         button.layer.borderWidth = 0.5
-        button.layer.borderColor = EdoColor.dynamic.gray.cgColor
+        button.layer.borderColor = EdoColor.gray.cgColor
         return button
     }()
 
@@ -37,9 +37,9 @@ open class ScrollToBottomButtonView: UIView {
     
     lazy var unreadBadgeCount: UIButton = {
         let button = RoundButton(type: .custom)
-        button.backgroundColor = EdoColor.dynamic.brandBlue
+        button.backgroundColor = EdoColor.brandBlue
         button.setTitle("", for: .normal)
-        button.setTitleColor(EdoColor.dynamic.white, for: .normal)
+        button.setTitleColor(EdoColor.white, for: .normal)
         button.titleLabel?.textAlignment = .center
         button.titleLabel?.font = .staticBoldExtraSmall()
         button.isUserInteractionEnabled = false

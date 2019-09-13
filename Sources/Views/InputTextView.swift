@@ -71,9 +71,9 @@ open class InputTextView: UITextView {
     open lazy var placeholderLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
-        label.textColor = EdoColor.dynamic.lightText
+        label.textColor = EdoColor.lightText
         label.text = "New Message"
-        label.backgroundColor = EdoColor.static.transparent
+        label.backgroundColor = EdoColor.transparent
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -86,7 +86,7 @@ open class InputTextView: UITextView {
     }
     
     /// The placeholderLabel's textColor
-    open var placeholderTextColor: UIColor? = EdoColor.dynamic.lightText {
+    open var placeholderTextColor: UIColor? = EdoColor.lightText {
         didSet {
             placeholderLabel.textColor = placeholderTextColor
         }
@@ -165,9 +165,9 @@ open class InputTextView: UITextView {
         isScrollEnabled = false
         layer.cornerRadius = 5.0
         layer.borderWidth = 0.5
-        layer.borderColor = EdoColor.dynamic.dividerLine.cgColor
+        layer.borderColor = EdoColor.dividerLine.cgColor
         allowsEditingTextAttributes = false
-        textColor = EdoColor.dynamic.primaryText
+        textColor = EdoColor.primaryText
         setupPlaceholderLabel()
         setupObservers()
     }

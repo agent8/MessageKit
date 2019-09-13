@@ -126,7 +126,7 @@ open class MessagesViewController: UIViewController {
     private func setupDefaults() {
         extendedLayoutIncludesOpaqueBars = true
         automaticallyAdjustsScrollViewInsets = false
-        view.backgroundColor = EdoColor.dynamic.whiteBackground
+        view.backgroundColor = EdoColor.whiteBackground
         messagesCollectionView.keyboardDismissMode = .interactive
         messagesCollectionView.alwaysBounceVertical = true
     }

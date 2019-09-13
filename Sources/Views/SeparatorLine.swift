@@ -61,7 +61,7 @@ open class SeparatorLine: UIView {
     
     /// Sets up the default properties
     open func setup() {
-        backgroundColor = EdoColor.dynamic.dividerLine
+        backgroundColor = EdoColor.dividerLine
         translatesAutoresizingMaskIntoConstraints = false
         setContentHuggingPriority(.defaultHigh, for: .vertical)
     }

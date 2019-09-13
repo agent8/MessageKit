@@ -42,8 +42,8 @@ open class PlayButtonView: UIView {
         setupConstraints()
 
         triangleView.clipsToBounds = true
-        triangleView.backgroundColor = EdoColor.dynamic.gray
-        backgroundColor = EdoColor.dynamic.lightBackground
+        triangleView.backgroundColor = EdoColor.gray
+        backgroundColor = EdoColor.lightBackground
     }
 
     required public init?(coder aDecoder: NSCoder) {
