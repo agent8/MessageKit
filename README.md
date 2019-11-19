@@ -1,5 +1,4 @@
 <p>
-
   <img src="https://raw.githubusercontent.com/MessageKit/MessageKit/master/Assets/mklogo.png" title="MessageKit logo">
 </p>
 
